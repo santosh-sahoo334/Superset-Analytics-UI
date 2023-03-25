@@ -75,7 +75,7 @@
      
      // input choices & options
      export const D3_FORMAT_OPTIONS = [
-  ['SMART_NUMBER', 'Adaptive formatting'],
+       ['SMART_NUMBER', 'Adaptive formatting'],
        ['~g', 'Original value'],
        [',d', ',d (12345.432 => 12,345)'],
        ['.1s', '.1s (12345.432 => 10k)'],

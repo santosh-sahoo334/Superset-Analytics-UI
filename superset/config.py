@@ -237,24 +237,27 @@ SHOW_STACKTRACE = True
 ENABLE_PROXY_FIX = False
 PROXY_FIX_CONFIG = {"x_for": 1, "x_proto": 1, "x_host": 1, "x_port": 1, "x_prefix": 1}
 
+# For Email 
+EMAIL_REPORTS_CTA = "Explore in DWorks"
+
 # ------------------------------
 # GLOBALS FOR APP Builder
 # ------------------------------
 # Uncomment to setup Your App name
-APP_NAME = "Superset"
+APP_NAME = "DWorks"
 
 # Specify the App icon
 APP_ICON = "/static/assets/images/superset-logo-horiz.png"
 
 # Specify where clicking the logo would take the user
 # e.g. setting it to '/' would take the user to '/superset/welcome/'
-LOGO_TARGET_PATH = None
+LOGO_TARGET_PATH = '/dashboard/list/'
 
 # Specify tooltip that should appear when hovering over the App Icon/Logo
-LOGO_TOOLTIP = ""
+LOGO_TOOLTIP = "DWorks Home"
 
 # Specify any text that should appear to the right of the logo
-LOGO_RIGHT_TEXT: Union[Callable[[], str], str] = ""
+LOGO_RIGHT_TEXT: Union[Callable[[], str], str] = "TekSecur"
 
 # Enables SWAGGER UI for superset openapi spec
 # ex: http://localhost:8080/swagger/v1
