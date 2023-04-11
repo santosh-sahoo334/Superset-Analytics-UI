@@ -388,7 +388,7 @@ DEFAULT_FEATURE_FLAGS: Dict[str, bool] = {
     "DASHBOARD_CACHE": False,
     "REMOVE_SLICE_LEVEL_LABEL_COLORS": False,
     "SHARE_QUERIES_VIA_KV_STORE": False,
-    "TAGGING_SYSTEM": False,
+    "TAGGING_SYSTEM": True,
     "SQLLAB_BACKEND_PERSISTENCE": True,
     "LISTVIEWS_DEFAULT_CARD_VIEW": False,
     # When True, this flag allows display of HTML tags in Markdown components
@@ -404,8 +404,8 @@ DEFAULT_FEATURE_FLAGS: Dict[str, bool] = {
     "VERSIONED_EXPORT": True,
     "EMBEDDED_SUPERSET": False,
     # Enables Alerts and reports new implementation
-    "ALERT_REPORTS": False,
-    "DASHBOARD_RBAC": False,
+    "ALERT_REPORTS": True,
+    "DASHBOARD_RBAC": True,
     "ENABLE_EXPLORE_DRAG_AND_DROP": True,
     "ENABLE_FILTER_BOX_MIGRATION": False,
     "ENABLE_ADVANCED_DATA_TYPES": False,
