@@ -1,0 +1,17 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/ts-cloud-factory-poc/github.com/santosh-sahoo334/superset-analytics-ui:${COMMIT_SHA}', '-m','4g','.']
+ - name: 'gcr.io/cloud-builders/docker'
+   args: ['push', 'gcr.io/ts-cloud-factory-poc/github.com/santosh-sahoo334/superset-analytics-ui:${COMMIT_SHA}']
+#  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+#    entrypoint: 'gcloud'
+#    timeout: 240s
+#    args: ['compute', 'instances', 'create-with-container', 'DWorks-Superset-Image-Build', '--container-image', 'gcr.io/ts-cloud-factory-poc/github.com/santosh-sahoo334/superset-analytics-ui:${COMMIT_SHA}']
+#    env:
+#    - 'CLOUDSDK_COMPUTE_REGION=us-central1'
+#    - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'  
+timeout: 9000s
+
+options:
+ machineType: N1_HIGHCPU_8
+ diskSizeGb: 100
