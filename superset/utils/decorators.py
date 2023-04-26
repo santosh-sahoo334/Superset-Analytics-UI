@@ -21,9 +21,10 @@ from contextlib import contextmanager
 from functools import wraps
 from typing import Any, Callable, Dict, Iterator, Optional, TYPE_CHECKING, Union
 
-from flask import current_app, Response
+from flask import current_app, g, redirect, Response
+from werkzeug.wrappers import Response as werkz_Response
 
-from superset import is_feature_enabled
+from superset import appbuilder, is_feature_enabled
 from superset.dashboards.commands.exceptions import DashboardAccessDeniedError
 from superset.utils import core as utils
 from superset.utils.dates import now_as_float
@@ -45,7 +46,17 @@ def statsd_gauge(metric_prefix: Optional[str] = None) -> Callable[..., Any]:
                 current_app.config["STATS_LOGGER"].gauge(f"{metric_prefix_}.ok", 1)
                 return result
             except Exception as ex:
-                current_app.config["STATS_LOGGER"].gauge(f"{metric_prefix_}.error", 1)
+                if (
+                    hasattr(ex, "status")
+                    and ex.status < 500  # type: ignore # pylint: disable=no-member
+                ):
+                    current_app.config["STATS_LOGGER"].gauge(
+                        f"{metric_prefix_}.warning", 1
+                    )
+                else:
+                    current_app.config["STATS_LOGGER"].gauge(
+                        f"{metric_prefix_}.error", 1
+                    )
                 raise ex
 
         return wrapped
@@ -101,7 +112,9 @@ def debounce(duration: Union[float, int] = 0.1) -> Callable[..., Any]:
     return decorate
 
 
-def on_security_exception(self: Any, ex: Exception) -> Response:
+def on_security_exception(self: Any, ex: Exception) -> Union[Response, werkz_Response]:
+    if not g.user or not utils.get_user_id():
+        return redirect(appbuilder.get_url_for_login)
     return self.response(403, **{"message": utils.error_msg_from_exception(ex)})
 
 
