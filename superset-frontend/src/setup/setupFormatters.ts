@@ -79,7 +79,7 @@ export default function setupFormatters() {
           grouping: [3, 2, 2, 2, 2, 2, 2, 2, 2, 2],
           currency: ['₹', ''],
         },
-      })
+      }),
     );
 
   getTimeFormatterRegistry()
