@@ -1,0 +1,55 @@
+<!-- extend base layout -->
+{% extends "appbuilder/base.html" %} {% block content %}
+
+<script type="text/javascript">
+  var baseLoginUrl = '{{appbuilder.get_url_for_login}}'
+  var baseRegisterUrl = '{{appbuilder.get_url_for_login}}'
+  var next = '?next=' + encodeURIComponent("{{request.args.get('next', '') | safe}}")
+
+  function signin(provider) {
+    window.location.href = baseLoginUrl + provider + next
+  }
+
+  function hideNavbar() {
+    const navbar = document.querySelector('#app-menu')
+    if (navbar && navbar.style) {
+      navbar.style.display = 'none'
+    }
+    const container = document.querySelector('.container')
+    if (container && container.style) {
+      container.style.width = '100%'
+    }
+  }
+  hideNavbar()
+  setTimeout(() => {
+    hideNavbar()
+  }, 1000)
+</script>
+
+<div class="container" style="
+    min-height: 100vh;
+    background-image: url('/static/assets/images/dworks_background.jpg');
+    background-position: center;
+    background-size: cover;
+    width: 100%;
+  ">
+  <div id="loginbox" style="display: flex; justify-content: center; align-items: center; margin-top: 100px">
+    <div style="background: #fff; padding: 40px; border-radius: 4px; min-width: 400px; box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1)">
+      <div class="text-center mb-5">
+        <img src="/static/assets/images/superset-logo-horiz.png" alt="Image" height="50" style="margin-bottom: 20px" />
+        <div style="margin-bottom: 20px; font-size: 24px; font-weight: 500">Welcome to DWorks</div>
+      </div>
+
+      <div style="margin-top: 50px">
+        {% for provider in providers %}
+        <a onclick="signin('{{ provider.name }}');" class="btn btn-primary btn-block" type="submit">
+          {{_('Login with SSO')}}
+          <i id="{{provider.name}}"></i>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
