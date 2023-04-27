@@ -42,6 +42,25 @@ function getCategories(fd, data) {
   const fixedColor = [c.r, c.g, c.b, 255 * c.a];
   const colorFn = getScale(fd.color_scheme);
   const categories = {};
+  //Added to test the metrics and count for dimension Start
+  const count = {};
+  const metrics = {}
+  let total_count = 0
+  let title = fd.dimension
+
+  data.forEach(d => {
+    if(count[d.cat_color]) {
+      count[d.cat_color]+=d.metric
+      total_count+=d.metric
+    }
+    else{
+      count[d.cat_color]=d.metric
+      total_count+= d.metric
+    }
+
+  });
+  //Added to test the metrics and count for dimension End
+
   data.forEach(d => {
     if (d.cat_color != null && !categories.hasOwnProperty(d.cat_color)) {
       let color;
@@ -50,7 +69,12 @@ function getCategories(fd, data) {
       } else {
         color = fixedColor;
       }
-      categories[d.cat_color] = { color, enabled: true };
+      //Modified to test the metrics and count for dimension Start
+      let totalcount = count[d.cat_color]
+      let metricsvalue = (totalcount/total_count)*100
+      categories[d.cat_color] = { color, enabled: true, totalcount, metricsvalue, title };
+      //Modified to test the metrics and count for dimension End
+
     }
   });
 
@@ -283,6 +307,7 @@ export default class CategoricalDeckGLContainer extends React.PureComponent {
             position={this.props.formData.legend_position}
             showSingleCategory={this.showSingleCategory}
             toggleCategory={this.toggleCategory}
+            legendheading = {this.props.formData.dimension}
           />
         </AnimatableDeckGLContainer>
       </div>
