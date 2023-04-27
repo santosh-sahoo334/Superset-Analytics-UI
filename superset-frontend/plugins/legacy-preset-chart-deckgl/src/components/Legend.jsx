@@ -61,7 +61,6 @@ const propTypes = {
   position: PropTypes.oneOf([null, 'tl', 'tr', 'bl', 'br']),
   showSingleCategory: PropTypes.func,
   toggleCategory: PropTypes.func,
-  legendheading: PropTypes.string
 };
 
 const defaultProps = {
@@ -71,7 +70,6 @@ const defaultProps = {
   position: 'tr',
   showSingleCategory: () => {},
   toggleCategory: () => {},
-  legendheading: null
 };
 
 export default class Legend extends React.PureComponent {
@@ -112,9 +110,7 @@ export default class Legend extends React.PureComponent {
     const categories = Object.entries(this.props.categories).map(([k, v]) => {
       const style = { color: `rgba(${v.color.join(', ')})` };
       const icon = v.enabled ? '\u25FC' : '\u25FB';
-      const metric = v.metricsvalue ? v.metricsvalue.toFixed(2) : ''
-      const totalcount = v.totalcount? v.totalcount: ''
-      
+
       return (
         <li key={k}>
           <a
@@ -122,7 +118,7 @@ export default class Legend extends React.PureComponent {
             onClick={() => this.props.toggleCategory(k)}
             onDoubleClick={() => this.props.showSingleCategory(k)}
           >
-            <span style={style}>{icon}</span> {this.formatCategoryLabel(k)} {metric}{"%"}  {"("}{totalcount}{")"}
+            <span style={style}>{icon}</span> {this.formatCategoryLabel(k)}
           </a>
         </li>
       );
@@ -138,7 +134,6 @@ export default class Legend extends React.PureComponent {
 
     return (
       <StyledLegend style={style}>
-        <span>{this.props.legendheading}</span>
         <ul>{categories}</ul>
       </StyledLegend>
     );
