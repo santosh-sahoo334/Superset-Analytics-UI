@@ -49,13 +49,12 @@ function getCategories(fd, data) {
 
   data.forEach(d => {
     if (count[d.cat_color]) {
-      count[d.cat_color] += d.metric
-      total_count += d.metric
+      count[d.cat_color] += d.metric;
+      total_count += d.metric;
     } else {
-      count[d.cat_color] = d.metric
-      total_count += d.metric
+      count[d.cat_color] = d.metric;
+      total_count += d.metric;
     }
-
   });
   // Added to test the metrics and count for dimension End
 
@@ -70,9 +69,14 @@ function getCategories(fd, data) {
       // Modified to test the metrics and count for dimension Start
       const totalcount = count[d.cat_color];
       const metricsvalue = (totalcount / total_count) * 100;
-      categories[d.cat_color] = { color,  enabled: true,  totalcount, metricsvalue, title };
+      categories[d.cat_color] = {
+        color,
+        enabled: true,
+        totalcount,
+        metricsvalue,
+        title,
+      };
       // Modified to test the metrics and count for dimension End
-
     }
   });
 
