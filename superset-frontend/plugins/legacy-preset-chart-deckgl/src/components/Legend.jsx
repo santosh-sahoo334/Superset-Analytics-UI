@@ -121,7 +121,7 @@ export default class Legend extends React.PureComponent {
             onDoubleClick={() => this.props.showSingleCategory(k)}
           >
             <span style={style}>{icon}</span> {this.formatCategoryLabel(k)}{' '}
-            {metric} {"%"} {"("} {totalcount} {")"}
+            {metric} % ( {totalcount} )
           </a>
         </li>
       );
