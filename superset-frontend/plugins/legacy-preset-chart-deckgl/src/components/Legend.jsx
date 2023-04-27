@@ -110,8 +110,8 @@ export default class Legend extends React.PureComponent {
     const categories = Object.entries(this.props.categories).map(([k, v]) => {
       const style = { color: `rgba(${v.color.join(', ')})` };
       const icon = v.enabled ? '\u25FC' : '\u25FB';
-      const metric = v.metricsvalue ? v.metricsvalue.toFixed(2) : ''
-      const totalcount = v.totalcount? v.totalcount: ''
+      const metric = v.metricsvalue ? v.metricsvalue.toFixed(2) : '';
+      const totalcount = v.totalcount ? v.totalcount : '';
 
       return (
         <li key={k}>
@@ -120,7 +120,8 @@ export default class Legend extends React.PureComponent {
             onClick={() => this.props.toggleCategory(k)}
             onDoubleClick={() => this.props.showSingleCategory(k)}
           >
-            <span style={style}>{icon}</span> {this.formatCategoryLabel(k)} {metric}{"%"}  {"("}{totalcount}{")"}
+            <span style={style}>{icon}</span> {this.formatCategoryLabel(k)}{' '}
+            {metric} % ( {totalcount} )
           </a>
         </li>
       );
