@@ -61,7 +61,7 @@ const propTypes = {
   position: PropTypes.oneOf([null, 'tl', 'tr', 'bl', 'br']),
   showSingleCategory: PropTypes.func,
   toggleCategory: PropTypes.func,
-  legendheading: PropTypes.string
+  legendheading: PropTypes.string,
 };
 
 const defaultProps = {
@@ -71,7 +71,7 @@ const defaultProps = {
   position: 'tr',
   showSingleCategory: () => {},
   toggleCategory: () => {},
-  legendheading: null
+  legendheading: null,
 };
 
 export default class Legend extends React.PureComponent {
