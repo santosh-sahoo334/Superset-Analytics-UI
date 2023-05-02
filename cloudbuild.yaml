@@ -1,8 +1,8 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/ts-cloud-factory-poc/github.com/santosh-sahoo334/superset-analytics-ui:${COMMIT_SHA}','.']
+  args: ['build', '-t', 'dworks:2.1.0','.']
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/ts-cloud-factory-poc/github.com/santosh-sahoo334/superset-analytics-ui:${COMMIT_SHA}']
+  args: ['push', 'dworks:2.1.0']
 timeout: 9000s
 options:
  machineType: N1_HIGHCPU_32
