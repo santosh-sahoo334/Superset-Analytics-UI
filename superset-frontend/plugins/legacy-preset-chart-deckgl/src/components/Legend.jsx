@@ -109,25 +109,40 @@ export default class Legend extends React.PureComponent {
       return null;
     }
 
-    const categories = Object.entries(this.props.categories).map(([k, v]) => {
-      const style = { color: `rgba(${v.color.join(', ')})` };
-      const icon = v.enabled ? '\u25FC' : '\u25FB';
-      const metric = v.metricsvalue ? `${v.metricsvalue.toFixed(2)}%` : '';
-      const totalcount = v.totalcount ? `(${v.totalcount})` : '';
-
-      return (
-        <li key={k}>
-          <a
-            href="#"
-            onClick={() => this.props.toggleCategory(k)}
-            onDoubleClick={() => this.props.showSingleCategory(k)}
-          >
-            <span style={style}>{icon}</span> {this.formatCategoryLabel(k)}{' '}
-            {metric} {totalcount}
-          </a>
-        </li>
-      );
-    });
+    const categories = Object.entries(this.props.categories)
+      .sort((a, b) => {
+        if (
+          b[0].includes('(') &&
+          a[0].includes('(') &&
+          a[0].includes(',') &&
+          b[0].includes(',')
+        ) {
+          return (
+            Number(b[0].split('(')[1].split(',')[1].replace(')', '')) -
+            Number(a[0].split('(')[1].split(',')[1].replace(')', ''))
+          );
+        } else {
+          return 0;
+        }
+      })
+      .map(([k, v]) => {
+        const style = { color: `rgba(${v.color.join(', ')})` };
+        const icon = v.enabled ? '\u25FC' : '\u25FB';
+        const metric = v.metricsvalue ? `${v.metricsvalue.toFixed(2)}%` : '';
+        const totalcount = v.totalcount ? `(${v.totalcount})` : '';
+        return (
+          <li key={k}>
+            <a
+              href="#"
+              onClick={() => this.props.toggleCategory(k)}
+              onDoubleClick={() => this.props.showSingleCategory(k)}
+            >
+              <span style={style}>{icon}</span> {this.formatCategoryLabel(k)}{' '}
+              {metric} {totalcount}
+            </a>
+          </li>
+        );
+      });
 
     const vertical = this.props.position.charAt(0) === 't' ? 'top' : 'bottom';
     const horizontal = this.props.position.charAt(1) === 'r' ? 'right' : 'left';
