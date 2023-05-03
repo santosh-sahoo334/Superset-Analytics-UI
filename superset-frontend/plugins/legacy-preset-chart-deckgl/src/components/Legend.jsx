@@ -122,6 +122,7 @@ export default class Legend extends React.PureComponent {
             Number(a[0].split('(')[1].split(',')[1].replace(')', ''))
           );
         }
+        return 0;
       })
       .map(([k, v]) => {
         const style = { color: `rgba(${v.color.join(', ')})` };
