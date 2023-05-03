@@ -121,8 +121,6 @@ export default class Legend extends React.PureComponent {
             Number(b[0].split('(')[1].split(',')[1].replace(')', '')) -
             Number(a[0].split('(')[1].split(',')[1].replace(')', ''))
           );
-        } else {
-          return 0;
         }
       })
       .map(([k, v]) => {
