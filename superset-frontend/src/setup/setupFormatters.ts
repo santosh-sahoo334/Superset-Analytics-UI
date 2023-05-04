@@ -24,6 +24,7 @@ import {
   getTimeFormatterRegistry,
   smartDateFormatter,
   smartDateVerboseFormatter,
+  createD3NumberFormatter,
 } from '@superset-ui/core';
 
 export default function setupFormatters() {
@@ -66,6 +67,19 @@ export default function setupFormatters() {
     .registerValue(
       'DURATION_SUB',
       createDurationFormatter({ formatSubMilliseconds: true }),
+    )
+    .registerValue(
+      'CURRENCY_INDIA',
+      createD3NumberFormatter({
+        description: 'Indian Currency',
+        formatString: '$,.2f',
+        locale: {
+          decimal: '.',
+          thousands: ',',
+          grouping: [3, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+          currency: ['₹', ''],
+        },
+      }),
     );
 
   getTimeFormatterRegistry()
