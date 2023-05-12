@@ -245,7 +245,7 @@ class Dashboard(Model, AuditMixinNullable, ImportExportMixin):
         """
         Returns a MD5 HEX digest that makes this dashboard unique
         """
-        unique_string = f"{self.position_json}.{self.css}"
+        unique_string = f"{self.position_json}.{self.css}.{self.json_metadata}"
         return md5_sha_from_str(unique_string)
 
     @property
