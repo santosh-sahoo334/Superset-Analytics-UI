@@ -138,6 +138,7 @@ RUN wget https://download-installer.cdn.mozilla.net/pub/firefox/releases/${FIREF
 RUN apt-get update && \
     wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
     apt-get install -y --no-install-recommends ./google-chrome-stable_current_amd64.deb && \
+    apt-get install unzip && \
     rm -f google-chrome-stable_current_amd64.deb
 
 # Chrome Driver Latest Version - 112.0.5615.49 [ 12-May-2023 ]
