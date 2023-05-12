@@ -129,7 +129,7 @@ RUN apt-get update -y \
 #     tar xvfz /tmp/geckodriver.tar.gz -C /tmp && \
 #     mv /tmp/geckodriver /usr/local/bin/geckodriver && \
 #     rm /tmp/geckodriver.tar.gz
-
+RUN apt-get update && apt-get install -y gnupg2
 RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-linux64.tar.gz && \
     tar -xvzf geckodriver* && \
     chmod +x geckodriver && \
