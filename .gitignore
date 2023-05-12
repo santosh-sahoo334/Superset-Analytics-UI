@@ -110,3 +110,5 @@ messages.mo
 docker/requirements-local.txt
 
 cache/
+python_geohash-0.8.5-cp38-cp38-win_amd64.whl
+sasl-0.3.1-cp38-cp38-win_amd64.whl

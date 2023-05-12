@@ -127,8 +127,10 @@ export default class Legend extends React.PureComponent {
       .map(([k, v]) => {
         const style = { color: `rgba(${v.color.join(', ')})` };
         const icon = v.enabled ? '\u25FC' : '\u25FB';
-        const metric = v.metricsvalue ? `${v.metricsvalue.toFixed(2)}%` : '';
-        const totalcount = v.totalcount ? `(${v.totalcount})` : '';
+        const metric = v.metricsvalue
+          ? `${v.metricsvalue.toFixed(2)}%`
+          : `0.00%`;
+        const totalcount = v.totalcount ? `(${v.totalcount})` : `(0)`;
         return (
           <li key={k}>
             <a
