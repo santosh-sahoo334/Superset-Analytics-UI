@@ -126,16 +126,8 @@ class Chart extends React.PureComponent {
       this.handleRenderContainerFailure.bind(this);
   }
 
-  _onWebGLInitialized(gl) {
-    console.log("_onWebGLInitialized", gl)
-    this.setState(gl);
-  }
-
   componentDidMount() {
     // during migration, hold chart queries before user choose review or cancel
-    console.log("componentDidMount ownState :", this.props.ownState)
-    
-
     if (
       this.props.triggerQuery &&
       this.props.filterboxMigrationState !== 'UNDECIDED'
@@ -146,8 +138,6 @@ class Chart extends React.PureComponent {
 
   componentDidUpdate() {
     // during migration, hold chart queries before user choose review or cancel
-    
-    console.log("componentDidUpdate ownState :", this.props.ownState)
     if (
       this.props.triggerQuery &&
       this.props.filterboxMigrationState !== 'UNDECIDED'
@@ -158,10 +148,6 @@ class Chart extends React.PureComponent {
       }
       this.runQuery();
     }
-  }
-
-  componentWillUnMount() {
-    
   }
 
   runQuery() {
