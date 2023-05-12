@@ -106,7 +106,8 @@ CMD /usr/bin/run-server.sh
 # Dev image...
 ######################################################################
 FROM lean AS dev
-ARG GECKODRIVER_VERSION=v0.32.0
+# ARG GECKODRIVER_VERSION=v0.32.0
+ARG GECKODRIVER_VERSION=v0.29.0
 ARG FIREFOX_VERSION=106.0.3
 
 COPY ./requirements/*.txt ./docker/requirements-*.txt/ /app/requirements/
@@ -129,24 +130,29 @@ RUN wget https://github.com/mozilla/geckodriver/releases/download/${GECKODRIVER_
     mv /tmp/geckodriver /usr/local/bin/geckodriver && \
     rm /tmp/geckodriver.tar.gz
 
+# RUN wget -q https://github.com/mozilla/geckodriver/releases/download/v${GECKODRIVER_VERSION}/geckodriver-v${GECKODRIVER_VERSION}-linux64.tar.gz && \
+#     tar -x geckodriver -zf geckodriver-v${GECKODRIVER_VERSION}-linux64.tar.gz -O > /usr/bin/geckodriver && \
+#     chmod 755 /usr/bin/geckodriver && \
+#     rm geckodriver-v${GECKODRIVER_VERSION}-linux64.tar.gz
+
 # Install Firefox
 RUN wget https://download-installer.cdn.mozilla.net/pub/firefox/releases/${FIREFOX_VERSION}/linux-x86_64/en-US/firefox-${FIREFOX_VERSION}.tar.bz2 -O /opt/firefox.tar.bz2 && \
     tar xvf /opt/firefox.tar.bz2 -C /opt && \
     ln -s /opt/firefox/firefox /usr/local/bin/firefox
 
 # Install Chrome Driver
-RUN apt-get update && \
-    wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
-    apt-get install -y --no-install-recommends ./google-chrome-stable_current_amd64.deb && \
-    apt-get install unzip && \
-    rm -f google-chrome-stable_current_amd64.deb
+# RUN apt-get update && \
+#     wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+#     apt-get install -y --no-install-recommends ./google-chrome-stable_current_amd64.deb && \
+#     apt-get install unzip && \
+#     rm -f google-chrome-stable_current_amd64.deb
 
-# Chrome Driver Latest Version - 112.0.5615.49 [ 12-May-2023 ]
-RUN export CHROMEDRIVER_VERSION=$(curl --silent https://chromedriver.storage.googleapis.com/LATEST_RELEASE_112) && \
-    wget -q https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip && \
-    unzip chromedriver_linux64.zip -d /usr/bin && \
-    chmod 755 /usr/bin/chromedriver && \
-    rm -f chromedriver_linux64.zip
+# # Chrome Driver Latest Version - 112.0.5615.49 [ 12-May-2023 ]
+# RUN export CHROMEDRIVER_VERSION=$(curl --silent https://chromedriver.storage.googleapis.com/LATEST_RELEASE_112) && \
+#     wget -q https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip && \
+#     unzip chromedriver_linux64.zip -d /usr/bin && \
+#     chmod 755 /usr/bin/chromedriver && \
+#     rm -f chromedriver_linux64.zip
 
 # Cache everything for dev purposes...
 RUN cd /app \
