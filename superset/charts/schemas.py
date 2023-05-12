@@ -62,6 +62,7 @@ screenshot_query_schema = {
         "force": {"type": "boolean"},
         "window_size": width_height_schema,
         "thumb_size": width_height_schema,
+        "dashboard_id": {"type": "integer"}
     },
 }
 get_export_ids_schema = {"type": "array", "items": {"type": "integer"}}
