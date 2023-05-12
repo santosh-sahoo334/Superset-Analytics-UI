@@ -114,6 +114,8 @@ COPY ./requirements/*.txt ./docker/requirements-*.txt/ /app/requirements/
 
 USER root
 
+RUN apt-get install -y software-properties-common && \
+    rm -rf /var/lib/apt/lists/* 
 RUN apt-get update -y \
     && apt-get install -y --no-install-recommends \
           libnss3 \
