@@ -125,20 +125,25 @@ RUN apt-get update -y \
           wget
 
 # Install GeckoDriver WebDriver
-RUN wget https://github.com/mozilla/geckodriver/releases/download/${GECKODRIVER_VERSION}/geckodriver-${GECKODRIVER_VERSION}-linux64.tar.gz -O /tmp/geckodriver.tar.gz && \
-    tar xvfz /tmp/geckodriver.tar.gz -C /tmp && \
-    mv /tmp/geckodriver /usr/local/bin/geckodriver && \
-    rm /tmp/geckodriver.tar.gz
+# RUN wget https://github.com/mozilla/geckodriver/releases/download/${GECKODRIVER_VERSION}/geckodriver-${GECKODRIVER_VERSION}-linux64.tar.gz -O /tmp/geckodriver.tar.gz && \
+#     tar xvfz /tmp/geckodriver.tar.gz -C /tmp && \
+#     mv /tmp/geckodriver /usr/local/bin/geckodriver && \
+#     rm /tmp/geckodriver.tar.gz
 
-# RUN wget -q https://github.com/mozilla/geckodriver/releases/download/v${GECKODRIVER_VERSION}/geckodriver-v${GECKODRIVER_VERSION}-linux64.tar.gz && \
-#     tar -x geckodriver -zf geckodriver-v${GECKODRIVER_VERSION}-linux64.tar.gz -O > /usr/bin/geckodriver && \
-#     chmod 755 /usr/bin/geckodriver && \
-#     rm geckodriver-v${GECKODRIVER_VERSION}-linux64.tar.gz
+RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-linux64.tar.gz && \
+    tar -xvzf geckodriver* && \
+    chmod +x geckodriver && \
+    mv geckodriver /usr/local/bin/
 
 # Install Firefox
-RUN wget https://download-installer.cdn.mozilla.net/pub/firefox/releases/${FIREFOX_VERSION}/linux-x86_64/en-US/firefox-${FIREFOX_VERSION}.tar.bz2 -O /opt/firefox.tar.bz2 && \
-    tar xvf /opt/firefox.tar.bz2 -C /opt && \
-    ln -s /opt/firefox/firefox /usr/local/bin/firefox
+# RUN wget https://download-installer.cdn.mozilla.net/pub/firefox/releases/${FIREFOX_VERSION}/linux-x86_64/en-US/firefox-${FIREFOX_VERSION}.tar.bz2 -O /opt/firefox.tar.bz2 && \
+#     tar xvf /opt/firefox.tar.bz2 -C /opt && \
+#     ln -s /opt/firefox/firefox /usr/local/bin/firefox
+
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A6DCF7707EBC211F && \ 
+    apt-add-repository "deb http://ppa.launchpad.net/ubuntu-mozilla-security/ppa/ubuntu focal main" && \
+    apt update && \
+    apt install firefox -y    
 
 # Install Chrome Driver
 # RUN apt-get update && \
