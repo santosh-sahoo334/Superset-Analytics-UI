@@ -106,17 +106,16 @@ CMD /usr/bin/run-server.sh
 # Dev image...
 ######################################################################
 FROM lean AS dev
-# ARG GECKODRIVER_VERSION=v0.32.0
-ARG GECKODRIVER_VERSION=v0.29.0
+ARG GECKODRIVER_VERSION=v0.32.0
 ARG FIREFOX_VERSION=106.0.3
 
 COPY ./requirements/*.txt ./docker/requirements-*.txt/ /app/requirements/
 
 USER root
 
-RUN apt-get update && \
-    apt-get install -y software-properties-common && \
-    rm -rf /var/lib/apt/lists/* 
+# RUN apt-get update && \
+#     apt-get install -y software-properties-common && \
+#     rm -rf /var/lib/apt/lists/* 
 RUN apt-get update -y \
     && apt-get install -y --no-install-recommends \
           libnss3 \
@@ -128,25 +127,29 @@ RUN apt-get update -y \
           wget
 
 # Install GeckoDriver WebDriver
-# RUN wget https://github.com/mozilla/geckodriver/releases/download/${GECKODRIVER_VERSION}/geckodriver-${GECKODRIVER_VERSION}-linux64.tar.gz -O /tmp/geckodriver.tar.gz && \
-#     tar xvfz /tmp/geckodriver.tar.gz -C /tmp && \
-#     mv /tmp/geckodriver /usr/local/bin/geckodriver && \
-#     rm /tmp/geckodriver.tar.gz
-RUN apt-get update && apt-get install -y gnupg2
-RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-linux64.tar.gz && \
-    tar -xvzf geckodriver* && \
-    chmod +x geckodriver && \
-    mv geckodriver /usr/local/bin/
+RUN wget https://github.com/mozilla/geckodriver/releases/download/${GECKODRIVER_VERSION}/geckodriver-${GECKODRIVER_VERSION}-linux64.tar.gz -O /tmp/geckodriver.tar.gz && \
+    tar xvfz /tmp/geckodriver.tar.gz -C /tmp && \
+    mv /tmp/geckodriver /usr/local/bin/geckodriver && \
+    rm /tmp/geckodriver.tar.gz
+RUN echo "########### GeckoDriver TEST ECHO STARTS ###########"    
+RUN ls -lrt /usr/local/bin/geckodriver
+RUN echo $PATH     
+RUN echo "########### GeckoDriver TEST ECHO STARTS ###########" 
+# RUN apt-get update && apt-get install -y gnupg2
+# RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-linux64.tar.gz && \
+#     tar -xvzf geckodriver* && \
+#     chmod +x geckodriver && \
+#     mv geckodriver /usr/local/bin/
 
 # Install Firefox
-# RUN wget https://download-installer.cdn.mozilla.net/pub/firefox/releases/${FIREFOX_VERSION}/linux-x86_64/en-US/firefox-${FIREFOX_VERSION}.tar.bz2 -O /opt/firefox.tar.bz2 && \
-#     tar xvf /opt/firefox.tar.bz2 -C /opt && \
-#     ln -s /opt/firefox/firefox /usr/local/bin/firefox
+RUN wget https://download-installer.cdn.mozilla.net/pub/firefox/releases/${FIREFOX_VERSION}/linux-x86_64/en-US/firefox-${FIREFOX_VERSION}.tar.bz2 -O /opt/firefox.tar.bz2 && \
+    tar xvf /opt/firefox.tar.bz2 -C /opt && \
+    ln -s /opt/firefox/firefox /usr/local/bin/firefox
 
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A6DCF7707EBC211F && \ 
-    apt-add-repository "deb http://ppa.launchpad.net/ubuntu-mozilla-security/ppa/ubuntu focal main" && \
-    apt update && \
-    apt install firefox -y    
+# RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A6DCF7707EBC211F && \ 
+#     apt-add-repository "deb http://ppa.launchpad.net/ubuntu-mozilla-security/ppa/ubuntu focal main" && \
+#     apt update && \
+#     apt install firefox -y    
 
 # Install Chrome Driver
 # RUN apt-get update && \
