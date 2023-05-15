@@ -33,13 +33,13 @@ const StyledLegend = styled.div`
     padding: ${theme.gridUnit * 3}px ${theme.gridUnit * 5}px;
     outline: none;
     overflow-y: auto;
-    max-height: 200px;
+    max-height: auto;
 
     & ul {
       list-style: none;
       padding-left: 0;
       margin: 0;
-      font-size:20px;
+      font-size:18px;
 
       & li a {
         color: ${theme.colors.grayscale.base};
@@ -54,6 +54,16 @@ const StyledLegend = styled.div`
       fontWeight: 'bold';
       font-size:20px;
     }
+
+    .grid-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+      font-size:18px;
+    }
+
   `}
 `;
 
@@ -159,10 +169,12 @@ export default class Legend extends React.PureComponent {
       [horizontal]: '10px',
     };
 
+    const shouldApplyGrid = categories.length > 10;
+    const ulClassName = shouldApplyGrid ? 'grid-list' : '';
     return (
       <StyledLegend style={style}>
         <span>{this.props.legendheading}</span>
-        <ul>{categories}</ul>
+        <ul className={ulClassName}>{categories}</ul>
       </StyledLegend>
     );
   }
