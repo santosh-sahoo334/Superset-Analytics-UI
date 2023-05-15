@@ -39,6 +39,7 @@ const StyledLegend = styled.div`
       list-style: none;
       padding-left: 0;
       margin: 0;
+      font-size:25px;
 
       & li a {
         color: ${theme.colors.grayscale.base};
@@ -51,6 +52,7 @@ const StyledLegend = styled.div`
     }
     & span {
       fontWeight: 'bold';
+      font-size:25px;
     }
   `}
 `;
