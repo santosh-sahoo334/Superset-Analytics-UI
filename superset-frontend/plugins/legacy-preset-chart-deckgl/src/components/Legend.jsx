@@ -140,7 +140,7 @@ export default class Legend extends React.PureComponent {
 
     return (
       <StyledLegend style={style}>
-        <span style={{ fontWeight: "bold" }}>{this.props.legendheading}</span>
+        <span>{this.props.legendheading}</span>
         <ul>{categories}</ul>
       </StyledLegend>
     );
