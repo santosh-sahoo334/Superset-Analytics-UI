@@ -49,6 +49,9 @@ const StyledLegend = styled.div`
         }
       }
     }
+    & span {
+      fontWeight: 'bold';
+    }
   `}
 `;
 
@@ -148,6 +151,7 @@ export default class Legend extends React.PureComponent {
     const vertical = this.props.position.charAt(0) === 't' ? 'top' : 'bottom';
     const horizontal = this.props.position.charAt(1) === 'r' ? 'right' : 'left';
     const style = {
+      fontWeight: 'bold',
       position: 'absolute',
       [vertical]: '0px',
       [horizontal]: '10px',
