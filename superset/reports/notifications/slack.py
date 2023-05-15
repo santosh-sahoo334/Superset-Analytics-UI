@@ -67,7 +67,7 @@ class SlackNotification(BaseNotification):  # pylint: disable=too-few-public-met
 
 %(description)s
 
-<%(url)s|Explore in Superset>
+<%(url)s|Explore in DWorks>
 
 %(table)s
 """,
