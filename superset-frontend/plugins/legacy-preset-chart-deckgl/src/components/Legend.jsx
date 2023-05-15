@@ -32,7 +32,7 @@ const StyledLegend = styled.div`
     margin: ${theme.gridUnit * 6}px;
     padding: ${theme.gridUnit * 3}px ${theme.gridUnit * 5}px;
     outline: none;
-    overflow-y: scroll;
+    overflow-y: auto;
     max-height: 200px;
 
     & ul {
