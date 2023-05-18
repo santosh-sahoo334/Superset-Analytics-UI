@@ -551,8 +551,6 @@ class ChartRestApi(BaseSupersetModelRestApi):
             if chart.dashboards and dashboard_id:
                 for dashboard in chart.dashboards:
                     if dashboard_id == dashboard.id:
-                        print(
-                            f"Dashboard in slice cache screenshot:{dashboard.id} and meta_data:{dashboard.json_metadata}")
                         unique_string = f"{chart.params}.{dashboard.css}.{dashboard.json_metadata}"
                         digest =  md5_sha_from_str(unique_string)
 
@@ -568,7 +566,7 @@ class ChartRestApi(BaseSupersetModelRestApi):
             logger.info("Triggering screenshot ASYNC")
             kwargs = {
                 "url": chart_url,
-                "digest": chart.digest,
+                "digest": digest if digest else chart.digest,
                 "force": True,
                 "window_size": window_size,
                 "thumb_size": thumb_size,
