@@ -70,7 +70,6 @@ from superset.constants import MODEL_API_RW_METHOD_PERMISSION_MAP, RouteMethod
 from superset.extensions import event_logger
 from superset.models.slice import Slice
 from superset.tasks.thumbnails import cache_chart_thumbnail
-from superset.utils.hashing import md5_sha_from_str
 from superset.utils.screenshots import ChartScreenshot
 from superset.utils.urls import get_url_path
 from superset.views.base_api import (
@@ -118,7 +117,6 @@ class ChartRestApi(BaseSupersetModelRestApi):
         "dashboards.dashboard_title",
         "dashboards.id",
         "dashboards.json_metadata",
-        "dashboards.css",
         "description",
         "owners.first_name",
         "owners.id",
@@ -544,19 +542,8 @@ class ChartRestApi(BaseSupersetModelRestApi):
         if not chart:
             return self.response_404()
 
-        dashboard_id = rison_dict.get("dashboard_id") or ""
-
-        digest = None
-        if dashboard_id:
-            if chart.dashboards and dashboard_id:
-                for dashboard in chart.dashboards:
-                    if dashboard_id == dashboard.id:
-                        unique_string = f"{chart.params}.{dashboard.css}.{dashboard.json_metadata}"
-                        digest =  md5_sha_from_str(unique_string)
-
-
         chart_url = get_url_path("Superset.slice", slice_id=chart.id, standalone="true")
-        screenshot_obj = ChartScreenshot(chart_url, digest if digest else chart.digest)
+        screenshot_obj = ChartScreenshot(chart_url, chart.digest)
         cache_key = screenshot_obj.cache_key(window_size, thumb_size)
         image_url = get_url_path(
             "ChartRestApi.screenshot", pk=chart.id, digest=cache_key
@@ -566,7 +553,7 @@ class ChartRestApi(BaseSupersetModelRestApi):
             logger.info("Triggering screenshot ASYNC")
             kwargs = {
                 "url": chart_url,
-                "digest": digest if digest else chart.digest,
+                "digest": chart.digest,
                 "force": True,
                 "window_size": window_size,
                 "thumb_size": thumb_size,

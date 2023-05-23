@@ -235,11 +235,6 @@ class Slice(  # pylint: disable=too-many-public-methods
         """
         Returns a MD5 HEX digest that makes this dashboard unique
         """
-        #Rever the changes if it is not worked
-        if self.dashboards:
-            for dashboard in self.dashboards:
-                unique_string = f"{self.params}.{dashboard.css}.{dashboard.json_metadata}"
-                return md5_sha_from_str(unique_string)
         return md5_sha_from_str(self.params or "")
 
     @property
