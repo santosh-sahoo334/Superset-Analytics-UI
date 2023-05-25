@@ -183,6 +183,5 @@ export default class Legend extends React.PureComponent {
     );
   }
 }
-
 Legend.propTypes = propTypes;
 Legend.defaultProps = defaultProps;
