@@ -88,6 +88,7 @@ const defaultTheme = {
       light3: '#F0F0F0',
       light4: '#F7F7F7',
       light5: '#FFFFFF',
+      thinblackborder: '#808080',
     },
     error: {
       base: '#E04355',
