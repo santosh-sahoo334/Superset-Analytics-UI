@@ -28,8 +28,6 @@ const StyledLegend = styled.div`
     font-size: ${theme.typography.sizes.s}px;
     position: absolute;
     background: ${theme.colors.grayscale.light5};
-    /*box-shadow: 0 0 ${theme.gridUnit}px ${theme.colors.grayscale.light2};*/
-    // border: 1px solid #808080;
     border: 1px solid ${theme.colors.grayscale.thinblackborder};
     margin: 2px;
     padding: 4px 6px;
