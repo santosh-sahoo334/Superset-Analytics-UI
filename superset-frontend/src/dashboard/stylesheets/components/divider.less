@@ -16,18 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-.dashboard-component-divider {
-  width: 100%;
-  padding: 8px 0; /* this is padding not margin to enable a larger mouse target */
-  background-color: transparent;
+.dashboard-component-divider:before {
+  // width: 100%;
+  // padding: 3px 0; /* this is padding not margin to enable a larger mouse target */
+  // background-color: transparent;
+  content: '';
+  display: block;
+  height: 0.1px;
+  background-color: #2A52CA;
 }
 
 .dashboard-component-divider:after {
   content: '';
-  height: 1px;
+  height: 0.1px;
   width: 100%;
-  background-color: @gray-light;
-  display: block;
+  // background-color: @gray-light;
+  display: inline;
+  background-color: #2A52CA;
 }
 
 .new-component-placeholder.divider-placeholder:after {
