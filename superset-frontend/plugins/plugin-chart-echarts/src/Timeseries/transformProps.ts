@@ -323,14 +323,14 @@ export default function transformProps(
     axisLine: {
       lineStyle: {
         color: theme.colors.spirent.base, // Change X-axis line color
-      }
+      },
     },
     axisLabel: {
       hideOverlap: true,
       formatter: xAxisFormatter,
       rotate: xAxisLabelRotation,
       textStyle: {
-        color: theme.colors.spirent.base, 
+        color: theme.colors.spirent.base,
         fontSize: '13px', // Change X-axis font label size
         // fontWeight: 'bold',
       },
@@ -345,17 +345,19 @@ export default function transformProps(
     type: logAxis ? 'log' : 'value',
     min,
     max,
-    minorTick: { show: true, lineStyle: {
-      color: theme.colors.spirent.base, // Change Y-axis line color
-    } 
-  },
+    minorTick: {
+      show: true,
+      lineStyle: {
+        color: theme.colors.spirent.base, // Change Y-axis line color
+      },
+    },
     minorSplitLine: { show: minorSplitLine },
-    axisLabel: { 
-      formatter, 
+    axisLabel: {
+      formatter,
       textStyle: {
-      color: theme.colors.spirent.base, // Change Y-axis text font color
-    }, 
-  },
+        color: theme.colors.spirent.base, // Change Y-axis text font color
+      },
+    },
     scale: truncateYAxis,
     name: yAxisTitle,
     nameGap: convertInteger(yAxisTitleMargin),

@@ -59,7 +59,7 @@ const defaultTheme = {
       help: '#737373',
     },
     spirent: {
-      base:'#2A52CA',
+      base: '#2A52CA',
     },
     primary: {
       base: '#20A7C9',
