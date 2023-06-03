@@ -423,7 +423,7 @@ DEFAULT_FEATURE_FLAGS: Dict[str, bool] = {
     # This could cause the server to run out of memory or compute.
     "ALLOW_FULL_CSV_EXPORT": False,
     "UX_BETA": False,
-    "GENERIC_CHART_AXES": False,
+    "GENERIC_CHART_AXES": True,
     "ALLOW_ADHOC_SUBQUERY": False,
     "USE_ANALAGOUS_COLORS": True,
     # Apply RLS rules to SQL Lab queries. This requires parsing and manipulating the

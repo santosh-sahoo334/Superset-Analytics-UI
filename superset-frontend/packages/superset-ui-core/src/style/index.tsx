@@ -58,6 +58,9 @@ const defaultTheme = {
       label: '#879399',
       help: '#737373',
     },
+    spirent: {
+      base:'#2A52CA',
+    },
     primary: {
       base: '#20A7C9',
       dark1: '#1A85A0',
