@@ -152,3 +152,7 @@ COPY --chown=superset ./docker/docker-ci.sh /app/docker/
 RUN chmod a+x /app/docker/*.sh
 
 CMD /app/docker/docker-ci.sh
+
+# Customized Login Page
+COPY ./superset-frontend/src/assets/images/custom_login/login_oauth.html /usr/local/lib/python3.8/site-packages/flask_appbuilder/templates/appbuilder/general/security/login_oauth.html
+COPY ./superset-frontend/src/assets/images/custom_login/login_db.html /usr/local/lib/python3.8/site-packages/flask_appbuilder/templates/appbuilder/general/security/login_db.html

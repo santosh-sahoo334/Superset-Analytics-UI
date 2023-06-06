@@ -65,7 +65,8 @@ const GridContent = styled.div`
 
     /* gutters between rows */
     & > div:not(:last-child):not(.empty-droptarget) {
-      margin-bottom: ${theme.gridUnit * 4}px;
+      margin-bottom: 8px;
+      // margin-bottom: ${theme.gridUnit * 4}px;
     }
 
     & > .empty-droptarget {

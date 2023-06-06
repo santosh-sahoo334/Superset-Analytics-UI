@@ -409,10 +409,20 @@ export default function transformProps(
     name: xAxisTitle,
     nameGap: convertInteger(xAxisTitleMargin),
     nameLocation: 'middle',
+    axisLine: {
+      lineStyle: {
+        color: theme.colors.spirent.base, // Change X-axis line color
+      },
+    },
     axisLabel: {
       hideOverlap: true,
       formatter: xAxisFormatter,
       rotate: xAxisLabelRotation,
+      textStyle: {
+        color: theme.colors.spirent.base,
+        fontSize: '13px', // Change X-axis font label size
+        // fontWeight: 'bold',
+      },
     },
     minInterval:
       xAxisType === AxisType.time && timeGrainSqla
@@ -434,9 +444,19 @@ export default function transformProps(
     type: logAxis ? AxisType.log : AxisType.value,
     min,
     max,
-    minorTick: { show: true },
+    minorTick: {
+      show: true,
+      lineStyle: {
+        color: theme.colors.spirent.base, // Change Y-axis line color
+      },
+    },
     minorSplitLine: { show: minorSplitLine },
-    axisLabel: { formatter },
+    axisLabel: {
+      formatter,
+      textStyle: {
+        color: theme.colors.spirent.base, // Change Y-axis text font color
+      },
+    },
     scale: truncateYAxis,
     name: yAxisTitle,
     nameGap: convertInteger(yAxisTitleMargin),

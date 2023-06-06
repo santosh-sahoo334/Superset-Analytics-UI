@@ -356,7 +356,8 @@ const StyledDashboardContent = styled.div<{
       width: 0;
       flex: 1;
       position: relative;
-      margin-top: ${theme.gridUnit * 6}px;
+      margin-top: 8px;
+      // margin-top: ${theme.gridUnit * 6}px;
       margin-right: ${theme.gridUnit * 8}px;
       margin-bottom: ${theme.gridUnit * 6}px;
       margin-left: ${marginLeft}px;
