@@ -87,8 +87,8 @@ function cellBar({
     // The 0.01 to 0.001 is a workaround for what appears to be a
     // CSS rendering bug on flat, transparent colors
     return (
-      `linear-gradient(to right, rgba(${r},0,0,0.2), rgba(${r},0,0,0.2) ${perc}%, ` +
-      `rgba(0,0,0,0.01) ${perc}%, rgba(0,0,0,0.001) 100%)`
+      `linear-gradient(to right, rgba(${r},0,252,0.2), rgba(${r},0,252,0.2) ${perc}%, ` +
+      `rgba(0,0,252,0.01) ${perc}%, rgba(0,0,252,0.001) 100%)`
     );
   }
   const posExtent = Math.abs(Math.max(maxValue, 0));
@@ -98,12 +98,13 @@ function cellBar({
     (Math.min(negExtent + value, negExtent) / tot) * 100,
   );
   const perc2 = Math.round((Math.abs(value) / tot) * 100);
+  const blueOpacity = 0.05; // Desired opacity for the blue color (5%)
   // The 0.01 to 0.001 is a workaround for what appears to be a
   // CSS rendering bug on flat, transparent colors
   return (
-    `linear-gradient(to right, rgba(0,0,0,0.01), rgba(0,0,0,0.001) ${perc1}%, ` +
-    `rgba(${r},0,0,0.2) ${perc1}%, rgba(${r},0,0,0.2) ${perc1 + perc2}%, ` +
-    `rgba(0,0,0,0.01) ${perc1 + perc2}%, rgba(0,0,0,0.001) 100%)`
+    `linear-gradient(to right, rgba(0,0,252,${blueOpacity}), rgba(0,0,252,0.001) ${perc1}%, ` +
+    `rgba(${r},0,252,0.2) ${perc1}%, rgba(${r},0,252,0.2) ${perc1 + perc2}%, ` +
+    `rgba(0,0,252,${blueOpacity}) ${perc1 + perc2}%, rgba(0,0,252,0.001) 100%)`
   );
 }
 
