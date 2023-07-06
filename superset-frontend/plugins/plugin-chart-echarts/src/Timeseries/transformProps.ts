@@ -470,6 +470,7 @@ export default function transformProps(
   }
 
   const echartOptions: EChartsCoreOption = {
+    label:{color:'#2A52CA',position:'top'},
     useUTC: true,
     grid: {
       ...defaultGrid,
