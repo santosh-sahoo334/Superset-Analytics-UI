@@ -370,6 +370,8 @@ export default function transformProps(
   }
 
   const echartOptions: EChartsCoreOption = {
+    // Change the Bar Value Color at top
+    label:{color:'#2A52CA',position:'top'},
     useUTC: true,
     grid: {
       ...defaultGrid,
