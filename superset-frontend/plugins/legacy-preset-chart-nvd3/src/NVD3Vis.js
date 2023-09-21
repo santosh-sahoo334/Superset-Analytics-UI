@@ -392,7 +392,7 @@ function nvd3Vis(element, props) {
         chart = nv.models
           .multiBarChart()
           .showControls(showControls)
-          .groupSpacing(0.1);
+          .groupSpacing(0.5);
 
         if (!reduceXTicks) {
           width = computeBarChartWidth(data, isBarStacked, maxWidth);
@@ -407,7 +407,7 @@ function nvd3Vis(element, props) {
           .multiBarChart()
           .showControls(showControls)
           .reduceXTicks(reduceXTicks)
-          .groupSpacing(0.1); // Distance between each group of bars.
+          .groupSpacing(0.5); // Distance between each group of bars.
 
         chart.xAxis.showMaxMin(false);
 

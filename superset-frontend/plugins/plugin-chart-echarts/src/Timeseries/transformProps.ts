@@ -440,10 +440,19 @@ export default function transformProps(
     name: xAxisTitle,
     nameGap: convertInteger(xAxisTitleMargin),
     nameLocation: 'middle',
+    axisLine: {
+      lineStyle: {
+        color: theme.colors.spirent.base, // Change X-axis line color
+      },
+    },
     axisLabel: {
       hideOverlap: true,
       formatter: xAxisFormatter,
       rotate: xAxisLabelRotation,
+      textStyle: {
+        color: theme.colors.spirent.base,
+        fontSize: '13px', // Change X-axis font label size
+      },
     },
     minInterval:
       xAxisType === 'time' && timeGrainSqla
@@ -455,7 +464,13 @@ export default function transformProps(
     type: logAxis ? 'log' : 'value',
     min,
     max,
-    minorTick: { show: true },
+    // minorTick: { show: true },
+    minorTick: {
+      show: true,
+      lineStyle: {
+        color: theme.colors.spirent.base, // Change Y-axis line color
+      },
+    },
     minorSplitLine: { show: minorSplitLine },
     axisLabel: {
       formatter: getYAxisFormatter(
@@ -464,6 +479,9 @@ export default function transformProps(
         customFormatters,
         defaultFormatter,
       ),
+      textStyle: {
+        color: theme.colors.spirent.base, // Change Y-axis text font color
+      },
     },
     scale: truncateYAxis,
     name: yAxisTitle,
@@ -478,6 +496,7 @@ export default function transformProps(
   }
 
   const echartOptions: EChartsCoreOption = {
+    label:{color:'#2A52CA',position:'top'},
     useUTC: true,
     grid: {
       ...defaultGrid,

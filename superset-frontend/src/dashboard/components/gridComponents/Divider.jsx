@@ -47,7 +47,8 @@ const DividerLine = styled.div`
       content: '';
       height: 1px;
       width: 100%;
-      background-color: ${theme.colors.grayscale.light2};
+      // background-color: ${theme.colors.grayscale.light2};
+      background-color: ${theme.colors.spirent.base};
       display: block;
     }
 

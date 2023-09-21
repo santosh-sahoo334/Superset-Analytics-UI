@@ -59,6 +59,9 @@ const defaultTheme = {
       label: '#879399',
       help: '#737373',
     },
+    spirent: {
+      base: '#2A52CA',
+    },
     primary: {
       base: '#20A7C9',
       dark1: '#1A85A0',
@@ -96,6 +99,7 @@ const defaultTheme = {
       dark2: '#6F212A',
       light1: '#EFA1AA',
       light2: '#FAEDEE',
+      thinblackborder: '#808080',
     },
     warning: {
       base: '#FF7F44',

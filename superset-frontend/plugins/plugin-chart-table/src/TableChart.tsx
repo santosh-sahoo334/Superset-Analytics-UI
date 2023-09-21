@@ -142,7 +142,7 @@ function cellBackground({
   colorPositiveNegative: boolean;
 }) {
   const r = colorPositiveNegative && value < 0 ? 150 : 0;
-  return `rgba(${r},0,0,0.2)`;
+  return `rgba(${r},0,252,0.2)`;
 }
 
 function SortIcon<D extends object>({ column }: { column: ColumnInstance<D> }) {

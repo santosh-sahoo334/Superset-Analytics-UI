@@ -28,26 +28,48 @@ const StyledLegend = styled.div`
     font-size: ${theme.typography.sizes.s}px;
     position: absolute;
     background: ${theme.colors.grayscale.light5};
-    box-shadow: 0 0 ${theme.gridUnit}px ${theme.colors.grayscale.light2};
-    margin: ${theme.gridUnit * 6}px;
-    padding: ${theme.gridUnit * 3}px ${theme.gridUnit * 5}px;
+    // box-shadow: 0 0 ${theme.gridUnit}px ${theme.colors.grayscale.light2};
+    // margin: ${theme.gridUnit * 6}px;
+    // padding: ${theme.gridUnit * 3}px ${theme.gridUnit * 5}px;
+    border: 1px solid ${theme.colors.grayscale.thinblackborder};
+    margin: 2px;
+    padding: 4px 6px;
     outline: none;
-    overflow-y: scroll;
-    max-height: 200px;
+    // overflow-y: scroll;
+    // max-height: 200px;
+    top: 0;
+    right:0;
+    overflow-y: auto;
+    max-height: auto;
 
     & ul {
       list-style: none;
       padding-left: 0;
       margin: 0;
+      font-size:14px;
 
       & li a {
         color: ${theme.colors.grayscale.base};
         text-decoration: none;
 
         & span {
-          margin-right: ${theme.gridUnit * 3}px;
+          // margin-right: ${theme.gridUnit * 3}px;
+          margin-right: 6px;
+          margin-left: 10px;
         }
       }
+    }
+    & span {
+      fontWeight: 'bold';
+      font-size:16px;
+    }
+    .grid-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+      font-size:14px;
     }
   `}
 `;
@@ -61,6 +83,7 @@ const propTypes = {
   position: PropTypes.oneOf([null, 'tl', 'tr', 'bl', 'br']),
   showSingleCategory: PropTypes.func,
   toggleCategory: PropTypes.func,
+  legendheading: PropTypes.string,
 };
 
 const defaultProps = {
@@ -70,6 +93,7 @@ const defaultProps = {
   position: 'tr',
   showSingleCategory: () => {},
   toggleCategory: () => {},
+  legendheading: null,
 };
 
 export default class Legend extends React.PureComponent {
@@ -107,34 +131,73 @@ export default class Legend extends React.PureComponent {
       return null;
     }
 
-    const categories = Object.entries(this.props.categories).map(([k, v]) => {
-      const style = { color: `rgba(${v.color.join(', ')})` };
-      const icon = v.enabled ? '\u25FC' : '\u25FB';
+    // const categories = Object.entries(this.props.categories).map(([k, v]) => {
+    //   const style = { color: `rgba(${v.color.join(', ')})` };
+    //   const icon = v.enabled ? '\u25FC' : '\u25FB';
 
-      return (
-        <li key={k}>
-          <a
-            href="#"
-            onClick={() => this.props.toggleCategory(k)}
-            onDoubleClick={() => this.props.showSingleCategory(k)}
-          >
-            <span style={style}>{icon}</span> {this.formatCategoryLabel(k)}
-          </a>
-        </li>
-      );
-    });
+    //   return (
+    //     <li key={k}>
+    //       <a
+    //         href="#"
+    //         onClick={() => this.props.toggleCategory(k)}
+    //         onDoubleClick={() => this.props.showSingleCategory(k)}
+    //       >
+    //         <span style={style}>{icon}</span> {this.formatCategoryLabel(k)}
+    //       </a>
+    //     </li>
+    //   );
+    // });
+    const categories = Object.entries(this.props.categories)
+      .sort((a, b) => {
+        if (
+          b[0].includes('(') &&
+          a[0].includes('(') &&
+          a[0].includes(',') &&
+          b[0].includes(',')
+        ) {
+          return (
+            Number(b[0].split('(')[1].split(',')[1].replace(')', '')) -
+            Number(a[0].split('(')[1].split(',')[1].replace(')', ''))
+          );
+        }
+        return 0;
+      })
+      .map(([k, v]) => {
+        const style = { color: `rgba(${v.color.join(', ')})` };
+        const icon = v.enabled ? '\u25FC' : '\u25FB';
+        const metric = v.metricsvalue
+          ? `${v.metricsvalue.toFixed(2)}%`
+          : `0.00%`;
+        const totalcount = v.totalcount ? `(${v.totalcount})` : `(0)`;
+        return (
+          <li key={k}>
+            <a
+              href="#"
+              onClick={() => this.props.toggleCategory(k)}
+              onDoubleClick={() => this.props.showSingleCategory(k)}
+            >
+              <span style={style}>{icon}</span> {this.formatCategoryLabel(k)}{' '}
+              {metric} {totalcount}
+            </a>
+          </li>
+        );
+      });
 
     const vertical = this.props.position.charAt(0) === 't' ? 'top' : 'bottom';
     const horizontal = this.props.position.charAt(1) === 'r' ? 'right' : 'left';
     const style = {
+      fontWeight: 'bold',
       position: 'absolute',
       [vertical]: '0px',
-      [horizontal]: '10px',
+      [horizontal]: '0px',
     };
-
+    const shouldApplyGrid = categories.length > 10;
+    const ulClassName = shouldApplyGrid ? 'grid-list' : '';
     return (
       <StyledLegend style={style}>
-        <ul>{categories}</ul>
+        {/* <ul>{categories}</ul> */}
+        <span>{this.props.legendheading}</span>
+        <ul className={ulClassName}>{categories}</ul>
       </StyledLegend>
     );
   }
