@@ -1,6 +1,12 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/ts-cloud-factory-poc/dworks-master/dworks-3-0:${COMMIT_SHA}','--backend', 'buildkit','.']
+  args: ['pull', 'docker/dockerfile:experimental']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['pull', 'docker/dockerfile:1.0-experimental']  
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/ts-cloud-factory-poc/dworks-master/dworks-3-0:${COMMIT_SHA}','.']
+  env:
+    - "DOCKER_BUILDKIT=1"
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'gcr.io/ts-cloud-factory-poc/dworks-master/dworks-3-0:${COMMIT_SHA}']
 timeout: 9000s
