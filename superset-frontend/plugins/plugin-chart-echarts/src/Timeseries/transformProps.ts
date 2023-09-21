@@ -496,7 +496,7 @@ export default function transformProps(
   }
 
   const echartOptions: EChartsCoreOption = {
-    label:{color:'#2A52CA',position:'top'},
+    label: { color: theme.colors.spirent.base },
     useUTC: true,
     grid: {
       ...defaultGrid,
