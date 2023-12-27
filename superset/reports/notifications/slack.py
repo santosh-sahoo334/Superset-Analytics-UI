@@ -67,13 +67,23 @@ class SlackNotification(BaseNotification):  # pylint: disable=too-few-public-met
 
 %(description)s
 
-<%(url)s|Explore in DWorks>
+<%(url)s|Explore in CSight>
+
+*Navigation Path*
+Here is how you can drill down the spike at a Resource ID Level.  
+1. Once Logged in, please navigate to *Cost Summary*
+2. Scroll down to the Chart - *Cost Breakdown by Resource*
+3. Click on the Resource Name, for example, AWSLambda. 
+4. Other Charts will be refreshed as per the selected Resource Name. 
+5. Scroll down to the Chart - *Cost Breakdown by Resource ID*.
+6. Sort the cost in descending order to see the Resource ID that caused the spike.
 
 %(table)s
 """,
             name=self._content.name,
             description=self._content.description or "",
-            url=self._content.url,
+            # url=self._content.url,
+            url="https://csight-ushur.teksecur.com/#/dashboard/finops",
             table=table,
         )
 
