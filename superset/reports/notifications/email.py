@@ -158,7 +158,19 @@ class EmailNotification(BaseNotification):  # pylint: disable=too-few-public-met
               <body>
                 <div>{description}</div>
                 <br>
-                <b><a href="{self._content.url}">{call_to_action}</a></b><p></p>
+                <b><a href="https://csight-ushur.teksecur.com/#/dashboard/finops">{call_to_action}</a></b><p></p>
+                <br>
+                <div>
+                <p><strong>Navigation Path</strong></p>
+                <ol>
+                    <li>Once Logged in, please navigate to <strong>Cost Summary</strong></li>
+                    <li>Scroll down to the Chart - <strong>Cost Breakdown by Resource</strong></li>
+                    <li>Click on the Resource Name, for example, <strong>AWSLambda</strong></li>
+                    <li>Other Charts will be refreshed as per the selected Resource Name.</li>
+                    <li>Scroll down to the Chart - <strong>Cost Breakdown by Resource ID</strong>.</li>
+                    <li>Sort the cost in descending order to see the Resource ID that caused the spike.</li>
+                </ol>
+                </div>
                 {html_table}
                 {img_tag}
               </body>
