@@ -159,7 +159,6 @@ class EmailNotification(BaseNotification):  # pylint: disable=too-few-public-met
                 <div>{description}</div>
                 <br>
                 <b><a href="https://csight-ushur.teksecur.com/#/dashboard/finops">{call_to_action}</a></b><p></p>
-                <br>
                 <div>
                 <p><strong>Navigation Path</strong></p>
                 <ol>
