@@ -130,6 +130,7 @@ class EmailNotification(BaseNotification):  # pylint: disable=too-few-public-met
             html_table = ""
 
         call_to_action = __(app.config["EMAIL_REPORTS_CTA"])
+        call_to_action_url = app.config["EMAIL_REPORTS_CTA_URL"]
         img_tags = []
         for msgid in images.keys():
             img_tags.append(
@@ -158,7 +159,7 @@ class EmailNotification(BaseNotification):  # pylint: disable=too-few-public-met
               <body>
                 <div>{description}</div>
                 <br>
-                <b><a href="https://csight-ushur.teksecur.com/#/dashboard/finops">{call_to_action}</a></b><p></p>
+                <b><a href={call_to_action_url}>{call_to_action}</a></b><p></p>
                 <div>
                 <p><strong>Navigation Path</strong></p>
                 <ol>

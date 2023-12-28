@@ -91,7 +91,7 @@ Here is how you can drill down the spike at a Resource ID Level.
             name=title,
             description=self._content.description or "",
             # url=self._content.url,
-            url="https://csight-ushur.teksecur.com/#/dashboard/finops",
+            url=app.config["EMAIL_REPORTS_CTA_URL"],
             table=table,
         )
 
