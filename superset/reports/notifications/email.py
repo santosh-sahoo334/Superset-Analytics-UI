@@ -188,10 +188,17 @@ class EmailNotification(BaseNotification):  # pylint: disable=too-few-public-met
         )
 
     def _get_subject(self) -> str:
+        logger.info(f"Title + Chart Name Passed to Get the Email Title -- > {self._content.name}")
+        prefix=app.config["ALERT_TITLE_PREFIX"] if "alert" in self._content.name.lower() else app.config["EMAIL_REPORT_SUBJECT_PREFIX"]
+        title=self._content.name
+        second_colon_index=title.find(":", title.find(":") + 1)
+        title=title[:second_colon_index]
         return __(
             "%(prefix)s %(title)s",
-            prefix=app.config["EMAIL_REPORTS_SUBJECT_PREFIX"],
-            title=self._content.name,
+            # prefix=app.config["EMAIL_REPORT_SUBJECT_PREFIX"]
+            prefix=prefix,
+            # title=self._content.name,
+            title=title
         )
 
     def _get_to(self) -> str:

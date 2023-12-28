@@ -62,8 +62,14 @@ class SlackNotification(BaseNotification):  # pylint: disable=too-few-public-met
         return json.loads(self._recipient.recipient_config_json)["target"]
 
     def _message_template(self, table: str = "") -> str:
+        logger.info(f"Title + Chart Name Passed to Get the Slack Title -- > {self._content.name}")
+        prefix=app.config["ALERT_TITLE_PREFIX"] if "alert" in self._content.name.lower() else app.config["EMAIL_REPORT_SUBJECT_PREFIX"]
+        title=self._content.name
+        second_colon_index=title.find(":", title.find(":") + 1)
+        title=title[:second_colon_index]
         return __(
-            """*%(name)s*
+            # """*%(name)s*
+            """*%(prefix)s %(name)s*
 
 %(description)s
 
@@ -80,7 +86,9 @@ Here is how you can drill down the spike at a Resource ID Level.
 
 %(table)s
 """,
-            name=self._content.name,
+            # name=self._content.name,
+            prefix=prefix,
+            name=title,
             description=self._content.description or "",
             # url=self._content.url,
             url="https://csight-ushur.teksecur.com/#/dashboard/finops",
