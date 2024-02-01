@@ -1,16 +1,19 @@
 from flask import Response, request
 from flask_appbuilder import expose
 from flask_appbuilder.api import BaseApi
+from flask_appbuilder.const import API_SECURITY_VERSION
 
-from superset.onboard.schema import OnboardSchema
+from superset.onboard.schemas import OnboardSchema
 
 
 class OnboardApi(BaseApi):
     resource_name = 'onboard-api'
     route_base = '/onboard'
     openapi_spec_tag = "Onboard App"
+    version = API_SECURITY_VERSION
 
     add_model_schema = OnboardSchema()
+    add_columns = ["csight_key"]
 
     @expose('/app', methods=['POST'])
     def post(self) -> Response:
@@ -46,8 +49,9 @@ class OnboardApi(BaseApi):
                                       $ref: '#/components/responses/500'
                          """
         try:
+
             item = self.add_model_schema.load(request.json)
-            if 'cisght_key' in item:
+            if 'csight_key' in item:
                 if item['csight_key'] == "test":
                     return self.response(200, message="Csight enabled for onboard")
             return self.response(500, message="Does not exist",
