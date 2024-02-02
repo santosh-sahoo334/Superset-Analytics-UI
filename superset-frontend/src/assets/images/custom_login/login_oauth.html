@@ -43,7 +43,11 @@
       <div style="margin-top: 50px">
         {% for provider in providers %}
         <a onclick="signin('{{ provider.name }}');" class="btn btn-primary btn-block" type="submit">
-          {{_('Login with SSO')}}
+          {% if provider.name == 'keycloak' %}
+              {{_('Login with SSO')}}
+          {% else %}
+              {{_('Login for TekSecur Admin')}}
+          {% endif %}
           <i id="{{provider.name}}"></i>
         </a>
         {% endfor %}
