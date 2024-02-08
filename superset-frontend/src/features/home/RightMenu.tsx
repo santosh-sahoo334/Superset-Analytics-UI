@@ -55,13 +55,13 @@ import {
 
 const extensionsRegistry = getExtensionsRegistry();
 
-const versionInfoStyles = (theme: SupersetTheme) => css`
-  padding: ${theme.gridUnit * 1.5}px ${theme.gridUnit * 4}px
-    ${theme.gridUnit * 4}px ${theme.gridUnit * 7}px;
-  color: ${theme.colors.grayscale.base};
-  font-size: ${theme.typography.sizes.xs}px;
-  white-space: nowrap;
-`;
+// const versionInfoStyles = (theme: SupersetTheme) => css`
+//   padding: ${theme.gridUnit * 1.5}px ${theme.gridUnit * 4}px
+//     ${theme.gridUnit * 4}px ${theme.gridUnit * 7}px;
+//   color: ${theme.colors.grayscale.base};
+//   font-size: ${theme.typography.sizes.xs}px;
+//   white-space: nowrap;
+// `;
 const StyledI = styled.div`
   color: ${({ theme }) => theme.colors.primary.dark1};
 `;
