@@ -156,3 +156,5 @@ CMD /app/docker/docker-ci.sh
 # Customized Login Page
 COPY ./superset-frontend/src/assets/images/custom_login/login_oauth.html /usr/local/lib/python3.9/site-packages/flask_appbuilder/templates/appbuilder/general/security/login_oauth.html
 COPY ./superset-frontend/src/assets/images/custom_login/login_db.html /usr/local/lib/python3.9/site-packages/flask_appbuilder/templates/appbuilder/general/security/login_db.html
+COPY ./superset-frontend/src/assets/images/custom_login/manager.py /usr/local/lib/python3.9/site-packages/flask_appbuilder/api/manager.py
+RUN cat /usr/local/lib/python3.9/site-packages/flask_appbuilder/api/manager.py |grep -i devopsinsights
