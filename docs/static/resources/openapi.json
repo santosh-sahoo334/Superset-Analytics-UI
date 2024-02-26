@@ -20267,7 +20267,7 @@
         ]
       }
     },
-    "/api/{version}/_openapi": {
+    "/devopsinsights/api/{version}/_openapi": {
       "get": {
         "description": "Get the OpenAPI spec for a specific API version",
         "parameters": [
