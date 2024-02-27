@@ -23,7 +23,7 @@ def resolver(schema):
 
 
 class OpenApi(BaseApi):
-    route_base = "/api"
+    route_base = "/devopsinsights/api"
     allow_browser_login = True
 
     @expose("/<version>/_openapi")
