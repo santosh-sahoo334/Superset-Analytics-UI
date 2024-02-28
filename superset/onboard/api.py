@@ -6,8 +6,8 @@ from superset.onboard.schemas import OnboardSchema
 
 
 class OnboardApi(BaseApi):
-    resource_name = 'onboard-api'
-    route_base = '/api/v1/onboard'
+    resource_name = 'onboard'
+    # route_base = '/api/v1/onboard'
     openapi_spec_tag = "Onboard App"
 
     add_model_schema = OnboardSchema()
