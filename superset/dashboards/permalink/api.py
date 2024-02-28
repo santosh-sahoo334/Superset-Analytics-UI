@@ -102,7 +102,7 @@ class DashboardPermalinkRestApi(BaseSupersetApi):
                 state=state,
             ).run()
             http_origin = request.headers.environ.get("HTTP_ORIGIN")
-            url = f"{http_origin}/superset/dashboard/p/{key}/"
+            url = f"{http_origin}/devopsinsights/superset/dashboard/p/{key}/"
             return self.response(201, key=key, url=url)
         except (ValidationError, DashboardPermalinkInvalidStateError) as ex:
             return self.response(400, message=str(ex))
