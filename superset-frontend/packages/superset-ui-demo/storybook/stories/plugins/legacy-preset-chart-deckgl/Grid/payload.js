@@ -19,6 +19,7 @@
 
 /* eslint-disable sort-keys */
 /* eslint-disable no-magic-numbers */
+const mapboxApiKey = process.env.REACT_APP_MAPBOX_API_KEY || '';
 export default {
   cache_key: null,
   cached_dttm: null,
@@ -107,8 +108,7 @@ export default {
       { position: [-122.4368896, 37.7822303], weight: 239 },
       { position: [-122.389625, 37.7806302], weight: 237 },
     ],
-    mapboxApiKey:
-      'pk.eyJ1Ijoia3Jpc3R3IiwiYSI6ImNqbGg1N242NTFlczczdnBhazViMjgzZ2sifQ.lUneM-o3NucXN189EYyXxQ',
+    mapboxApiKey:mapboxApiKey,
     metricLabels: ['count'],
   },
 };

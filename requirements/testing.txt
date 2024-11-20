@@ -62,7 +62,7 @@ googleapis-common-protos==1.59.0
     # via
     #   google-api-core
     #   grpcio-status
-grpcio==1.54.0
+grpcio==1.56.2
     # via
     #   google-api-core
     #   google-cloud-bigquery
@@ -142,3 +142,4 @@ websocket-client==1.5.1
 # The following packages are considered to be unsafe in a requirements file:
 # pip
 # setuptools
+setuptools>=70.0.0

@@ -62,12 +62,89 @@ RUN mkdir -p ${PYTHONPATH} \
     && apt-get update -y \
     && apt-get install -y --no-install-recommends \
         build-essential \
-        curl \
         default-libmysqlclient-dev \
         libsasl2-dev \
         libsasl2-modules-gssapi-mit \
         libpq-dev \
         libecpg-dev \
+        wget \
+        ca-certificates \
+        libsqlite3-dev \
+        zlib1g-dev \
+    # [CRITICAL] Image Scan Security Fix 1 - upgrade cURL to  7.88.0.
+    && wget https://curl.se/download/curl-7.88.0.tar.gz \
+    && tar -xzf curl-7.88.0.tar.gz \
+    && cd curl-7.88.0 \
+    && ./configure \
+    && make \
+    && make install \
+    && cd .. \
+    && rm -rf curl-7.88.0.tar.gz curl-7.88.0 \
+    # [CRITICAL] Image Scan Security Fix 2 - upgrade SQLite to version 3.28.0.
+    && wget https://www.sqlite.org/2023/sqlite-autoconf-3420000.tar.gz \
+    && tar -xzf sqlite-autoconf-3420000.tar.gz \
+    && cd sqlite-autoconf-3420000 \
+    && ./configure --prefix=/usr/local \
+    && make \
+    && make install \
+    && cd .. \
+    && rm -rf sqlite-autoconf-3420000.tar.gz sqlite-autoconf-3420000 \
+    # Verify SQLite version
+    && sqlite3 --version \
+    # [CRITICAL] Image Scan Security Fix 3 - Upgrade libexpat to version 2.6.3 or later
+    && wget https://github.com/libexpat/libexpat/releases/download/R_2_6_3/expat-2.6.3.tar.gz \
+    && tar -xzf expat-2.6.3.tar.gz \
+    && cd expat-2.6.3 \
+    && ./configure --prefix=/usr/local \
+    && make \
+    && make install \
+    && cd .. \
+    && rm -rf expat-2.6.3.tar.gz expat-2.6.3 \
+    # Verify libexpat version
+    && ldconfig \
+    && strings /usr/local/lib/libexpat.so | grep "expat_" \
+    # [CRITICAL] Image Scan Security Fix 4 - Upgrade krb5 to version 1.21.3 or later
+    && wget https://web.mit.edu/kerberos/dist/krb5/1.21/krb5-1.21.3.tar.gz \
+    && tar -xzf krb5-1.21.3.tar.gz \
+    && cd krb5-1.21.3/src \
+    && ./configure --prefix=/usr/local \
+    && make \
+    && make install \
+    && cd ../.. \
+    && rm -rf krb5-1.21.3.tar.gz krb5-1.21.3 \
+    # Verify krb5 version
+    && /usr/local/sbin/krb5-config --version \
+    # [HIGH] Image Scan Security Fix 5 - Upgrade e2fsprogs
+    && apt-get install -y --only-upgrade e2fsprogs \
+    # Verify e2fsprogs version
+    && e2fsck -V \
+    # [HIGH] Image Scan Security Fix 6 - Upgrade libc6
+    && apt-get install -y --only-upgrade libc6 \
+    # Verify libc6 version
+    && ldd --version \
+    # Check for vulnerabilities in libc6
+    && grep TUNABLES /proc/self/environ \
+    # [HIGH] Image Scan Security Fix 7 - Upgrade gnutls packages
+    && apt-get install -y --only-upgrade gnutls28 libgnutls30 libgnutls-dane0 libgnutls-openssl27 gnutls-bin \
+    # Verify gnutls version
+    && dpkg -l | grep gnutls \
+    # [HIGH] Image Scan Security Fix 8 - Upgrade libssh2-1
+    && apt-get install -y --only-upgrade libssh2-1 \
+    # Verify libssh2 version
+    && dpkg -l | grep libssh2 \
+    # [HIGH] Image Scan Security Fix 9 - # Upgrade openssl and libssl3
+    && apt-get install -y --only-upgrade openssl libssl3 \
+    # Verify openssl version
+    && dpkg -l | grep openssl \
+    # [HIGH] Image Scan Security Fix 10 - # Remove bind9 and reinstall
+    && apt-get remove -y bind9 \
+    && dpkg --remove bind9 \
+    && apt-get install -y bind9 \
+    # Verify bind9 version (optional, if needed for debugging)
+    && dpkg -l | grep bind9 \
+    # Clean up unnecessary tools
+    && apt-get remove -y wget ca-certificates \
+    && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

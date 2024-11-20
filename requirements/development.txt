@@ -26,7 +26,7 @@ botocore==1.29.130
     #   s3transfer
 cached-property==1.5.2
     # via tableschema
-certifi==2023.5.7
+certifi==2024.7.4
     # via requests
 chardet==5.1.0
     # via tabulator
@@ -74,7 +74,7 @@ pexpect==4.8.0
     # via ipython
 pickleshare==0.7.5
     # via ipython
-pillow==9.5.0
+pillow==10.3.0
     # via apache-superset
 progress==1.6
     # via -r requirements/development.in
@@ -135,3 +135,4 @@ xlrd==2.0.1
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
+setuptools>=70.0.0

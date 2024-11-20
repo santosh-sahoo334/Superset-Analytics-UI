@@ -19,6 +19,7 @@
 
 /* eslint-disable sort-keys */
 /* eslint-disable no-magic-numbers */
+const mapboxApiKey = process.env.REACT_APP_MAPBOX_API_KEY || '';
 export const payload = theme => ({
   cache_key: null,
   cached_dttm: null,
@@ -221,8 +222,7 @@ export const payload = theme => ({
         extraProps: { color: theme.colors.warning.base },
       },
     ],
-    mapboxApiKey:
-      'pk.eyJ1Ijoia3Jpc3R3IiwiYSI6ImNqbGg1N242NTFlczczdnBhazViMjgzZ2sifQ.lUneM-o3NucXN189EYyXxQ',
+    mapboxApiKey:mapboxApiKey,
     metricLabels: [],
   },
 });

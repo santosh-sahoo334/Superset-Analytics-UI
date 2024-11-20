@@ -17,7 +17,7 @@
  * under the License.
  */
 import { SupersetTheme } from '@superset-ui/core';
-
+const mapboxApiKey = process.env.REACT_APP_MAPBOX_API_KEY || '';
 /* eslint-disable sort-keys, no-magic-numbers */
 export const generateData = (theme: SupersetTheme) => ({
   geoJSON: {
@@ -5526,8 +5526,7 @@ export const generateData = (theme: SupersetTheme) => ({
     ],
   },
   hasCustomMetric: false,
-  mapboxApiKey:
-    'pk.eyJ1Ijoia3Jpc3R3IiwiYSI6ImNqbGg1N242NTFlczczdnBhazViMjgzZ2sifQ.lUneM-o3NucXN189EYyXxQ',
+  mapboxApiKey:mapboxApiKey,
   mapStyle: 'mapbox://styles/mapbox/light-v9',
   aggregatorName: 'sum',
   clusteringRadius: '60',

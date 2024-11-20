@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
+const mapboxApiKey = process.env.REACT_APP_MAPBOX_API_KEY || '';
 export default {
   cache_key: '31946c4488d1899827d283b668d83281',
   cached_dttm: '2020-03-04T22:40:59',
@@ -124,8 +124,7 @@ export default {
         elevation: 0,
       },
     ],
-    mapboxApiKey:
-      'pk.eyJ1IjoiZ2tlZWUiLCJhIjoiY2lvbmN5dXhtMDA4NXRybTJjZWU2ZHVxOSJ9.CJG_6Oz52y5yI5cr3Ct_aQ',
+    mapboxApiKey:mapboxApiKey,
     metricLabels: ['count'],
   },
 };
