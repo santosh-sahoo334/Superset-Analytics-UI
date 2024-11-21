@@ -88,7 +88,7 @@ parameterized==0.9.0
     # via -r requirements/testing.in
 pathable==0.4.3
     # via jsonschema-spec
-playwright==1.41.2
+playwright==1.48.0
     # via apache-superset
 prophet==1.1.5
     # via apache-superset
@@ -106,7 +106,7 @@ protobuf==4.23.0
     #   proto-plus
 pydata-google-auth==1.7.0
     # via pandas-gbq
-pyee==11.0.1
+pyee==12.0.0
     # via playwright
 pyfakefs==5.2.2
     # via -r requirements/testing.in
@@ -142,4 +142,4 @@ websocket-client==1.5.1
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip
-# setuptools
+setuptools==70.0.0
