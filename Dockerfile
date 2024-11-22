@@ -65,13 +65,46 @@ RUN mkdir -p ${PYTHONPATH} superset/static superset-frontend apache_superset.egg
     && useradd --user-group -d ${SUPERSET_HOME} -m --no-log-init --shell /bin/bash superset \
     && apt-get update -qq && apt-get install -yqq --no-install-recommends \
         build-essential \
-        curl \
         default-libmysqlclient-dev \
         libsasl2-dev \
         libsasl2-modules-gssapi-mit \
         libpq-dev \
         libecpg-dev \
         libldap2-dev \
+        wget \
+        ca-certificates \
+        libsqlite3-dev \
+        zlib1g-dev \
+    # [CRITICAL] Image Scan Security Fix 1 - upgrade cURL to  7.88.0.
+    && wget https://curl.se/download/curl-7.88.0.tar.gz \
+    && tar -xzf curl-7.88.0.tar.gz \
+    && cd curl-7.88.0 \
+    && ./configure \
+    && make \
+    && make install \
+    && cd .. \
+    && rm -rf curl-7.88.0.tar.gz curl-7.88.0 \
+    # [CRITICAL] Image Scan Security Fix 2 - upgrade SQLite to version 3.28.0.
+    && wget https://www.sqlite.org/2023/sqlite-autoconf-3420000.tar.gz \
+    && tar -xzf sqlite-autoconf-3420000.tar.gz \
+    && cd sqlite-autoconf-3420000 \
+    && ./configure --prefix=/usr/local \
+    && make \
+    && make install \
+    && cd .. \
+    && rm -rf sqlite-autoconf-3420000.tar.gz sqlite-autoconf-3420000 \
+    # Verify SQLite version
+    && sqlite3 --version \
+    # [CRITICAL] Image Scan Security Fix 3 - Upgrade libexpat to version 2.6.3 or later
+    && wget https://github.com/libexpat/libexpat/releases/download/R_2_6_3/expat-2.6.3.tar.gz \
+    && tar -xzf expat-2.6.3.tar.gz \
+    && cd expat-2.6.3 \
+    && ./configure --prefix=/usr/local \
+    && make \
+    && make install \
+    && cd .. \
+    && rm -rf expat-2.6.3.tar.gz expat-2.6.3 \
+    # Final Cleanup
     && touch superset/static/version_info.json \
     && chown -R superset:superset ./* \
     && rm -rf /var/lib/apt/lists/*
@@ -141,3 +174,7 @@ FROM lean AS ci
 COPY --chown=superset:superset --chmod=755 ./docker/*.sh /app/docker/
 
 CMD ["/app/docker/docker-ci.sh"]
+
+# Customized Login Page
+COPY ./superset-frontend/src/assets/images/custom_login/login_oauth.html /usr/local/lib/python3.9/site-packages/flask_appbuilder/templates/appbuilder/general/security/login_oauth.html
+COPY ./superset-frontend/src/assets/images/custom_login/login_db.html /usr/local/lib/python3.9/site-packages/flask_appbuilder/templates/appbuilder/general/security/login_db.html
