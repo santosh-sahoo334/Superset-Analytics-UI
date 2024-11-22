@@ -29,50 +29,23 @@ ARG NPM_BUILD_CMD="build"
 RUN apt-get update -qq \
     && apt-get install -yqq --no-install-recommends \
         build-essential \
-        python3 \
-        git \
-        g++ \
-        make \
-        openssh-client \
-        ca-certificates && \
-    # Configure git to use HTTPS
-    git config --global url."https://github.com/".insteadOf "git@github.com:" && \
-    git config --global url."https://".insteadOf "git://" && \
-    # Configure npm
-    npm config set registry https://registry.npmjs.org/ && \
-    npm config set strict-ssl true && \
-    npm config set ca "" && \
-    npm config set git-protocol https
+        python3
 
 ENV BUILD_CMD=${NPM_BUILD_CMD} \
-    NODE_OPTIONS="--max-old-space-size=8192" \
-    DISABLE_POSTCSS_PRESET_ENV=true \
-    NODE_ENV=production \
     PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 # NPM ci first, as to NOT invalidate previous steps except for when package.json changes
 WORKDIR /app/superset-frontend
 
-# Copy memory check script
-COPY ./docker/frontend-mem-nag.sh /frontend-mem-nag.sh
-RUN chmod +x /frontend-mem-nag.sh && /frontend-mem-nag.sh
+RUN --mount=type=bind,target=/frontend-mem-nag.sh,src=./docker/frontend-mem-nag.sh \
+    /frontend-mem-nag.sh
 
-# Copy package files first
-COPY superset-frontend/package*.json ./
-
-# Install dependencies with optimized flags
-RUN --mount=type=cache,target=/root/.npm \
-    --mount=type=cache,target=/root/.cache/npm \
-    npm install \
-        --prefer-offline \
-        --no-audit \
-        --no-optional \
-        --legacy-peer-deps \
-        --no-fund
+RUN --mount=type=bind,target=./package.json,src=./superset-frontend/package.json \
+    --mount=type=bind,target=./package-lock.json,src=./superset-frontend/package-lock.json \
+    npm ci
 
 COPY ./superset-frontend ./
 # This seems to be the most expensive step
-RUN npm run ${BUILD_CMD} && \
-    npm cache clean --force
+RUN npm run ${BUILD_CMD}
 
 ######################################################################
 # Final lean image...
