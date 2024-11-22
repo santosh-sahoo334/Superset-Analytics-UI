@@ -29,7 +29,11 @@ ARG NPM_BUILD_CMD="build"
 RUN apt-get update -qq \
     && apt-get install -yqq --no-install-recommends \
         build-essential \
-        python3
+        python3 \
+        git \
+        g++ \
+        make
+
 
 ENV BUILD_CMD=${NPM_BUILD_CMD} \
     NODE_OPTIONS="--max-old-space-size=8192" \
@@ -54,8 +58,7 @@ RUN --mount=type=cache,target=/root/.npm \
         --no-audit \
         --no-optional \
         --legacy-peer-deps \
-        --no-fund \
-        --ignore-scripts
+        --no-fund
 
 COPY ./superset-frontend ./
 # This seems to be the most expensive step
