@@ -32,8 +32,17 @@ RUN apt-get update -qq \
         python3 \
         git \
         g++ \
-        make
-
+        make \
+        openssh-client \
+        ca-certificates && \
+    # Configure git to use HTTPS
+    git config --global url."https://github.com/".insteadOf "git@github.com:" && \
+    git config --global url."https://".insteadOf "git://" && \
+    # Configure npm
+    npm config set registry https://registry.npmjs.org/ && \
+    npm config set strict-ssl true && \
+    npm config set ca "" && \
+    npm config set git-protocol https
 
 ENV BUILD_CMD=${NPM_BUILD_CMD} \
     NODE_OPTIONS="--max-old-space-size=8192" \
