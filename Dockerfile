@@ -39,8 +39,10 @@ WORKDIR /app/superset-frontend
 RUN --mount=type=bind,target=/frontend-mem-nag.sh,src=./docker/frontend-mem-nag.sh \
     /frontend-mem-nag.sh
 
-RUN npm install 
-    
+RUN --mount=type=bind,target=./package.json,src=./superset-frontend/package.json \
+    --mount=type=bind,target=./package-lock.json,src=./superset-frontend/package-lock.json \
+    npm install 
+
 RUN --mount=type=bind,target=./package.json,src=./superset-frontend/package.json \
     --mount=type=bind,target=./package-lock.json,src=./superset-frontend/package-lock.json \
     npm ci
