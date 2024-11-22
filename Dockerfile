@@ -66,6 +66,8 @@ RUN mkdir -p ${PYTHONPATH} superset/static superset-frontend apache_superset.egg
     && apt-get update -qq && apt-get install -yqq --no-install-recommends \
         build-essential \
         default-libmysqlclient-dev \
+        # openssl is required for cURL 7.88.0
+        openssl \
         libsasl2-dev \
         libsasl2-modules-gssapi-mit \
         libpq-dev \
@@ -79,7 +81,7 @@ RUN mkdir -p ${PYTHONPATH} superset/static superset-frontend apache_superset.egg
     && wget https://curl.se/download/curl-7.88.0.tar.gz \
     && tar -xzf curl-7.88.0.tar.gz \
     && cd curl-7.88.0 \
-    && ./configure \
+    && ./configure --with-openssl \
     && make \
     && make install \
     && cd .. \
