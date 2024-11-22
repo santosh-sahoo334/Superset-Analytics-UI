@@ -32,34 +32,35 @@ RUN apt-get update -qq \
         python3
 
 ENV BUILD_CMD=${NPM_BUILD_CMD} \
+    NODE_OPTIONS="--max-old-space-size=8192" \
+    DISABLE_POSTCSS_PRESET_ENV=true \
+    NODE_ENV=production \
     PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 # NPM ci first, as to NOT invalidate previous steps except for when package.json changes
 WORKDIR /app/superset-frontend
 
-RUN --mount=type=bind,target=/frontend-mem-nag.sh,src=./docker/frontend-mem-nag.sh \
-    /frontend-mem-nag.sh
+# Copy memory check script
+COPY ./docker/frontend-mem-nag.sh /frontend-mem-nag.sh
+RUN chmod +x /frontend-mem-nag.sh && /frontend-mem-nag.sh
 
+# Copy package files first
+COPY superset-frontend/package*.json ./
+
+# Install dependencies with optimized flags
 RUN --mount=type=cache,target=/root/.npm \
     --mount=type=cache,target=/root/.cache/npm \
-    --mount=type=bind,target=./package.json,src=./superset-frontend/package.json \
     npm install \
         --prefer-offline \
         --no-audit \
-        --no-optional
-
-RUN --mount=type=cache,target=/root/.npm \
-        --mount=type=cache,target=/root/.cache/npm \
-        --mount=type=bind,target=./package.json,src=./superset-frontend/package.json \
-        --mount=type=bind,target=./package-lock.json,src=./superset-frontend/package-lock.json \
-        npm install \
-            --prefer-offline \
-            --no-audit \
-            --no-optional \
-            --frozen-lockfile
+        --no-optional \
+        --legacy-peer-deps \
+        --no-fund \
+        --ignore-scripts
 
 COPY ./superset-frontend ./
 # This seems to be the most expensive step
-RUN npm run ${BUILD_CMD}
+RUN npm run ${BUILD_CMD} && \
+    npm cache clean --force
 
 ######################################################################
 # Final lean image...
