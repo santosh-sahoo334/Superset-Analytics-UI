@@ -39,9 +39,11 @@ WORKDIR /app/superset-frontend
 RUN --mount=type=bind,target=/frontend-mem-nag.sh,src=./docker/frontend-mem-nag.sh \
     /frontend-mem-nag.sh
 
-RUN --mount=type=bind,target=./package.json,src=./superset-frontend/package.json \
+RUN --mount=type=cache,target=/root/.npm \
+    --mount=type=cache,target=/root/.cache/npm \
+    --mount=type=bind,target=./package.json,src=./superset-frontend/package.json \
     --mount=type=bind,target=./package-lock.json,src=./superset-frontend/package-lock.json \
-    npm ci
+    npm ci --prefer-offline --no-audit --no-optional
 
 COPY ./superset-frontend ./
 # This seems to be the most expensive step
