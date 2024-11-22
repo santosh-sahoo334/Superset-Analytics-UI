@@ -42,8 +42,20 @@ RUN --mount=type=bind,target=/frontend-mem-nag.sh,src=./docker/frontend-mem-nag.
 RUN --mount=type=cache,target=/root/.npm \
     --mount=type=cache,target=/root/.cache/npm \
     --mount=type=bind,target=./package.json,src=./superset-frontend/package.json \
-    --mount=type=bind,target=./package-lock.json,src=./superset-frontend/package-lock.json \
-    npm ci --prefer-offline --no-audit --no-optional
+    npm install \
+        --prefer-offline \
+        --no-audit \
+        --no-optional
+
+RUN --mount=type=cache,target=/root/.npm \
+        --mount=type=cache,target=/root/.cache/npm \
+        --mount=type=bind,target=./package.json,src=./superset-frontend/package.json \
+        --mount=type=bind,target=./package-lock.json,src=./superset-frontend/package-lock.json \
+        npm install \
+            --prefer-offline \
+            --no-audit \
+            --no-optional \
+            --frozen-lockfile
 
 COPY ./superset-frontend ./
 # This seems to be the most expensive step
