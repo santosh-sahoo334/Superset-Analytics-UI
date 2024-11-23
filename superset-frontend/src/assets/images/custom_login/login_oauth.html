@@ -43,7 +43,7 @@
       <div style="margin-top: 50px">
         {% for provider in providers %}
         <a onclick="signin('{{ provider.name }}');" class="btn btn-primary btn-block" type="submit">
-          {% if provider.name == 'keycloak' %}
+          {% if provider.name == 'okta' %}
               {{_('Login with SSO')}}
           {% else %}
               {{_('Admin Login')}}
