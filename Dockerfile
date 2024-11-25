@@ -79,6 +79,8 @@ RUN mkdir -p ${PYTHONPATH} superset/static superset-frontend apache_superset.egg
         ca-certificates \
         libsqlite3-dev \
         zlib1g-dev \
+        libcurl4-openssl-dev \
+        libssl-dev \
     # [CRITICAL] Image Scan Security Fix 1 - upgrade cURL to  7.88.0.
     && wget https://curl.se/download/curl-7.88.0.tar.gz \
     && tar -xzf curl-7.88.0.tar.gz \
@@ -88,6 +90,8 @@ RUN mkdir -p ${PYTHONPATH} superset/static superset-frontend apache_superset.egg
     && make install \
     && cd .. \
     && rm -rf curl-7.88.0.tar.gz curl-7.88.0 \
+    # Check the curl version after installation
+    && curl --version  \
     # [CRITICAL] Image Scan Security Fix 2 - upgrade SQLite to version 3.28.0.
     && wget https://www.sqlite.org/2023/sqlite-autoconf-3420000.tar.gz \
     && tar -xzf sqlite-autoconf-3420000.tar.gz \
@@ -112,6 +116,12 @@ RUN mkdir -p ${PYTHONPATH} superset/static superset-frontend apache_superset.egg
     && touch superset/static/version_info.json \
     && chown -R superset:superset ./* \
     && rm -rf /var/lib/apt/lists/*
+
+# Ensure libcurl.so.4 is available (in case it's not installed)
+RUN ln -s /usr/local/lib/libcurl.so /usr/lib/libcurl.so.4 || echo "libcurl.so.4 already exists"
+
+# Update dynamic linker cache to reflect changes
+RUN ldconfig
 
 COPY --chown=superset:superset setup.py MANIFEST.in README.md ./
 # setup.py uses the version information in package.json
