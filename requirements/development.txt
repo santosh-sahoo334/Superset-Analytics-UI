@@ -82,7 +82,7 @@ ptyprocess==0.7.0
     # via pexpect
 pure-eval==0.2.2
     # via stack-data
-pydruid==0.6.5
+pydruid==0.6.9
     # via apache-superset
 pyhive[hive_pure_sasl]==0.7.0
     # via apache-superset
