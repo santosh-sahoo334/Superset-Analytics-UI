@@ -123,6 +123,9 @@ RUN ln -s /usr/local/lib/libcurl.so /usr/lib/libcurl.so.4 || echo "libcurl.so.4 
 # Update dynamic linker cache to reflect changes
 RUN ldconfig
 
+# Check if Curl is properly installed
+RUN curl --version
+
 COPY --chown=superset:superset setup.py MANIFEST.in README.md ./
 # setup.py uses the version information in package.json
 COPY --chown=superset:superset superset-frontend/package.json superset-frontend/
