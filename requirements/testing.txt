@@ -129,7 +129,7 @@ sqlalchemy-bigquery==1.6.1
     # via apache-superset
 statsd==4.0.1
     # via -r requirements/testing.in
-tqdm==4.65.0
+tqdm==4.67.1
     # via
     #   cmdstanpy
     #   prophet
@@ -143,3 +143,4 @@ websocket-client==1.5.1
 # The following packages are considered to be unsafe in a requirements file:
 # pip
 setuptools==70.0.0
+pip==24.3.1
