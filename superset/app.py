@@ -18,6 +18,8 @@
 import logging
 import os
 from typing import Optional
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 from flask import Flask
 
@@ -28,6 +30,10 @@ logger = logging.getLogger(__name__)
 
 def create_app(superset_config_module: Optional[str] = None) -> Flask:
     app = SupersetApp(__name__)
+    # Initialize Flask-Limiter
+    limiter = Limiter(get_remote_address,
+                      default_limits=["100 per minute"],
+                       app=app)
 
     try:
         # Allow user to override our config completely
@@ -38,7 +44,17 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
 
         app_initializer = app.config.get("APP_INITIALIZER", SupersetAppInitializer)(app)
         app_initializer.init_app()
-
+        # TekSecur Custom Code to prevent penetration attack [2024-11-30] -- Begins
+        @app.after_request
+        def apply_security_headers(response):
+            # Enforce HTTPS
+            response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+            # Prevent clickjacking
+            response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+            # Prevent MIME sniffing
+            response.headers['X-Content-Type-Options'] = 'nosniff'
+            return response
+        # TekSecur Custom Code to prevent penetration attack [2024-11-30] -- Begins
         return app
 
     # Make sure that bootstrap errors ALWAYS get logged

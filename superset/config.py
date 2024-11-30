@@ -874,6 +874,8 @@ MAPBOX_API_KEY = os.environ.get("MAPBOX_API_KEY", "")
 # Maximum number of rows returned for any analytical database query
 SQL_MAX_ROW = 100000
 
+#Add this line to limit the maximum size (5KiB) of incoming requests [ TekSecur - 2024-11-30]
+MAX_CONTENT_LENGTH = 10 * 1024
 # Maximum number of rows displayed in SQL Lab UI
 # Is set to avoid out of memory/localstorage issues in browsers. Does not affect
 # exported CSVs
