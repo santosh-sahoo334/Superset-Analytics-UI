@@ -42,7 +42,7 @@
 
       <div style="margin-top: 50px">
         {% for provider in providers %}
-        <a onclick="signin('{{ provider.name }}');" class="btn btn-primary btn-block" type="submit">
+        <a onclick="signin('{{ provider.name }}');" class="btn btn-primary btn-block" nonce="RQ3QrOBw4IY1sZyReRUNpPgeMOpcd1ONvIgK2Ghj2zc=" type="submit">
           {% if provider.name == 'okta' %}
               {{_('Login with SSO')}}
           {% else %}
