@@ -7,10 +7,21 @@
   }
 </script>
 
-<script type="text/javascript">
+<script type="text/javascript" nonce="RQ3QrOBw4IY1sZyReRUNpPgeMOpcd1ONvIgK2Ghj2zc=">
   var baseLoginUrl = '{{appbuilder.get_url_for_login}}'
   var baseRegisterUrl = '{{appbuilder.get_url_for_login}}'
   var next = '?next=' + encodeURIComponent("{{request.args.get('next', '') | safe}}")
+
+  document.addEventListener('DOMContentLoaded', function() {
+        const signinLinks = document.querySelectorAll('[id^="signin-"]');
+        signinLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                const provider = this.id.replace('signin-', '');
+                window.location.href = baseLoginUrl + provider + next;
+            });
+        });
+    });
+
   function hideNavbar() {
     const navbar = document.querySelector('#app-menu')
     if (navbar && navbar.style) {
@@ -43,7 +54,7 @@
 
       <div style="margin-top: 50px">
         {% for provider in providers %}
-        <a onclick="signin('{{ provider.name }}');" class="btn btn-primary btn-block" type="submit">
+        <a id="signin-{{provider.name}}" class="btn btn-primary btn-block" nonce="RQ3QrOBw4IY1sZyReRUNpPgeMOpcd1ONvIgK2Ghj2zc=" type="submit">
           {% if provider.name == 'okta' %}
               {{_('Login with SSO')}}
           {% else %}
