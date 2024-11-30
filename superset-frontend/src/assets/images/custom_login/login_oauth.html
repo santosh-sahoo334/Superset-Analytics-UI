@@ -2,20 +2,15 @@
 {% extends "appbuilder/base.html" %} {% block content %}
 
 <script nonce="RQ3QrOBw4IY1sZyReRUNpPgeMOpcd1ONvIgK2Ghj2zc=">
-  document.getElementById('signin-link').addEventListener('click', function () {
-    signin('{{ provider.name }}');
-  });
+  function signin(provider) {
+    window.location.href = baseLoginUrl + provider + next
+  }
 </script>
 
 <script type="text/javascript">
   var baseLoginUrl = '{{appbuilder.get_url_for_login}}'
   var baseRegisterUrl = '{{appbuilder.get_url_for_login}}'
   var next = '?next=' + encodeURIComponent("{{request.args.get('next', '') | safe}}")
-
-  function signin(provider) {
-    window.location.href = baseLoginUrl + provider + next
-  }
-
   function hideNavbar() {
     const navbar = document.querySelector('#app-menu')
     if (navbar && navbar.style) {
@@ -48,7 +43,7 @@
 
       <div style="margin-top: 50px">
         {% for provider in providers %}
-        <a id="signin-link" class="btn btn-primary btn-block" type="submit">
+        <a onclick="signin('{{ provider.name }}');" class="btn btn-primary btn-block" type="submit">
           {% if provider.name == 'okta' %}
               {{_('Login with SSO')}}
           {% else %}
