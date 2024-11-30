@@ -1,6 +1,12 @@
 <!-- extend base layout -->
 {% extends "appbuilder/base.html" %} {% block content %}
 
+<script nonce="RQ3QrOBw4IY1sZyReRUNpPgeMOpcd1ONvIgK2Ghj2zc=">
+  document.getElementById('signin-link').addEventListener('click', function () {
+    signin('{{ provider.name }}');
+  });
+</script>
+
 <script type="text/javascript">
   var baseLoginUrl = '{{appbuilder.get_url_for_login}}'
   var baseRegisterUrl = '{{appbuilder.get_url_for_login}}'
@@ -42,7 +48,7 @@
 
       <div style="margin-top: 50px">
         {% for provider in providers %}
-        <a onclick="signin('{{ provider.name }}');" class="btn btn-primary btn-block" nonce="RQ3QrOBw4IY1sZyReRUNpPgeMOpcd1ONvIgK2Ghj2zc=" type="submit">
+        <a id="signin-link" class="btn btn-primary btn-block" type="submit">
           {% if provider.name == 'okta' %}
               {{_('Login with SSO')}}
           {% else %}
