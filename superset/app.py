@@ -44,17 +44,17 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
 
         app_initializer = app.config.get("APP_INITIALIZER", SupersetAppInitializer)(app)
         app_initializer.init_app()
-        # TekSecur Custom Code to prevent penetration attack [2024-11-30] -- Begins
-        @app.after_request
-        def apply_security_headers(response):
-            # Enforce HTTPS
-            response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
-            # Prevent clickjacking
-            response.headers['X-Frame-Options'] = 'SAMEORIGIN'
-            # Prevent MIME sniffing
-            response.headers['X-Content-Type-Options'] = 'nosniff'
-            return response
-        # TekSecur Custom Code to prevent penetration attack [2024-11-30] -- Begins
+        # # TekSecur Custom Code to prevent penetration attack [2024-11-30] -- Begins
+        # @app.after_request
+        # def apply_security_headers(response):
+        #     # Enforce HTTPS
+        #     response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+        #     # Prevent clickjacking
+        #     response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+        #     # Prevent MIME sniffing
+        #     response.headers['X-Content-Type-Options'] = 'nosniff'
+        #     return response
+        # # TekSecur Custom Code to prevent penetration attack [2024-11-30] -- Begins
         return app
 
     # Make sure that bootstrap errors ALWAYS get logged
