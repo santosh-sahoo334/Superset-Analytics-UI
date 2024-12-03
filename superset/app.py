@@ -21,6 +21,8 @@ from typing import Optional
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_cors import CORS
+from flask import g
+import secrets
 
 from flask import Flask
 
@@ -31,6 +33,11 @@ logger = logging.getLogger(__name__)
 
 def create_app(superset_config_module: Optional[str] = None) -> Flask:
     app = SupersetApp(__name__)
+
+    # TekSecur Custom Code 
+    @app.context_processor
+    def inject_nonce():
+        return {'get_nonce': lambda: getattr(g, 'nonce', '')}
     
     # Fetch CORS origins from .env and convert to list
     cors_origins = os.environ.get("CORS_ORIGINS", "").split(",")
@@ -55,6 +62,8 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
         # TekSecur Custom Code to prevent penetration attack [2024-11-30] -- Begins
         @app.after_request
         def apply_security_headers(response):
+            if not hasattr(g, 'nonce'):
+                g.nonce = secrets.token_hex(16)  # Creates a secure nonce
             # Enforce HTTPS
             response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
             # Prevent clickjacking
