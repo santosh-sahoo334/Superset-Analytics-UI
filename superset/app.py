@@ -21,9 +21,7 @@ from typing import Optional
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_cors import CORS
-from flask import g
-import secrets
-from superset.extensions import talisman
+from flask import request, abort
 
 from flask import Flask
 
@@ -34,11 +32,6 @@ logger = logging.getLogger(__name__)
 
 def create_app(superset_config_module: Optional[str] = None) -> Flask:
     app = SupersetApp(__name__)
-
-    # TekSecur Custom Code 
-    @app.context_processor
-    def inject_nonce():
-        return {'get_nonce': lambda: getattr(g, 'nonce', '')}
     
     # Fetch CORS origins from .env and convert to list
     cors_origins = os.environ.get("CORS_ORIGINS", "").split(",")
@@ -61,16 +54,14 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
         app_initializer = app.config.get("APP_INITIALIZER", SupersetAppInitializer)(app)
         app_initializer.init_app()
         # TekSecur Custom Code to prevent penetration attack [2024-11-30] -- Begins
+        @app.before_request
+        def validate_host():
+            host = request.headers.get("Host", "")
+            ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
+            if host not in ALLOWED_HOSTS:
+                abort(400, "Invalid Host Header")
         @app.after_request
         def apply_security_headers(response):
-            talisman_config = (
-                app.config["TALISMAN_DEV_CONFIG"] if app.superset_app.debug else app.config["TALISMAN_CONFIG"]
-            )
-            if not hasattr(g, 'nonce'):
-                g.nonce = secrets.token_hex(16)  # Creates a secure nonce
-                talisman_config['script-src'].append(f"'nonce-{g.nonce}'")
-                talisman_config['style-src'].append(f"'nonce-{g.nonce}'")
-            talisman.init_app(app.superset_app, **talisman_config)            
             # Enforce HTTPS
             response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
             # Prevent clickjacking

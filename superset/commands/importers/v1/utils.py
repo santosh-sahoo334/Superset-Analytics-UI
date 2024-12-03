@@ -27,6 +27,7 @@ from superset.commands.importers.exceptions import IncorrectVersionError
 from superset.databases.ssh_tunnel.models import SSHTunnel
 from superset.models.core import Database
 from superset.utils.core import check_is_safe_zip
+from flask import abort
 
 METADATA_FILE_NAME = "metadata.yaml"
 IMPORT_VERSION = "1.0.0"
@@ -196,7 +197,10 @@ def load_configs(
 def is_valid_config(file_name: str) -> bool:
     path = Path(file_name)
 
-    # ignore system files that might've been added to the bundle
+    # Skip directories
+    if file_name.endswith("/"):  # ZIP directories end with "/"
+        return False  
+    # Raise Error and Terminate the Process if system files that might've been added to the bundle
     if path.name.startswith(".") or path.name.startswith("_"):
         return False
 
@@ -206,11 +210,44 @@ def is_valid_config(file_name: str) -> bool:
 
     return True
 
-
+# TekSecur code to abort files other than YAML/YML file. 
+def validate_yaml(file):
+    """
+    Validates if the provided content is valid YAML.
+    """
+    try:
+        yaml.safe_load(file)
+        return True
+    except yaml.YAMLError:
+        return False
+    
 def get_contents_from_bundle(bundle: ZipFile) -> dict[str, str]:
-    check_is_safe_zip(bundle)
-    return {
-        remove_root(file_name): bundle.read(file_name).decode()
-        for file_name in bundle.namelist()
-        if is_valid_config(file_name)
-    }
+    # Step 1: Validate the safety of the ZIP file
+    check_is_safe_zip(bundle)    
+    # Step 2: Initialize an empty dictionary to store the results
+    extracted_contents = {}
+    
+    # Step 3: Iterate over all file names in the ZIP archive
+    for file_name in bundle.namelist():
+        # Skip Directories
+        if file_name.endswith("/"):
+            continue
+
+        # Step 4: Check if the current file is a valid configuration file
+        if not is_valid_config(file_name):
+            # Abort the process and return an HTTP 400 Bad Request response
+            abort(400, description=f"Invalid import file detected: {file_name}")
+
+        # Step 4: Read and validate YAML content
+        file_content = bundle.read(file_name).decode()
+
+        # Step 5: Read the file's content and decode it to a string
+        if not validate_yaml(file_content):
+            abort(400, description=f"Invalid YAML/YML file detected: {file_name}")
+        
+        # Step 6: Remove the root path (if any) and store the result
+        clean_file_name = remove_root(file_name)
+        extracted_contents[clean_file_name] = file_content
+
+    # Step 7: Return the extracted contents as a dictionary
+    return extracted_contents
