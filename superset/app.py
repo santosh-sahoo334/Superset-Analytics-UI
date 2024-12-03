@@ -23,6 +23,7 @@ from flask_limiter.util import get_remote_address
 from flask_cors import CORS
 from flask import g
 import secrets
+from superset.extensions import talisman
 
 from flask import Flask
 
@@ -62,8 +63,14 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
         # TekSecur Custom Code to prevent penetration attack [2024-11-30] -- Begins
         @app.after_request
         def apply_security_headers(response):
+            talisman_config = (
+                app.config["TALISMAN_DEV_CONFIG"] if app.superset_app.debug else app.config["TALISMAN_CONFIG"]
+            )
             if not hasattr(g, 'nonce'):
                 g.nonce = secrets.token_hex(16)  # Creates a secure nonce
+                talisman_config['script-src'].append(f"'nonce-{g.nonce}'")
+                talisman_config['style-src'].append(f"'nonce-{g.nonce}'")
+            talisman.init_app(app.superset_app, **talisman_config)            
             # Enforce HTTPS
             response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
             # Prevent clickjacking
