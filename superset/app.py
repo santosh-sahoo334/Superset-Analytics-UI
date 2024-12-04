@@ -30,6 +30,20 @@ from superset.initialization import SupersetAppInitializer
 logger = logging.getLogger(__name__)
 
 
+def get_host():
+    # Try multiple headers in order of priority
+    headers = [
+        'X-Forwarded-Host',  # Most common in load balanced environments
+        'Host',              # Standard HTTP header
+        'X-Host',            # Fallback option
+    ]  
+    for header in headers:
+        host = request.headers.get(header)
+        if host:
+            return host
+    
+    return ''  # Default if no host found
+
 def create_app(superset_config_module: Optional[str] = None) -> Flask:
     app = SupersetApp(__name__)
     
@@ -56,7 +70,7 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
         # TekSecur Custom Code to prevent penetration attack [2024-11-30] -- Begins
         @app.before_request
         def validate_host():
-            host = request.headers.get("Host", "")
+            host = get_host()
             logger.debug(f"Received Host Header: {host}")
             ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
             logger.debug(f"Allowed Host from Config: {ALLOWED_HOSTS}")
