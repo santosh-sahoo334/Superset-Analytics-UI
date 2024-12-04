@@ -71,11 +71,39 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
         @app.before_request
         def validate_host():
             host = get_host()
+            print(f"Received Host Header: {host}")
             logger.debug(f"Received Host Header: {host}")
             ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
             logger.debug(f"Allowed Host from Config: {ALLOWED_HOSTS}")
+            print(f"Allowed Host from Config: {ALLOWED_HOSTS}")
             if host not in ALLOWED_HOSTS:
                 abort(400, "Invalid Host Header")
+        @app.before_request
+        # Dynamic Content length for File upload and request
+        def enforce_dynamic_max_content_length():
+            # Get Content-Length from the request headers
+            content_length = request.content_length 
+
+            # Handle case where Content-Length is missing
+            if content_length is None:
+                return
+            # Content-Length is in bytes
+            max_length_normal = app.config.get("DWORKS_MAX_CONTENT_LENGTH", 10 * 1024) # Default 10 KiB
+            max_length_file_upload = app.config.get("ZIPPED_FILE_MAX_SIZE", 5 * 1024 * 1024) # Default 5 MiB
+            
+            file = request.files.get('formData')  # Replace 'formData' with the actual key
+            if file:
+                print("I am a file!!!")
+                file.seek(0, 2)  # Move to the end of the file
+                file_size = file.tell()  # Get the file size in bytes
+                file.seek(0)  # Reset the pointer to the beginning
+                if file_size > max_length_file_upload:
+                    abort(413, description="File upload size exceeds 10 MB limit.")
+                return 
+
+            if content_length > max_length_normal:
+                abort(413, description="Request size exceeds 10 KB limit.")
+
         @app.after_request
         def apply_security_headers(response):
             # Enforce HTTPS

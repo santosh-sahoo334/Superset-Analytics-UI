@@ -875,7 +875,7 @@ MAPBOX_API_KEY = os.environ.get("MAPBOX_API_KEY", "")
 SQL_MAX_ROW = 100000
 
 #Add this line to limit the maximum size (5KiB) of incoming requests [ TekSecur - 2024-11-30]
-MAX_CONTENT_LENGTH = 10 * 1024
+DWORKS_MAX_CONTENT_LENGTH = 10 * 1024
 # Maximum number of rows displayed in SQL Lab UI
 # Is set to avoid out of memory/localstorage issues in browsers. Does not affect
 # exported CSVs
@@ -1618,7 +1618,7 @@ WELCOME_PAGE_LAST_TAB: (
 ) = "all"
 
 # Max allowed size for a zipped file
-ZIPPED_FILE_MAX_SIZE = 100 * 1024 * 1024  # 100MB
+ZIPPED_FILE_MAX_SIZE = 5 * 1024 * 1024  # 100MB
 # Max allowed compression ratio for a zipped file
 ZIP_FILE_MAX_COMPRESS_RATIO = 200.0
 
