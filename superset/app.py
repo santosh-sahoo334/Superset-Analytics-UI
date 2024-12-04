@@ -57,7 +57,9 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
         @app.before_request
         def validate_host():
             host = request.headers.get("Host", "")
+            logger.debug(f"Received Host Header: {host}")
             ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
+            logger.debug(f"Allowed Host from Config: {ALLOWED_HOSTS}")
             if host not in ALLOWED_HOSTS:
                 abort(400, "Invalid Host Header")
         @app.after_request
