@@ -68,16 +68,16 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
         app_initializer = app.config.get("APP_INITIALIZER", SupersetAppInitializer)(app)
         app_initializer.init_app()
         # TekSecur Custom Code to prevent penetration attack [2024-11-30] -- Begins
-        @app.before_request
-        def validate_host():
-            host = get_host()
-            print(f"Received Host Header: {host}")
-            logger.debug(f"Received Host Header: {host}")
-            ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
-            logger.debug(f"Allowed Host from Config: {ALLOWED_HOSTS}")
-            print(f"Allowed Host from Config: {ALLOWED_HOSTS}")
-            if host not in ALLOWED_HOSTS:
-                abort(400, "Invalid Host Header")
+        # @app.before_request
+        # def validate_host():
+        #     host = get_host()
+        #     print(f"Received Host Header: {host}")
+        #     logger.debug(f"Received Host Header: {host}")
+        #     ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
+        #     logger.debug(f"Allowed Host from Config: {ALLOWED_HOSTS}")
+        #     print(f"Allowed Host from Config: {ALLOWED_HOSTS}")
+        #     if host not in ALLOWED_HOSTS:
+        #         abort(400, "Invalid Host Header")
         @app.before_request
         # Dynamic Content length for File upload and request
         def enforce_dynamic_max_content_length():
