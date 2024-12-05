@@ -33,8 +33,8 @@ logger = logging.getLogger(__name__)
 def get_host():
     # Try multiple headers in order of priority
     headers = [
+        'Host',
         'X-Forwarded-Host',  # Most common in load balanced environments
-        'Host',              # Standard HTTP header
         'X-Host',            # Fallback option
     ]  
     for header in headers:
