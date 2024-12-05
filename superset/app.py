@@ -37,6 +37,8 @@ def get_host():
         'X-Forwarded-Host',  # Most common in load balanced environments
         'X-Host',            # Fallback option
     ]  
+    requetHeader = request.headers
+    print(f"Request Header --> {requetHeader}")
     for header in headers:
         host = request.headers.get(header)
         if host:
@@ -93,7 +95,6 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
             
             file = request.files.get('formData')  # Replace 'formData' with the actual key
             if file:
-                print("I am a file!!!")
                 file.seek(0, 2)  # Move to the end of the file
                 file_size = file.tell()  # Get the file size in bytes
                 file.seek(0)  # Reset the pointer to the beginning
