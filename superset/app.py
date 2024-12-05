@@ -33,8 +33,8 @@ logger = logging.getLogger(__name__)
 def get_host():
     # Try multiple headers in order of priority
     headers = [
-        'Host',
         'X-Forwarded-Host',  # Most common in load balanced environments
+        'Host',
         'X-Host',            # Fallback option
     ]  
     requetHeader = request.headers
@@ -75,11 +75,18 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
             host = get_host()
             print(f"Received Host Header: {host}")
             logger.debug(f"Received Host Header: {host}")
+
+            # Check User-Agent for health probe
+            user_agent = request.headers.get('User-Agent', '')
+            if user_agent.startswith('kube-probe/'):
+                return  # Allow Kubernetes health probes
+            
             ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
             logger.debug(f"Allowed Host from Config: {ALLOWED_HOSTS}")
             print(f"Allowed Host from Config: {ALLOWED_HOSTS}")
             if host not in ALLOWED_HOSTS:
                 abort(400, "Invalid Host Header")
+                
         @app.before_request
         # Dynamic Content length for File upload and request
         def enforce_dynamic_max_content_length():
