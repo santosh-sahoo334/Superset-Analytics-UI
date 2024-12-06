@@ -23,7 +23,7 @@ from io import BytesIO
 from typing import Any, Callable, cast, Optional
 from zipfile import is_zipfile, ZipFile
 
-from flask import redirect, request, Response, send_file, url_for
+from flask import redirect, request, Response, send_file, url_for, abort
 from flask_appbuilder import permission_name
 from flask_appbuilder.api import expose, protect, rison, safe
 from flask_appbuilder.hooks import before_request
@@ -1091,6 +1091,11 @@ class DashboardRestApi(BaseSupersetModelRestApi):
         upload = request.files.get("formData")
         if not upload:
             return self.response_400()
+        
+        # TekSecur Custom Code to Validate file name and extension
+        if not upload.filename.lower().endswith(".zip"):
+            abort(400, description="Only .zip files are allowed for upload.")
+            
         if is_zipfile(upload):
             with ZipFile(upload) as bundle:
                 contents = get_contents_from_bundle(bundle)
