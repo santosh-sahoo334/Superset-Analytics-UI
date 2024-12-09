@@ -16,7 +16,7 @@
 # under the License.
 
 import logging
-import os
+import os, re
 from typing import Optional
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -68,6 +68,23 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
         app_initializer = app.config.get("APP_INITIALIZER", SupersetAppInitializer)(app)
         app_initializer.init_app()
         
+        @app.before_request
+        def validate_next():
+            """
+            Validates the `next` parameter value to ensure it is safe.
+            """
+            if not 'next' in request.args:
+                return
+            next_value = request.args.get('next')
+            if len(next_value) <= 0:
+                return
+            # Allowed URL Pattern to avoid XSS attack
+            # Change it to http in case of local test
+            pattern = r'^(https://[a-zA-Z0-9._~:/?#\[\]@!$&\'()*+,;=%-]+|/[a-zA-Z0-9/_\-.:]*(\?[a-zA-Z0-9&=_%.-]*)?)$'
+
+            if not re.match(pattern, next_value):
+                abort(400,"Operation not allowed")
+
         # TekSecur Custom Code to prevent penetration attack [2024-11-30] -- Begins
         @app.before_request
         def validate_host():

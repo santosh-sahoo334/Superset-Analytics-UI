@@ -45,6 +45,13 @@ const colorSchemeOptions = (theme: SupersetTheme) => [
   { value: theme.colors.success.dark1, label: t('success dark') },
   { value: theme.colors.alert.dark1, label: t('alert dark') },
   { value: theme.colors.error.dark1, label: t('error dark') },
+  { value: theme.colors.sonarqube.qualityGateError, label: t('qualitygate ERROR') },
+  { value: theme.colors.sonarqube.qualityGateOK, label: t('qualitygate OK') },
+  { value: theme.colors.sonarqube.securityBlocker, label: t('security BLOCKER') },
+  { value: theme.colors.sonarqube.securityCritical, label: t('security CRITICAL') },
+  { value: theme.colors.sonarqube.securityMajor, label: t('security MAJOR') },
+  { value: theme.colors.sonarqube.securityMinor, label: t('security MINOR') },
+  { value: theme.colors.sonarqube.securityNone, label: t('security NONE') },
 ];
 
 const operatorOptions = [

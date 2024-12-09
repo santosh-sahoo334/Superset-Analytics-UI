@@ -10,8 +10,22 @@
 <script type="text/javascript" nonce="RQ3QrOBw4IY1sZyReRUNpPgeMOpcd1ONvIgK2Ghj2zc=">
   var baseLoginUrl = '{{appbuilder.get_url_for_login}}'
   var baseRegisterUrl = '{{appbuilder.get_url_for_login}}'
-  var next = '?next=' + encodeURIComponent("{{request.args.get('next', '') | safe}}")
-
+  var rawNext = "{{request.args.get('next', '') | safe}}";
+  // var next = '?next=' + encodeURIComponent("{{request.args.get('next', '') | safe}}")
+  // Function to validate the 'next' value
+  function validateNext(nextValue) {
+      // Allow only HTTPS URLs or relative paths with optional query parameters
+      const validNextRegex = /^(https:\/\/[a-zA-Z0-9._~:/?#\[\]@!$&'()*+,;=%-]+|\/[a-zA-Z0-9/_\-.:]*(\?[a-zA-Z0-9&=_%.-]*)?)$/;
+      return validNextRegex.test(nextValue);
+  }
+  // Validate and encode the 'next' value
+  var next = '';
+  if (validateNext(rawNext)) {
+      next = '?next=' + encodeURIComponent(rawNext);
+  } else {
+      console.warn('Invalid "next" parameter detected. Defaulting to home page.');
+      next = '';
+  }
   document.addEventListener('DOMContentLoaded', function() {
         const signinLinks = document.querySelectorAll('[id^="signin-"]');
         signinLinks.forEach(link => {
