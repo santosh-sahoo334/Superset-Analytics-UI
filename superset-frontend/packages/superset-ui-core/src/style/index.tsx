@@ -125,15 +125,15 @@ const defaultTheme = {
       light1: '#B3DEFE',
       light2: '#EFF8FE',
     },
-    sonarqube:{
-      qualityGateError: '#F44336',
-      qualityGateOK: '#008000',
-      securityBlocker: '#F44336',
-      securityCritical: '#AA4A44',
-      securityMajor: '#FFBF00',
-      securityMinor: '#ADFF2F',
-      securityNone: '#008000',
-    }
+    sonarqube: {
+      qgerror: '#F44336',
+      qgok: '#008000',
+      secblock: '#F44337',
+      seccrit: '#AA4A44',
+      secmaj: '#FFBF00',
+      secmin: '#ADFF2F',
+      secnon: '#008001',
+    },
   },
   opacity: {
     light: '10%',
