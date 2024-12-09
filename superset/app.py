@@ -92,15 +92,14 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
             host = get_host()
 
             # Check User-Agent for health probe
-            reqHeader = request.headers
-            print(f"Request Header --> {reqHeader}")
+            # reqHeader = request.headers
+            # print(f"Request Header --> {reqHeader}")
             user_agent = request.headers.get('User-Agent', '')
             if user_agent.startswith('kube-probe/'):
                 return  # Allow Kubernetes health probes
 
-            
             ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
-            print(f"Allowed host --> {ALLOWED_HOSTS}")
+            # print(f"Allowed host --> {ALLOWED_HOSTS}")
             if host not in ALLOWED_HOSTS:
                 abort(400, "Invalid Host Header")
 
