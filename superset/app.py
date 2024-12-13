@@ -53,7 +53,6 @@ def is_valid_origin(origin, allowed_hosts):
         origin_host = parsed_origin.netloc.lower()
         # Remove port if present
         origin_host = origin_host.split(':')[0]
-        print(f"Origin host from helper : {origin_host}")
         for host_item in allowed_hosts: # host_item = localhost:8088
             host_item = host_item.split(':')[0] # localhost
             if host_item.lower() == origin_host.lower():
@@ -102,7 +101,6 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
         def validate_host():
             host = get_host()
             origin = request.headers.get('Origin')
-            print(f"Request Origin : {origin}")
 
             # Check the Request Origin
             user_agent = request.headers.get('User-Agent', '')
@@ -116,7 +114,6 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
             # Check the Origin
             if origin:
                 if not is_valid_origin(origin, ALLOWED_HOSTS):
-                    print(f"Origin :: {origin}")
                     abort(400, "Invalid Origin")
         
         # Dynamic Content length for File upload and request
