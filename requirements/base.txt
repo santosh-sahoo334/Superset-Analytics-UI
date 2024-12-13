@@ -412,3 +412,5 @@ flower==2.0.1
 playwright
 pip==24.3.1
 Flask-Limiter
+# For CORS to function correctly
+apache-superset[cors]

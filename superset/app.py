@@ -22,6 +22,7 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_cors import CORS
 from flask import request, abort
+import urllib.parse
 
 from flask import Flask
 
@@ -39,21 +40,31 @@ def get_host():
     ]  
     for header in headers:
         host = request.headers.get(header)
-        print(f"Inside get_host host for {header} is --> {host}")
         if host:
             return host
     
     return ''  # Default if no host found
 
+def is_valid_origin(origin, allowed_hosts):
+    if not origin:
+        return False
+    try:
+        parsed_origin = urllib.parse.urlparse(origin)
+        origin_host = parsed_origin.netloc.lower()
+        # Remove port if present
+        origin_host = origin_host.split(':')[0]
+        print(f"Origin host from helper : {origin_host}")
+        for host_item in allowed_hosts: # host_item = localhost:8088
+            host_item = host_item.split(':')[0] # localhost
+            if host_item.lower() == origin_host.lower():
+                return True
+        return False
+    except Exception:
+        return False
+
 def create_app(superset_config_module: Optional[str] = None) -> Flask:
     app = SupersetApp(__name__)
     
-    # Fetch CORS origins from .env and convert to list
-    cors_origins = os.environ.get("CORS_ORIGINS", "").split(",")
-    logger.info(f"CORS_ORIGINS :: {cors_origins}")
-    app.config['CORS_HEADERS'] = 'Content-Type'
-    CORS(app, resources={r"/*": {"origins": cors_origins, "supports_credentials": True}})
-
     # Initialize Flask-Limiter
     limiter = Limiter(get_remote_address,
                       default_limits=["100 per minute"],
@@ -90,21 +101,26 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
         @app.before_request
         def validate_host():
             host = get_host()
+            origin = request.headers.get('Origin')
+            print(f"Request Origin : {origin}")
 
-            # Check User-Agent for health probe
-            # reqHeader = request.headers
-            # print(f"Request Header --> {reqHeader}")
+            # Check the Request Origin
             user_agent = request.headers.get('User-Agent', '')
             if user_agent.startswith('kube-probe/'):
                 return  # Allow Kubernetes health probes
 
             ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
-            # print(f"Allowed host --> {ALLOWED_HOSTS}")
             if host not in ALLOWED_HOSTS:
                 abort(400, "Invalid Host Header")
-
-        @app.before_request
+            
+            # Check the Origin
+            if origin:
+                if not is_valid_origin(origin, ALLOWED_HOSTS):
+                    print(f"Origin :: {origin}")
+                    abort(400, "Invalid Origin")
+        
         # Dynamic Content length for File upload and request
+        @app.before_request 
         def enforce_dynamic_max_content_length():
             # Get Content-Length from the request headers
             content_length = request.content_length 
@@ -122,7 +138,7 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
                 file_size = file.tell()  # Get the file size in bytes
                 file.seek(0)  # Reset the pointer to the beginning
                 if file_size > max_length_file_upload:
-                    abort(413, description="File upload size exceeds 10 MB limit.")
+                    abort(413, description="File upload size exceeds 5 MB limit.")
                 return 
 
             if content_length > max_length_normal:
@@ -133,11 +149,10 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
             # Enforce HTTPS
             response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
             # Prevent clickjacking
-            response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+            response.headers['X-Frame-Options'] = 'DENY'
             # Prevent MIME sniffing
             response.headers['X-Content-Type-Options'] = 'nosniff'
             return response
-        # TekSecur Custom Code to prevent penetration attack [2024-11-30] -- Begins
         return app
 
     # Make sure that bootstrap errors ALWAYS get logged
