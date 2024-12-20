@@ -91,6 +91,7 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
         @app.before_request
         def check_blacklist():
             session_key = request.cookies.get('session')  # Or however your session ID is retrieved
+            session_key = session_key[:-34]
             print(f"Existing Session Key from Request Cookie (Inside check blacklist app py) --> {session_key}")
             if is_session_blacklisted(session_key):
                 abort(403, "Not a Valid Session")

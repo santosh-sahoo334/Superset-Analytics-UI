@@ -210,8 +210,9 @@ def logout_user():
     Logs a user out. (You do not need to pass the actual user.) This will
     also clean up the remember me cookie if it exists.
     """
-    # Mark the Session as Black Listed.
+    # Mark the Session as BlackListed post logout.
     session_key = request.cookies.get('session')
+    session_key = session_key[:-34]
     print(f"Existing Session Key from Request Cookie (Inside logout_user) --> {session_key}")
     redis_url = f"redis://:{os.getenv('REDIS_PASSWORD')}@{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT')}/0"
     redis_client = redis.StrictRedis.from_url(redis_url, decode_responses=True)
