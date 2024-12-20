@@ -23,6 +23,7 @@ from flask_limiter.util import get_remote_address
 from flask_cors import CORS
 from flask import request, abort
 import urllib.parse
+import redis
 
 from flask import Flask
 
@@ -61,6 +62,14 @@ def is_valid_origin(origin, allowed_hosts):
     except Exception:
         return False
 
+# Check if the session key is blacklisted
+def is_session_blacklisted(session_key):
+    redis_url = f"redis://:{os.getenv('REDIS_PASSWORD')}@{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT')}/0"
+    redis_client = redis.StrictRedis.from_url(redis_url, decode_responses=True)
+    if redis_client:
+        print("Redis Connected!!!")
+    return redis_client.exists(f'blacklist:{session_key}')
+
 def create_app(superset_config_module: Optional[str] = None) -> Flask:
     app = SupersetApp(__name__)
     
@@ -78,6 +87,13 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
 
         app_initializer = app.config.get("APP_INITIALIZER", SupersetAppInitializer)(app)
         app_initializer.init_app()
+
+        @app.before_request
+        def check_blacklist():
+            session_key = request.cookies.get('session')  # Or however your session ID is retrieved
+            print(f"Existing Session Key --> {session_key}")
+            if is_session_blacklisted(session_key):
+                abort(403, "Not a Valid Session")
         
         @app.before_request
         def validate_next():

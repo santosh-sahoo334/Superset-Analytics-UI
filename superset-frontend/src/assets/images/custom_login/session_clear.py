@@ -210,6 +210,13 @@ def logout_user():
     Logs a user out. (You do not need to pass the actual user.) This will
     also clean up the remember me cookie if it exists.
     """
+    # Mark the Session as Black Listed.
+    session_key = session.get('_id')
+    redis_url = f"redis://:{os.getenv('REDIS_PASSWORD')}@{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT')}/0"
+    redis_client = redis.StrictRedis.from_url(redis_url, decode_responses=True)
+    if redis_client:
+        print("Redis Connected!!!")
+    redis_client.set(f'blacklist:{session_key}', 'blacklisted')
 
     user = _get_user()
 
@@ -237,17 +244,11 @@ def logout_user():
     # TekSecur Modified. Clear Session.
     print("Attempting to clear Session")
     session.clear()
-    print("After Clearing Session  --> ")
-    print(session)
-    response = make_response(redirect('/login'))
-    print(f"response :{response}")
-    response.delete_cookie('session')  # Remove the session cookie
-
-    # Mark the Session as Black Listed.
-    # session_key = session.get('_id')
-    # redis_url = f"redis://:{os.getenv('REDIS_PASSWORD')}@{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT')}/0"
-    # redis_client = redis.StrictRedis.from_url(redis_url, decode_responses=True)
-    # redis_client.set(f'blacklist:{session_key}', 'blacklisted')
+    # print("After Clearing Session  --> ")
+    # print(session)
+    # response = make_response(redirect('/login'))
+    # print(f"response :{response}")
+    # response.delete_cookie('session')  # Remove the session cookie
     return True
 
 
