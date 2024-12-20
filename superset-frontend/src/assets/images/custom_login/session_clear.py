@@ -10,7 +10,7 @@ from flask import current_app
 from flask import g
 from flask import has_request_context
 from flask import request
-from flask import session
+from flask import session, make_response, redirect
 from flask import url_for
 from werkzeug.local import LocalProxy
 
@@ -19,6 +19,7 @@ from .config import EXEMPT_METHODS
 from .signals import user_logged_in
 from .signals import user_logged_out
 from .signals import user_login_confirmed
+import redis, os
 
 #: A proxy for the current user. If no user is logged in, this will be an
 #: anonymous user
@@ -236,6 +237,17 @@ def logout_user():
     # TekSecur Modified. Clear Session.
     print("Attempting to clear Session")
     session.clear()
+    print("After Clearing Session  --> ")
+    print(session)
+    response = make_response(redirect('/login'))
+    print(f"response :{response}")
+    response.delete_cookie('session')  # Remove the session cookie
+
+    # Mark the Session as Black Listed.
+    # session_key = session.get('_id')
+    # redis_url = f"redis://:{os.getenv('REDIS_PASSWORD')}@{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT')}/0"
+    # redis_client = redis.StrictRedis.from_url(redis_url, decode_responses=True)
+    # redis_client.set(f'blacklist:{session_key}', 'blacklisted')
     return True
 
 
