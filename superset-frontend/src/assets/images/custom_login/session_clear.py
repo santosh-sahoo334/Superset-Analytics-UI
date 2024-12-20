@@ -212,7 +212,9 @@ def logout_user():
     """
     # Mark the Session as BlackListed post logout.
     session_key = request.cookies.get('session')
-    session_key = session_key[:-34]
+    if session_key:
+        session_key = session_key[:-34]
+
     print(f"Existing Session Key from Request Cookie (Inside logout_user) --> {session_key}")
     redis_url = f"redis://:{os.getenv('REDIS_PASSWORD')}@{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT')}/0"
     redis_client = redis.StrictRedis.from_url(redis_url, decode_responses=True)
