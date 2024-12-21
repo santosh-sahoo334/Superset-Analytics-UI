@@ -218,8 +218,6 @@ def logout_user():
     print(f"Existing Session Key from Request Cookie (Inside logout_user) --> {session_key}")
     redis_url = f"redis://:{os.getenv('REDIS_PASSWORD')}@{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT')}/0"
     redis_client = redis.StrictRedis.from_url(redis_url, decode_responses=True)
-    if redis_client:
-        print("Redis Connected!!!")
     redis_client.set(f'blacklist:{session_key}', 'blacklisted')
 
     user = _get_user()
