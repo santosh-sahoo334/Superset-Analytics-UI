@@ -67,9 +67,10 @@ def black_list_ghost_cookie():
     request_referrer = os.environ.get("REQUEST_REFERRER", "").split(",")
     reqRef = request.headers.get("Referer")
     print(f"Referrer from Reqeust --> {reqRef}")
-    if request.headers.get("Referer").lower() in request_referrer:
-        print(f"request -path -> {request.path.lower()}")  
-        if request.path.lower() == '/dashboard/list/':
+    if reqRef and reqRef in request_referrer:
+        reqPath = request.path
+        print(f"request -path -> {reqPath}")  
+        if reqPath and reqPath.lower() == '/dashboard/list/':
             redis_url = f"redis://:{os.getenv('REDIS_PASSWORD')}@{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT')}/0"
             redis_client = redis.StrictRedis.from_url(redis_url, decode_responses=True)
             session_key = request.cookies.get('session')
