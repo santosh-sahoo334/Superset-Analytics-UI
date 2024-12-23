@@ -76,6 +76,7 @@ def black_list_ghost_cookie():
             session_key = request.cookies.get('session')
             if session_key:
                 session_key = session_key + '$$$GHOSTCOOKIE$$$' 
+                print(f"Ghost Session Key ---> {session_key}")
                 redis_client.set(f'blacklist:{session_key}', 'blacklisted')
 
 def is_session_blacklisted(session_key):
