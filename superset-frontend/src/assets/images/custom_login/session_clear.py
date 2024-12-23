@@ -215,15 +215,15 @@ def logout_user():
     if session_key:
         session_key = session_key[:-34]
 
-    print(f"Existing Session Key from Request Cookie (Inside logout_user) --> {session_key}")
+    # print(f"Existing Session Key from Request Cookie (Inside logout_user) --> {session_key}")
     redis_url = f"redis://:{os.getenv('REDIS_PASSWORD')}@{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT')}/0"
     redis_client = redis.StrictRedis.from_url(redis_url, decode_responses=True)
     redis_client.set(f'blacklist:{session_key}', 'blacklisted')
 
     user = _get_user()
 
-    print("Session::")
-    print(session)
+    # print("Session::")
+    # print(session)
 
     if "_user_id" in session:
         session.pop("_user_id")
@@ -244,7 +244,7 @@ def logout_user():
 
     current_app.login_manager._update_request_context_with_user()
     # TekSecur Modified. Clear Session.
-    print("Attempting to clear Session")
+    # print("Attempting to clear Session")
     session.clear()
     # print("After Clearing Session  --> ")
     # print(session)

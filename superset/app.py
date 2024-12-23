@@ -66,17 +66,17 @@ def is_valid_origin(origin, allowed_hosts):
 def black_list_ghost_cookie():
     request_referrer = os.environ.get("REQUEST_REFERRER", "").split(",")
     reqRef = request.headers.get("Referer")
-    print(f"Referrer from Reqeust --> {reqRef}")
+    # print(f"Referrer from Reqeust --> {reqRef}")
     if reqRef and reqRef in request_referrer:
         reqPath = request.path
-        print(f"request -path -> {reqPath}")  
+        # print(f"request -path -> {reqPath}")  
         if reqPath and reqPath.lower() == '/dashboard/list/':
             redis_url = f"redis://:{os.getenv('REDIS_PASSWORD')}@{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT')}/0"
             redis_client = redis.StrictRedis.from_url(redis_url, decode_responses=True)
             session_key = request.cookies.get('session')
             if session_key:
                 session_key = session_key + '$$$GHOSTCOOKIE$$$' 
-                print(f"Ghost Session Key ---> {session_key}")
+                # print(f"Ghost Session Key ---> {session_key}")
                 redis_client.set(f'blacklist:{session_key}', 'blacklisted')
 
 def is_session_blacklisted(session_key):
@@ -109,7 +109,7 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
             session_key = request.cookies.get('session')  # Or however your session ID is retrieved
             if session_key:
                 session_key = session_key[:-34]
-                print(f"Existing Session Key from Request Cookie (Inside check blacklist app py) --> {session_key}")
+                # print(f"Existing Session Key from Request Cookie (Inside check blacklist app py) --> {session_key}")
                 if is_session_blacklisted(session_key):
                     abort(403, "Not a Valid Session")
                 
