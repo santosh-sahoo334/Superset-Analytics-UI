@@ -39,7 +39,7 @@ def get_git_sha() -> str:
 
 
 GIT_SHA = get_git_sha()
-version_info = {"GIT_SHA": GIT_SHA, "version": version_string}
+version_info = {"GIT_SHA": GIT_SHA, "version": '3.0.0'}
 print("-==-" * 15)
 print("VERSION: " + version_string)
 print("GIT SHA: " + GIT_SHA)
