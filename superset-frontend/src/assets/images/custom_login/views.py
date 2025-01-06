@@ -709,7 +709,7 @@ class AuthOAuthView(AuthView):
 
     # TekSecur DWorks Auth Success Endpoint once TekSecur IDAM auth is successful
     @expose("/oauth-authorized/csight-auth-success")
-    def oauth_authorized(self) -> WerkzeugResponse:
+    def csight_oauth_authorized(self) -> WerkzeugResponse:
 
         oid_accesstoken = request.cookies.get('refresh_token')
         print(f"Access Token from Request --> {oid_accesstoken}")
