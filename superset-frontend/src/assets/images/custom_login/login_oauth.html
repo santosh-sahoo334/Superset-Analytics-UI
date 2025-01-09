@@ -1,55 +1,217 @@
-<!-- extend base layout -->
-{% extends "appbuilder/base.html" %} {% block content %}
+<!DOCTYPE html>
+<html lang="en">
 
-<script type="text/javascript">
-  var baseLoginUrl = '{{appbuilder.get_url_for_login}}'
-  var baseRegisterUrl = '{{appbuilder.get_url_for_login}}'
-  var next = '?next=' + encodeURIComponent("{{request.args.get('next', '') | safe}}")
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSIGHT Sign In</title>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        }
 
-  function signin(provider) {
-    window.location.href = baseLoginUrl + provider + next
-  }
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: url('https://csight.teksecur.com/layout/images/background_image.svg') center/cover no-repeat;
+            position: relative;
+            overflow: hidden;
+        }
 
-  function hideNavbar() {
-    const navbar = document.querySelector('#app-menu')
-    if (navbar && navbar.style) {
-      navbar.style.display = 'none'
-    }
-    const container = document.querySelector('.container')
-    if (container && container.style) {
-      container.style.width = '100%'
-    }
-  }
-  hideNavbar()
-  setTimeout(() => {
-    hideNavbar()
-  }, 1000)
-</script>
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            z-index: 3;
+            position: relative;
+        }
 
-<div class="container" style="
-    min-height: 100vh;
-    background-image: url('/static/assets/images/dworks_background.jpg');
-    background-position: center;
-    background-size: cover;
-    width: 100%;
-  ">
-  <div id="loginbox" style="display: flex; justify-content: center; align-items: center; margin-top: 100px">
-    <div style="background: #fff; padding: 40px; border-radius: 4px; min-width: 400px; box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1)">
-      <div class="text-center mb-5">
-        <img src="/static/assets/images/superset-logo-horiz.png" alt="Image" height="50" style="margin-bottom: 20px" />
-        <div style="margin-bottom: 20px; font-size: 24px; font-weight: 500">Welcome to CSight</div>
-      </div>
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
 
-      <div style="margin-top: 50px">
-        {% for provider in providers %}
-        <a onclick="signin('{{ provider.name }}');" class="btn btn-primary btn-block" type="submit">
-          {{_('Login with SSO')}}
-          <i id="{{provider.name}}"></i>
-        </a>
-        {% endfor %}
-      </div>
+        .logo img {
+            max-width: 150px;
+            height: auto;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 28px;
+            font-weight: normal;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: #4052AB;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #4052AB;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background: #334293;
+        }
+
+        .icon-user {
+            width: 16px;
+            height: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <div class="logo">
+            <img src="https://csight.teksecur.com/layout/images/csight.png" alt="CSIGHT Logo">
+        </div>
+
+        <h1>Sign in</h1>
+
+        <form id="signInForm">
+            <div class="form-group">
+                <label for="email">User Name</label>
+                <input type="email" id="email" placeholder="Email address" required>
+            </div>
+
+            <button type="submit">
+                <svg class="icon-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                </svg>
+                Next
+            </button>
+        </form>
     </div>
-  </div>
-</div>
 
-{% endblock %}
+    <script>
+        const REFRESH_TOKEN = 'refresh_token';
+        const SLUG_KEY = 'slug';
+        const SUPERSET_DOMAIN = 'https://dworks.aws.teksecur.com';
+
+        // Check for tokens and handle authentication on page load
+        document.addEventListener('DOMContentLoaded', async function () {
+            // Get URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const slug = urlParams.get('slug');
+
+            // Check for OIDC tokens
+            const oidc_refresh_token = Cookies.get("oidc_refresh_token");
+            const oidc_access_token = Cookies.get("oidc_access_token");
+
+            if (oidc_refresh_token) {
+                // Handle token storage
+                if (slug) {
+                    Cookies.set(SLUG_KEY, slug, {
+                        domain: ".teksecur.com",
+                    });
+                }
+
+                Cookies.set(REFRESH_TOKEN, oidc_refresh_token, {
+                    domain: ".teksecur.com",
+                });
+
+                // Clean up OIDC cookies
+                Cookies.remove("oidc_refresh_token", {
+                    path: "/",
+                    domain: ".teksecur.com",
+                });
+                Cookies.remove("oidc_access_token", {
+                    path: "/",
+                    domain: ".teksecur.com",
+                });
+
+                // Check for refresh token and slug
+                const refreshToken = Cookies.get(REFRESH_TOKEN);
+                const storedSlug = Cookies.get(SLUG_KEY);
+
+                if (refreshToken && storedSlug) {
+                    try {
+                        const response = await fetch(
+                            `${SUPERSET_DOMAIN}/oauth-authorized/csight-auth-success?slug=${storedSlug}`,
+                            {
+                                method: "GET",
+                                credentials: 'include',
+                                headers: {
+                                    'refresh_token': refreshToken,
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json'
+                                }
+                            }
+                        );
+                        const data = await response.json();
+                        // Handle successful authentication
+                        if (response.ok) {
+                            // Redirect to dashboard after successful response
+                            window.location.href = `/superset/dashboard/${storedSlug}`;
+                        } else {
+                            console.error('Authentication failed:', data);
+                        }
+
+                        console.log('Authentication successful:', data);
+                    } catch (error) {
+                        console.error('Authentication error:', error);
+                    }
+                }
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('signInForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            // const email = ;
+            let email = btoa(document.getElementById('email').value);
+            // Construct the authentication URL with the user's email
+            const authUrl = `https://csight-api.teksecur.com/api/v1/oidc/login/?email=${email}`;
+
+            // Redirect to the authentication URL
+            window.location.href = authUrl;
+        });
+    </script>
+</body>
+
+</html>
