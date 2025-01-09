@@ -138,18 +138,24 @@
             // Get URL parameters
             const urlParams = new URLSearchParams(window.location.search);
             const slug = urlParams.get('slug');
+            console.log('slug--',slug);
+            
 
             // Check for OIDC tokens
             const oidc_refresh_token = Cookies.get("oidc_refresh_token");
             const oidc_access_token = Cookies.get("oidc_access_token");
+            console.log('oidc_refresh_token--',oidc_refresh_token);
+            console.log('oidc_access_token--',oidc_access_token);
+            
+
+            if (slug) {
+                Cookies.set(SLUG_KEY, slug, {
+                    domain: ".teksecur.com",
+                });
+            }
 
             if (oidc_refresh_token) {
                 // Handle token storage
-                if (slug) {
-                    Cookies.set(SLUG_KEY, slug, {
-                        domain: ".teksecur.com",
-                    });
-                }
 
                 Cookies.set(REFRESH_TOKEN, oidc_refresh_token, {
                     domain: ".teksecur.com",
@@ -164,12 +170,16 @@
                     path: "/",
                     domain: ".teksecur.com",
                 });
-
+            }
                 // Check for refresh token and slug
                 const refreshToken = Cookies.get(REFRESH_TOKEN);
                 const storedSlug = Cookies.get(SLUG_KEY);
 
+                console.log('refreshToken--',refreshToken);
+                console.log('storedSlug--',storedSlug);
+
                 if (refreshToken && storedSlug) {
+                    
                     try {
                         const response = await fetch(
                             `${SUPERSET_DOMAIN}/oauth-authorized/csight-auth-success?slug=${storedSlug}`,
@@ -183,7 +193,10 @@
                                 }
                             }
                         );
+                        console.log('csight-auth-success response--',response);
                         const data = await response.json();
+                        console.log('csight-auth-success data--',data);
+                        
                         // Handle successful authentication
                         if (response.ok) {
                             // Redirect to dashboard after successful response
@@ -197,7 +210,6 @@
                         console.error('Authentication error:', error);
                     }
                 }
-            }
         });
 
         // Handle form submission
