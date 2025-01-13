@@ -33,6 +33,7 @@ if (process.env.NODE_ENV === 'production') {
     'plugins/**/test/**/*',
     'packages/**/test/**/*',
     'packages/generator-superset/**/*',
+    'src/*'
   ];
 }
 

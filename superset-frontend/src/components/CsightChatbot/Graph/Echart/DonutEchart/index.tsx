@@ -1,0 +1,84 @@
+/* eslint-disable */
+import ReactECharts, { EChartsOption } from "echarts-for-react";
+import React, { useEffect, useState } from 'react';
+import { GRAPH_COLORS, useAIBotContext } from '../../../Context';
+
+interface DonutEchartProps {
+    title: string
+    labels: string[]
+    data: string[]
+}
+
+const DonutEchart: React.FunctionComponent<DonutEchartProps> = ({ data, labels, title }) => {
+    const [dataSet, setDataSet] = useState<any[]>([])
+    const [option, setOptions] = useState<null | EChartsOption>(null)
+    const { isResize } = useAIBotContext()
+
+    useEffect(() => {
+        if (labels && labels?.length > 0) {
+            const o: EChartsOption = {
+                title: {
+                    text: title,
+                    left: 'center',
+                    textStyle: {
+                        overflow: "breakAll",
+                        width: 300
+                    }
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+                series: [
+                    {
+                        name: title,
+                        type: 'pie',
+                        radius: ['40%', '70%'],
+                        avoidLabelOverlap: false,
+                        itemStyle: {
+                            borderRadius: 10,
+                            borderColor: '#fff',
+                            borderWidth: 2
+                        },
+                        data: [],
+                    }
+                ],
+            }
+
+            const graphData = labels?.map(((_label, index) => {
+                return {
+                    value: data?.[index] || 0,
+                    name: _label,
+                    itemStyle: {
+                        color: GRAPH_COLORS[index % GRAPH_COLORS.length]
+                    }
+                }
+            }))
+            setOptions({
+                ...o, series: {
+                    name: title,
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    avoidLabelOverlap: false,
+                    itemStyle: {
+                        borderRadius: 10,
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    },
+                    data: graphData,
+                }
+            })
+
+            setDataSet(graphData)
+        }
+    }, [JSON.stringify(labels)])
+
+    if (dataSet?.length === 0) return <></>
+
+    return (
+        <div className='chart-container' style={{ width: isResize ? "60%" : 400, height: 400 }}>
+            <ReactECharts option={option} className="h-full w-full" />
+        </div>
+    );
+}
+
+export default DonutEchart;

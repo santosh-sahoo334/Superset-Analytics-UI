@@ -30,7 +30,7 @@ const parsedEnvArg = () => {
 };
 
 const { supersetPort = 8088, superset: supersetUrl = null } = parsedEnvArg();
-const backend = (supersetUrl || `http://localhost:${supersetPort}`).replace(
+const backend = (supersetUrl || `https://dworks.aws.teksecur.com`).replace(
   '//+$/',
   '',
 ); // strip ending backslash
@@ -169,7 +169,7 @@ module.exports = newManifest => {
         response.setHeader('content-type', 'text/plain');
         response.write(`Error requesting ${request.path} from proxy:\n\n`);
         response.end(e.stack);
-      }
+        }
     },
   };
 };

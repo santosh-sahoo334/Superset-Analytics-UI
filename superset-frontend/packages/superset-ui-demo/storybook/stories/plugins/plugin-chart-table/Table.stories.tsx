@@ -93,7 +93,6 @@ function expandArray<T>(input: T[], targetSize: number) {
 // data when changing page sizes
 const expandRecords = memoizeOne(expandArray);
 const expandColumns = memoizeOne(expandArray);
-
 /**
  * Load sample data for testing
  * @param props the original props passed to SuperChart

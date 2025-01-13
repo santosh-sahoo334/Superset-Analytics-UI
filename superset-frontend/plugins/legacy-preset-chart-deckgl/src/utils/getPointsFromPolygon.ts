@@ -17,7 +17,6 @@
  * under the License.
  */
 import { Point } from '../types';
-
 /** Format originally used by the Polygon plugin */
 type CustomPolygonFeature = {
   polygon: Point[];

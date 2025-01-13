@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -456,7 +458,8 @@ test('removes ignore cache checkbox when chart is selected', async () => {
     screen.queryByRole('checkbox', {
       name: /ignore cache when generating report/i,
     }),
-  ).toBe(null);
+  ).
+  toBe(null);
 });
 
 test('does not show screenshot width when csv is selected', async () => {

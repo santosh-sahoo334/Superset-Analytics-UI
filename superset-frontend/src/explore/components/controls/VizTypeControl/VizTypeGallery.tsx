@@ -194,7 +194,6 @@ const SearchWrapper = styled.div`
     }
   `}
 `;
-
 /** Styles to line up prefix/suffix icons in the search input */
 const InputIconAlignment = styled.div`
   display: flex;
@@ -433,7 +432,6 @@ interface ThumbnailGalleryProps {
   setSelectedViz: (viz: string) => void;
   onDoubleClick: () => void;
 }
-
 /** A list of viz thumbnails, used within the viz picker modal */
 const ThumbnailGallery: React.FC<ThumbnailGalleryProps> = ({
   vizEntries,

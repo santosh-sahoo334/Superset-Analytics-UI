@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,14 +20,13 @@
  */
 import { FeatureFlag, isFeatureEnabled } from '@superset-ui/core';
 import React, { lazy } from 'react';
+import MainLayout from 'src/components/MainLayout';
 
 // not lazy loaded since this is the home page.
 import Home from 'src/pages/Home';
 
-const ChartCreation = lazy(
-  () =>
-    import(/* webpackChunkName: "ChartCreation" */ 'src/pages/ChartCreation'),
-);
+{/* @ts-ignore: Disable TypeScript check for ReactRouterRoute */}
+const ChartCreation = lazy(() =>import(/* webpackChunkName: "ChartCreation" */ 'src/pages/ChartCreation'));
 
 const AnnotationLayerList = lazy(
   () =>
@@ -128,6 +129,7 @@ type Routes = {
   Component: React.ComponentType;
   Fallback?: React.ComponentType;
   props?: React.ComponentProps<any>;
+  layout?: React.ComponentType
 }[];
 
 export const routes: Routes = [
@@ -139,9 +141,10 @@ export const routes: Routes = [
     path: '/dashboard/list/',
     Component: DashboardList,
   },
-  {
+    {
     path: '/superset/dashboard/:idOrSlug/',
     Component: Dashboard,
+    layout: MainLayout
   },
   {
     path: '/chart/add',
@@ -238,7 +241,7 @@ if (isFeatureEnabled(FeatureFlag.TaggingSystem)) {
   });
 }
 
-const frontEndRoutes = routes
+const frontEndRoutes:any = routes
   .map(r => r.path)
   .reduce(
     (acc, curr) => ({

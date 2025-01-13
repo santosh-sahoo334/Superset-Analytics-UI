@@ -52,7 +52,6 @@ export type ControlProps = {
   isVisible?: boolean;
   resetOnHide?: boolean;
 };
-
 /**
  *
  */

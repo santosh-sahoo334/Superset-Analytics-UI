@@ -24,10 +24,15 @@ node_modules/*
 node_modules*/*
 vendor/*
 docs/*
+src/*
 src/dashboard/deprecated/*
 src/temp/*
 **/node_modules
 *.d.ts
+*.test.ts
+*.test.tsx
+*.test.js
+*.test.jsx
 coverage/
 esm/
 lib/

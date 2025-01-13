@@ -45,7 +45,6 @@ export interface ChartQueryPayload extends Partial<ChartReducerInitialState> {
   form_data?: ChartProps['rawFormData'];
   [key: string]: unknown;
 }
-
 /** Chart state of redux */
 export type Chart = ChartState & {
   form_data: {
@@ -147,7 +146,6 @@ export type Datasource = Dataset & {
 export type DatasourcesState = {
   [key: string]: Datasource;
 };
-
 /** Root state of redux */
 export type RootState = {
   datasources: DatasourcesState;
@@ -162,16 +160,13 @@ export type RootState = {
   nativeFilters: NativeFiltersState;
   user: UserWithPermissionsAndRoles;
 };
-
 /** State of dashboardLayout in redux */
 export type Layout = { [key: string]: LayoutItem };
-
 /** State of charts in redux */
 export type Charts = { [key: number]: Chart };
 
 type ComponentTypesKeys = keyof typeof componentTypes;
 export type ComponentType = (typeof componentTypes)[ComponentTypesKeys];
-
 /** State of dashboardLayout item in redux */
 export type LayoutItem = {
   children: string[];

@@ -74,7 +74,6 @@ const UnpaddedModal = styled(Modal)`
     padding: 0;
   }
 `;
-
 /** Manages the viz type and the viz picker modal */
 const VizTypeControl = ({
   value: initialValue,

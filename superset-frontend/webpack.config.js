@@ -34,6 +34,7 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const parsedArgs = require('yargs').argv;
 const getProxyConfig = require('./webpack.proxy-config');
 const packageConfig = require('./package');
+require('dotenv').config();
 
 // input dir
 const APP_DIR = path.resolve(__dirname, './');
@@ -117,6 +118,22 @@ const plugins = [
     'process.env.REDUX_DEFAULT_MIDDLEWARE':
       process.env.REDUX_DEFAULT_MIDDLEWARE,
     'process.env.SCARF_ANALYTICS': JSON.stringify(process.env.SCARF_ANALYTICS),
+    
+    // Ensure these environment variables are defined correctly
+    'process.env.REACT_APP_SUPERSET_GUEST_TOKEN_URL': JSON.stringify(process.env.REACT_APP_SUPERSET_GUEST_TOKEN_URL || ''),
+    'process.env.REACT_APP_SUPERSET_BASE_URL': JSON.stringify(process.env.REACT_APP_SUPERSET_BASE_URL || ''),
+    'process.env.REACT_APP_SUPERSET_DASHBOARD_ID': JSON.stringify(process.env.REACT_APP_SUPERSET_DASHBOARD_ID || ''),
+    'process.env.REACT_APP_SUPERSET_ID': JSON.stringify(process.env.REACT_APP_SUPERSET_ID || ''),
+    'process.env.REACT_APP_SUPERSET_DOMAIN': JSON.stringify(process.env.REACT_APP_SUPERSET_DOMAIN || ''),
+    'process.env.REACT_APP_IS_KEYCLOAK': JSON.stringify(process.env.REACT_APP_IS_KEYCLOAK || ''),
+    'process.env.REACT_APP_CINDY_BASE_URL': JSON.stringify(process.env.REACT_APP_CINDY_BASE_URL || ''),
+    'process.env.REACT_APP_CINDY_ORG_ID': JSON.stringify(process.env.REACT_APP_CINDY_ORG_ID || ''),
+    'process.env.REACT_APP_CINDY_PROJECT_ID': JSON.stringify(process.env.REACT_APP_CINDY_PROJECT_ID || ''),
+    'process.env.REACT_APP_CINDY_DOC_TYPE': JSON.stringify(process.env.REACT_APP_CINDY_DOC_TYPE || ''),
+    'process.env.REACT_APP_CINDY_APP_TYPE': JSON.stringify(process.env.REACT_APP_CINDY_APP_TYPE || ''),
+    'process.env.REACT_APP_CINDY_EMAIL_ID_TOKEN': JSON.stringify(process.env.REACT_APP_CINDY_EMAIL_ID_TOKEN || ''),
+    'process.env.REACT_APP_CINDY_AUTH_TOKEN': JSON.stringify(process.env.REACT_APP_CINDY_AUTH_TOKEN || ''),
+    'process.env.ADMIN_EMAIL': JSON.stringify(process.env.ADMIN_EMAIL) || '[]',
   }),
 
   new CopyPlugin({
@@ -191,7 +208,7 @@ const babelLoader = {
     // disable gzip compression for cache files
     // faster when there are millions of small files
     cacheCompression: false,
-    plugins: ['emotion'],
+    plugins: ['@emotion'],
     presets: [
       [
         '@emotion/babel-preset-css-prop',
@@ -299,6 +316,14 @@ const config = {
   context: APP_DIR, // to automatically find tsconfig.json
   module: {
     rules: [
+      {
+        test: /\.scss$/,
+        use: [
+          'style-loader', // Injects CSS into the DOM
+          'css-loader',   // Resolves CSS imports
+          'sass-loader'   // Compiles Sass to CSS
+        ]
+      },
       {
         test: /datatables\.net.*/,
         loader: 'imports-loader',

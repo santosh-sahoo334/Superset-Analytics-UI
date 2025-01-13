@@ -23,7 +23,6 @@ export enum ScopingType {
   All,
   Specific,
 }
-
 /** UI Ant tree type */
 export type TreeItem = {
   children: TreeItem[];

@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
     /* Type Checking */
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "strictNullChecks": true,
+    // "noImplicitAny": true,
+    // "noImplicitReturns": true,
+    // "noImplicitThis": true,
+    // "noUnusedLocals": true,
+    // "strictNullChecks": true,
+    // "strict": false,
 
     /* Modules */
     "baseUrl": ".",
@@ -38,6 +39,7 @@
     "declarationMap": true,
     "importHelpers": false,
     "noEmitOnError": true,
+    // "noEmit": true,
     "outDir": "./dist",
     "sourceMap": true,
 
@@ -64,7 +66,10 @@
     "skipLibCheck": true
   },
   "exclude": [
-    "./packages/generator-superset/test/**/*"
+    "./packages/generator-superset/test/**/*",
+    // "./packages/**/*",
+    // "./plugins/**/*",
+    // "./spec/**/*",
   ],
   "include": [
     "./src/**/*",

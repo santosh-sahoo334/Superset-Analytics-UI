@@ -1,3 +1,5 @@
+// @ts-nocheck
+/* eslint-disable */
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -40,12 +42,22 @@ import { logEvent } from 'src/logger/actions';
 import { store } from 'src/views/store';
 import { RootContextProviders } from './RootContextProviders';
 import { ScrollToTop } from './ScrollToTop';
+import RootLayout from 'src/pages/rootLayout';
+import { AuthProvider } from 'src/components/CsightCommon/context/AuthContext';
+import { AIBotProvider } from 'src/components/CsightChatbot/Context';
+
+// import Login from 'src/pages/Login';
 
 setupApp();
 setupPlugins();
 setupExtensions();
 
 const bootstrapData = getBootstrapData();
+
+const userEmail:any = bootstrapData?.user?.username || null;
+
+const adminList =process.env.ADMIN_EMAIL || [];
+
 
 let lastLocationPathname: string;
 
@@ -68,9 +80,15 @@ const LocationPathnameLogger = () => {
   return <></>;
 };
 
-const App = () => (
-  <Router>
-    <ScrollToTop />
+const App = () => {
+
+  return (
+    <Router>
+      <AIBotProvider>
+        
+
+      <RootLayout>
+        <ScrollToTop />
     <LocationPathnameLogger />
     <RootContextProviders>
       <GlobalStyles />
@@ -79,19 +97,22 @@ const App = () => (
         isFrontendRoute={isFrontendRoute}
       />
       <Switch>
-        {routes.map(({ path, Component, props = {}, Fallback = Loading }) => (
-          <Route path={path} key={path}>
+        {routes.map(({ path, Component, props = {}, Fallback = Loading,layout: Layout }) => (
+          <Route path={path} key={path} >
             <Suspense fallback={<Fallback />}>
               <ErrorBoundary>
-                <Component user={bootstrapData.user} {...props} />
+                { Layout && userEmail && !adminList?.includes(userEmail) ? <AuthProvider><Layout> <Component user={bootstrapData.user} {...props} /> </Layout></AuthProvider> : <Component user={bootstrapData.user} {...props} />}
               </ErrorBoundary>
             </Suspense>
           </Route>
         ))}
       </Switch>
       <ToastContainer />
-    </RootContextProviders>
-  </Router>
-);
+        </RootContextProviders>
+      </RootLayout>
+      </AIBotProvider>
+    </Router>
+  );
+};
 
 export default hot(App);

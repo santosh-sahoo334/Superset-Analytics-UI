@@ -1,0 +1,233 @@
+.custom-accordion {
+    .p-accordion-tab {
+      .p-accordion-header {
+        .p-accordion-header-link {
+          border: 0;
+          background: unset;
+          position: relative;
+          
+          .p-accordion-toggle-icon {
+            position: absolute;
+            right: 30%;
+            color: #808080;
+          }
+  
+          &:focus {
+            box-shadow: unset;
+          }
+  
+          .p-tag,
+          .p-badge {
+            background: #8d8d8d;
+          }
+        }
+      }
+  
+      .p-toggleable-content {
+        .p-accordion-content {
+          background: unset;
+          border: 0;
+          padding-left: 25.6%;
+          padding-top: 0;
+          width: 100%;
+        }
+      }
+    }
+  
+    .highlight-color {
+      color: red;
+    }
+  
+    .form-label {
+      font-size: 14px;
+      letter-spacing: 0.1px;
+    }
+  
+    .dark-gray {
+      color: #808080;
+    }
+  
+    .p-tooltip {
+      z-index: 9999;
+    }
+  
+    .p-overlaypanel {
+      z-index: 2;
+  
+      .p-tag {
+        background: #8d8d8d;
+      }
+    }
+  
+    &:hover {
+      .form-label,
+      .dark-gray {
+        color: #1976d2;
+      }
+    }
+  }
+
+  .custom-field {
+    &:hover {
+      label,
+      p {
+        color: #1976d2;
+      }
+      input {
+        border-color: #005cbb;
+        background-color: unset;
+      }
+      .p-dropdown {
+        border-color: #005cbb;
+      }
+      .p-multiselect {
+        border-color: #005cbb;
+      }
+      .p-chips {
+        .p-chips-multiple-container {
+          border-color: #005cbb;
+        }
+      }
+    }
+    input {
+      padding-left: 0;
+      padding-right: 0;
+      width: 50%;
+      font-size: 1.25rem;
+      background-color: unset;
+    }
+  
+    .p-inputtext {
+      border-left-width: 0;
+      border-top-width: 0;
+      border-right-width: 0;
+      border-radius: 0;
+      margin-bottom: 8px;
+      &:enabled {
+        &:focus {
+          border-color: #005cbb;
+        }
+      }
+      &:hover {
+        border-color: #005cbb;
+      }
+    }
+    .p-invalid {
+      box-shadow: unset !important;
+      border-bottom-color: #b00020 !important;
+      &:enabled {
+        &:focus {
+          border-color: #b00020 !important;
+        }
+      }
+      &:hover {
+        border-color: #b00020 !important;
+      }
+    }
+    .p-error {
+      color: #b00020;
+    }
+    .p-multiselect {
+      border-left-width: 0;
+      border-top-width: 0;
+      border-right-width: 0;
+      border-radius: 0;
+      margin-bottom: 8px;
+    }
+    .p-chips{
+      width: 100%;
+      .p-chips-multiple-container{
+        width: 50%;
+      }
+    }
+    .p-calendar{
+        width: 50%;
+    }
+    .p-inputnumber {
+        width: 50%;
+      }
+    .p-dropdown {
+      border-left-width: 0;
+      border-top-width: 0;
+      border-right-width: 0;
+      border-radius: 0;
+      width: 50% !important;
+      background: unset;
+      box-shadow: unset;
+      margin-bottom: 8px;
+    }
+    .p-dropdown-label {
+      padding-left: 0;
+      padding-right: 0;
+    }
+    .p-multiselect-label {
+      padding-left: 0;
+      padding-right: 0;
+    }
+    .p-multiselect:not(.p-disabled).p-focus {
+      box-shadow: unset;
+      background: unset;
+      border-color: #005cbb;
+    }
+    .p-dropdown:not(.p-disabled).p-focus {
+      box-shadow: unset;
+      background: unset;
+      border-color: #005cbb;
+    }
+    .p-inputtext:enabled:focus {
+      box-shadow: unset;
+      background: unset;
+    }
+    .p-invalid {
+      .p-component {
+        box-shadow: unset;
+      }
+    }
+  }
+
+
+
+
+
+  .edit_budget_page{
+   .col-3{
+    width: 12%;
+   }
+   .col-9{
+    width: 88%;
+   }
+   .p-accordion-toggle-icon{
+    right: 50% !important;
+   }
+   .custom-accordion .p-accordion-tab .p-toggleable-content .p-accordion-content{
+    padding-left: 13%;
+   }
+   .custom-field {
+    input {
+      
+      width: 28%;
+     
+    }
+    .p-chips{
+      width: 100%;
+      .p-chips-multiple-container{
+        width: 28%;
+      }
+    }
+    .p-calendar{
+        width: 28%;
+    }
+    .p-inputnumber {
+        width: 28%;
+      }
+    .p-dropdown {
+      
+      width: 28% !important;
+      
+    }
+   }
+  }
+
+
+
+  

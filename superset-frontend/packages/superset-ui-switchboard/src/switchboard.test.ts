@@ -26,7 +26,6 @@ type EventHandler = (event: MessageEvent) => void;
 // jsdom doesn't supply a MessageChannel or a MessagePort,
 // so we have to build our own unless we want to unit test in-browser.
 // Might want to open a PR in jsdom: https://github.com/jsdom/jsdom/issues/2448
-
 /** Matches the MessagePort api as closely as necessary (it's a small api) */
 class FakeMessagePort {
   otherPort?: FakeMessagePort;
@@ -83,7 +82,6 @@ class FakeMessagePort {
 
   onmessageerror: ((err: any) => void) | null = null;
 }
-
 /** Matches the MessageChannel api as closely as necessary (an even smaller api than MessagePort) */
 class FakeMessageChannel {
   port1: MessagePort;

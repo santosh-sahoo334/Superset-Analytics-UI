@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +20,7 @@
 import React, { FC } from 'react';
 import { useParams } from 'react-router-dom';
 import { DashboardPage } from 'src/dashboard/containers/DashboardPage';
+import './style.scss';  
 
 const DashboardRoute: FC = () => {
   const { idOrSlug } = useParams<{ idOrSlug: string }>();

@@ -104,7 +104,6 @@ export type QueryFormExtraFilter = {
       val: string[];
     }
 );
-
 /** These properties will be appended to those pre-existing in the form data/query object */
 export type ExtraFormDataAppend = {
   adhoc_filters?: AdhocFilter[];
@@ -116,7 +115,6 @@ export type ExtraFormDataAppend = {
   /** This property can be used to pass non-standard form data between viz components */
   custom_form_data?: JsonObject;
 };
-
 /** These parameters override properties in the extras parameter in the form data/query object.
  * Not all keys of QueryObjectExtras are supported here to ensure that freeform where and having
  * filter clauses can't be overridden */
@@ -124,7 +122,6 @@ export type ExtraFormDataOverrideExtras = Pick<
   QueryObjectExtras,
   'relative_start' | 'relative_end' | 'time_grain_sqla'
 >;
-
 /** These parameters override those already present in the form data/query object */
 export type ExtraFormDataOverrideRegular = Partial<
   Pick<SqlaFormData, 'granularity_sqla'>
@@ -132,7 +129,6 @@ export type ExtraFormDataOverrideRegular = Partial<
   Partial<Pick<SqlaFormData, 'granularity'>> &
   Partial<Pick<BaseFormData, 'time_range'>> &
   Partial<Pick<QueryObject, 'time_column' | 'time_grain'>>;
-
 /** These parameters override those already present in the form data/query object */
 export type ExtraFormDataOverride = ExtraFormDataOverrideRegular &
   ExtraFormDataOverrideExtras;

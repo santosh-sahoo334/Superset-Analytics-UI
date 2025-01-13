@@ -41,7 +41,6 @@ const formData = {
   vizType: 'big_number',
   yAxisFormat: '.3s',
 };
-
 /**
  * Add null values to trendline data
  * @param data input data
