@@ -17,21 +17,20 @@
  * under the License.
  */
 const zlib = require('zlib');
-require('dotenv').config();
 
-// const yargs = require('yargs');
+const yargs = require('yargs');
 // eslint-disable-next-line import/no-extraneous-dependencies
-// const parsedArgs = yargs.argv;
+const parsedArgs = yargs.argv;
 
-// const parsedEnvArg = () => {
-//   if (parsedArgs.env) {
-//     return yargs(parsedArgs.env).argv;
-//   }
-//   return {};
-// };
+const parsedEnvArg = () => {
+  if (parsedArgs.env) {
+    return yargs(parsedArgs.env).argv;
+  }
+  return {};
+};
 
-// const { supersetPort = 8088, REACT_APP_SUPERSET_DOMAIN: supersetUrl = null } = parsedEnvArg();
-const backend = (process.env.REACT_APP_SUPERSET_DOMAIN  || `https://dworks.aws.teksecur.com`).replace(
+const { supersetPort = 8088, superset: supersetUrl = null } = parsedEnvArg();
+const backend = (supersetUrl || `http://localhost:${supersetPort}`).replace(
   '//+$/',
   '',
 ); // strip ending backslash
@@ -170,7 +169,7 @@ module.exports = newManifest => {
         response.setHeader('content-type', 'text/plain');
         response.write(`Error requesting ${request.path} from proxy:\n\n`);
         response.end(e.stack);
-        }
+      }
     },
   };
 };
