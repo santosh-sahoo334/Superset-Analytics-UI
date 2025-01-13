@@ -41,7 +41,7 @@ RUN --mount=type=bind,target=/frontend-mem-nag.sh,src=./docker/frontend-mem-nag.
 
 RUN --mount=type=bind,target=./package.json,src=./superset-frontend/package.json,rw \
     --mount=type=bind,target=./package-lock.json,src=./superset-frontend/package-lock.json,rw \
-    npm install \
+    npm install -f \
     -- verbose && \
     npm ci
 
