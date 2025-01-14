@@ -174,6 +174,12 @@ const AuthState = () => {
         Cookies.set(REFRESH_TOKEN, oidc_refresh_token);
         Cookies.remove("oidc_refresh_token", {
           path: "/",
+        });
+        Cookies.remove("oidc_access_token", {
+          path: "/",
+        });
+        Cookies.remove("oidc_refresh_token", {
+          path: "/",
           domain: ".teksecur.com",
         });
         Cookies.remove("oidc_access_token", {

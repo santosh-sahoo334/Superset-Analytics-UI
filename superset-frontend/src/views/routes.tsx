@@ -23,10 +23,11 @@ import React, { lazy } from 'react';
 import MainLayout from 'src/components/MainLayout';
 
 // not lazy loaded since this is the home page.
-import Home from 'src/pages/Home';
+// import Home from 'src/pages/Home';
 
 {/* @ts-ignore: Disable TypeScript check for ReactRouterRoute */}
 const ChartCreation = lazy(() =>import(/* webpackChunkName: "ChartCreation" */ 'src/pages/ChartCreation'));
+const Home = lazy(() =>import(/* webpackChunkName: "ChartCreation" */ 'src/pages/Home'));
 
 const AnnotationLayerList = lazy(
   () =>

@@ -133,6 +133,14 @@ type PageProps = {
   idOrSlug: string;
 };
 
+const DashboardWrapper = ({ isVisible, children,className }) => {
+  return (
+    <div style={{ display: isVisible ? 'block' : 'none' }} className={className}>
+      {children}
+    </div>
+  );
+};
+
 export const DashboardPage: FC<PageProps> = ({ idOrSlug }: PageProps) => {
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -278,19 +286,26 @@ export const DashboardPage: FC<PageProps> = ({ idOrSlug }: PageProps) => {
 
   const getActiveComponent = () => {
     const bootstrapData = getBootstrapData();
-
     const userEmail:any = bootstrapData?.user?.username || null;
-
-    const adminList =process.env.ADMIN_EMAIL || [];
-
-    if(adminList.includes(userEmail)){
-      return <DashboardBuilder />
-    }
-    const activeComponent = componentPages.find(page => page.tabName === activeNavItem)?.component;
-    if (activeComponent) return activeComponent;
+    const adminList = process.env.ADMIN_EMAIL || [];
+    const isAdmin = adminList.includes(userEmail);
     
+    const activeComponent = componentPages.find(page => page.tabName === activeNavItem)?.component;
     const isKnownTab = componentPages.some(page => page.tabName === activeNavItem);
-    return isKnownTab ? <UnderConstruction /> : <DashboardBuilder />;
+    //hideTabList
+    return (
+      <>
+        <DashboardWrapper isVisible={isAdmin}>
+          <DashboardBuilder />
+        </DashboardWrapper>
+        
+        {!isAdmin && (
+          <DashboardWrapper isVisible={true}>
+            {activeComponent || (isKnownTab ? <UnderConstruction /> : <DashboardBuilder />)}
+          </DashboardWrapper>
+        )}
+      </>
+    );
   };
 
   if (error) throw error; // caught in error boundary

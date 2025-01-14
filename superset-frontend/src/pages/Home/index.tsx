@@ -1,4 +1,5 @@
 /* eslint-disable */
+// @ts-nocheck
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -57,6 +58,11 @@ import ActivityTable from 'src/features/home/ActivityTable';
 import ChartTable from 'src/features/home/ChartTable';
 import SavedQueries from 'src/features/home/SavedQueries';
 import DashboardTable from 'src/features/home/DashboardTable';
+import Cookies from 'js-cookie';
+import {
+  deleteCookies
+} from "../../components/CsightCommon/config/http-common";
+import {  useHistory } from "react-router-dom";
 
 const extensionsRegistry = getExtensionsRegistry();
 
@@ -182,6 +188,8 @@ function Welcome({ user, addDangerToast }: WelcomeProps) {
   const collapseState = getItem(LocalStorageKeys.HomepageCollapseState, []);
   const [activeState, setActiveState] = useState<Array<string>>(collapseState);
 
+  const history = useHistory(); 
+
   const handleCollapse = (state: Array<string>) => {
     setActiveState(state);
     setItem(LocalStorageKeys.HomepageCollapseState, state);
@@ -216,6 +224,23 @@ function Welcome({ user, addDangerToast }: WelcomeProps) {
       ],
     ];
   }, []);
+
+  useEffect(()=>{
+    const userEmail:any = user?.username || null;
+    const adminList =process.env.ADMIN_EMAIL || [];
+    if(userEmail && !adminList?.includes(userEmail)){
+      const slug = Cookies.get('slug') || 'teksecur';
+      history.replace( `/superset/dashboard/${slug}`);
+      return
+    }
+    if(!userEmail){
+      deleteCookies();  
+      setTimeout(()=>{
+        history.replace('/logout');
+        window.location.reload();
+      },1000);
+    }
+  },[])
 
   useEffect(() => {
     if (!otherTabFilters) {

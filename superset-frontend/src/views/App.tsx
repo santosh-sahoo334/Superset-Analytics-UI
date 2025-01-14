@@ -92,10 +92,13 @@ const App = () => {
     <LocationPathnameLogger />
     <RootContextProviders>
       <GlobalStyles />
+      {
+      userEmail && adminList?.includes(userEmail) ?
       <Menu
         data={bootstrapData.common.menu_data}
         isFrontendRoute={isFrontendRoute}
-      />
+      /> : null
+      }
       <Switch>
         {routes.map(({ path, Component, props = {}, Fallback = Loading,layout: Layout }) => (
           <Route path={path} key={path} >
