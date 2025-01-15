@@ -3,7 +3,7 @@ import logging
 import re
 from typing import Any, List, Optional
 
-from flask import abort, current_app, flash, g, redirect, request, session, url_for
+from flask import abort, current_app, flash, g, redirect, request, session, url_for, make_response
 from flask_appbuilder._compat import as_unicode
 from flask_appbuilder.actions import action
 from flask_appbuilder.baseviews import BaseView
@@ -498,11 +498,22 @@ class AuthView(BaseView):
     @expose("/logout/")
     def logout(self):
         logout_user()
-        return redirect(
+        # TekSecur modified code begin
+        response = make_response(redirect(
             self.appbuilder.app.config.get(
                 "LOGOUT_REDIRECT_URL", self.appbuilder.get_url_for_index
             )
         )
+        )
+        response.delete_cookie('session')  # Remove the session cookie
+        
+        return response
+        # TekSecur modified code Ends
+        # return redirect(
+        #     self.appbuilder.app.config.get(
+        #         "LOGOUT_REDIRECT_URL", self.appbuilder.get_url_for_index
+        #     )
+        # )
 
 
 class AuthDBView(AuthView):
