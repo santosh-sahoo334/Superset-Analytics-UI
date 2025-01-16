@@ -134,6 +134,7 @@ const plugins = [
     'process.env.REACT_APP_CINDY_EMAIL_ID_TOKEN': JSON.stringify(process.env.REACT_APP_CINDY_EMAIL_ID_TOKEN || ''),
     'process.env.REACT_APP_CINDY_AUTH_TOKEN': JSON.stringify(process.env.REACT_APP_CINDY_AUTH_TOKEN || ''),
     'process.env.ADMIN_EMAIL': JSON.stringify(process.env.ADMIN_EMAIL) || '[]',
+    'process.env.REACT_APP_LOGO_TEXT': JSON.stringify(process.env.REACT_APP_LOGO_TEXT) || '[]',
   }),
 
   new CopyPlugin({

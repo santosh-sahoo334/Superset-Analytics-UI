@@ -45,6 +45,7 @@ import { ScrollToTop } from './ScrollToTop';
 import RootLayout from 'src/pages/rootLayout';
 import { AuthProvider } from 'src/components/CsightCommon/context/AuthContext';
 import { AIBotProvider } from 'src/components/CsightChatbot/Context';
+import ScrollButtons from 'src/components/ScrollButtons';
 
 // import Login from 'src/pages/Login';
 
@@ -88,10 +89,11 @@ const App = () => {
         
 
       <RootLayout>
-        <ScrollToTop />
+        <ScrollButtons />
     <LocationPathnameLogger />
     <RootContextProviders>
       <GlobalStyles />
+      <ScrollButtons />
       {
       userEmail && adminList?.includes(userEmail) ?
       <Menu

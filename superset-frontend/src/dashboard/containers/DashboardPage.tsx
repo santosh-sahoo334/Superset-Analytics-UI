@@ -131,6 +131,7 @@ const originalDocumentTitle = document.title;
 
 type PageProps = {
   idOrSlug: string;
+  className?: string;
 };
 
 const DashboardWrapper = ({ isVisible, children,className }) => {
@@ -141,7 +142,7 @@ const DashboardWrapper = ({ isVisible, children,className }) => {
   );
 };
 
-export const DashboardPage: FC<PageProps> = ({ idOrSlug }: PageProps) => {
+export const DashboardPage: FC<PageProps> = ({ idOrSlug,className }: PageProps) => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -312,7 +313,7 @@ export const DashboardPage: FC<PageProps> = ({ idOrSlug }: PageProps) => {
   if (!readyToRender || !hasDashboardInfoInitiated) return <Loading />;
 
   return (
-    <div className="dashboard-page">
+    <div className={`dashboard-page ${className}`}>
    
       <Global
         styles={[

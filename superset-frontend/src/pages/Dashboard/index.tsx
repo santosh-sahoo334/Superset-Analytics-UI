@@ -21,10 +21,17 @@ import React, { FC } from 'react';
 import { useParams } from 'react-router-dom';
 import { DashboardPage } from 'src/dashboard/containers/DashboardPage';
 import './style.scss';  
+import getBootstrapData from 'src/utils/getBootstrapData';
+
+const bootstrapData = getBootstrapData();
+
+const userEmail:any = bootstrapData?.user?.username || null;
+
+const adminList:any =process.env.ADMIN_EMAIL || [];
 
 const DashboardRoute: FC = () => {
   const { idOrSlug } = useParams<{ idOrSlug: string }>();
-  return <DashboardPage idOrSlug={idOrSlug} />;
+  return <DashboardPage idOrSlug={idOrSlug} className={`${userEmail && !adminList?.includes(userEmail) ? 'hideTabList' : ''}`}/>;
 };
 
 export default DashboardRoute;

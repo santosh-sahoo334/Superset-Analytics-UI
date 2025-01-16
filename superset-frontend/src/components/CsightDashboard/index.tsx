@@ -25,13 +25,13 @@ const searchIconsData = {
     icon: "/static/assets/images/layout/images/notebook.png",
     title: "Recommendation",
   },
-  anamoly: {
+  anomaly: {
     icon: "/static/assets/images/layout/images/glitch.png",
-    title: "Anamoly",
+    title: "Anomaly",
   },
   billing: {
     icon: "/static/assets/images/layout/images/bill.png",
-    title: "Anamoly",
+    title: "Billing",
   },
   governance: {
     icon: "/static/assets/images/layout/images/government.png",
@@ -194,7 +194,7 @@ const CsightDashboard = () => {
   const updateRecentSearch = async (searchKeyword: string) => {
     try {
       await HTTP.post("/search/", {
-        keyword: searchKeyword,
+        keyword: searchKeyword?.toLowerCase(),
       });
     } catch (error) {}
   };

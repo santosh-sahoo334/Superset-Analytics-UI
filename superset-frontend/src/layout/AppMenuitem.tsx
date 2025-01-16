@@ -336,7 +336,9 @@ const AppMenuitem = (props: AppMenuItemProps) => {
                   setClickedNavItem(item?.label || '');
                  }
                 }}
-                className="flex flex-col"
+                className={`flex flex-col ${
+                  item.label === clickedNavItem ? 'selected' : ''
+                }`}
               >
                 {item.image && (
                   <div className="cursor-pointer flex pl-3 pr-2 align-items-center">
@@ -348,7 +350,9 @@ const AppMenuitem = (props: AppMenuItemProps) => {
                     />
                   </div>
                 )}
-                <div className="layout-menuitem-root-text py-2 cursor-pointer flex align-items-center">
+                <div 
+                  className={`layout-menuitem-root-text py-2 cursor-pointer flex align-items-center`}
+                >
                   {item.label}
                 </div>
               </Link>
@@ -380,7 +384,7 @@ const AppMenuitem = (props: AppMenuItemProps) => {
         ) : null}
 
         { !item.items && item.visible !== false ? (
-          <div>
+          <div className={`${item.label === clickedNavItem ? 'selected' : ''}`}>
             <Link
               to={{
                 pathname: item.to,

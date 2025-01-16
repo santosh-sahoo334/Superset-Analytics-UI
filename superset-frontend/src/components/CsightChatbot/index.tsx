@@ -1,4 +1,5 @@
 /* eslint-disable */
+// @ts-nocheck
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
@@ -10,6 +11,9 @@ import FalshCard from "./Component/FlashCard";
 import QuestionContainer from "./Component/QuestionContainer";
 import { useAIBotContext } from "./Context";
 import { useToast } from "../CsightCommon/context/ToastContext";
+import { Input } from 'antd'; // Import Input from Ant Design
+const { TextArea } = Input; // Destructure TextArea from Input
+
 
 interface GRAPH_ITEMS {
   name: string;
@@ -132,6 +136,20 @@ const ChatBot = () => {
   //     }
   //     setSelectedGraph({ graph_type, isSelected: true, type })
   // }
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter') {
+      if (e.shiftKey) {
+        // Allow new line
+        // Do not prevent default to allow new line
+      } else {
+        // Submit the prompt
+        e.preventDefault(); // Prevent default to stop new line
+        onClickSend();
+      }
+    }
+  };
+
 
   return (
     <div className="relative">
@@ -280,23 +298,26 @@ const ChatBot = () => {
             </div>
           )}
           <div className="flex align-items-center w-full">
-            <InputText
-              id="questionInput"
-              value={question}
-              onChange={(e) => {
-                setQuestion(e.target.value);
-              }}
-              placeholder="How can Cindy help you today?"
-              style={{ padding: "16px 0px", fontSize: "16px" }}
-              className="w-full border-none shadow-none"
-              disabled={isLoading}
-            />
+          <TextArea
+                id="questionInput"
+                value={question}
+                onChange={(e) => {
+                  setQuestion(e.target.value);
+                }}
+                onKeyDown={handleKeyDown}
+                placeholder="How can Cindy help you today?"
+                style={{ fontSize: "16px", width: "100%", marginRight: '5px', marginTop: '5px' }}
+                minLength={1}
+                rows={1} // Set the number of visible rows
+                disabled={isLoading}
+              />
             <Button
               disabled={isLoading}
               icon="pi pi-send"
               onClick={onClickSend}
               className="border-none border-circle shadow-none text-white"
               style={{
+                marginTop: '5px',
                 background: "#18279a",
                 minWidth: "40px",
                 height: "40px",

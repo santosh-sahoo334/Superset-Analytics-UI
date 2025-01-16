@@ -100,6 +100,9 @@ const AppSidebar = (
               />
             </div>
           </Link>
+          <div className="logo-text">
+            {process.env.REACT_APP_LOGO_TEXT || "Multi-Cloud FinOps"}
+          </div>
         </div>
 
         <div className="layout-menu-container pl-2 mt-6 overflow-auto">
