@@ -201,15 +201,12 @@ const SliceHeader: FC<SliceHeaderProps> = ({
   // TekSecur Customized
   // Access the user object from the Redux store
   const user = useSelector(state => state.user);
-  console.log("User :: ", user)
 
   // TekSecur - Assuming `user` is an object representing the current user
   const isAdmin = isUserAdmin(user);
-  console.log("User isAdmin :: ", isAdmin)
 
   // Check if the dashboard is in edit mode
   const canEditTitle = isAdmin && editMode;
-  console.log("Can Edit Title :: ", canEditTitle)
 
   return (
     <ChartHeaderStyles data-test="slice-header" ref={innerRef}>
