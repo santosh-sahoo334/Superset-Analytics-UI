@@ -193,7 +193,9 @@ COPY --chown=superset:superset --chmod=755 ./docker/*.sh /app/docker/
 CMD ["/app/docker/docker-ci.sh"]
 
 # Customized Login Page
-COPY ./superset-frontend/src/assets/images/custom_login/login_oauth.html /usr/local/lib/python3.9/site-packages/flask_appbuilder/templates/appbuilder/general/security/login_oauth.html
-COPY ./superset-frontend/src/assets/images/custom_login/login_db.html /usr/local/lib/python3.9/site-packages/flask_appbuilder/templates/appbuilder/general/security/login_db.html
+COPY ./superset/custom_login/login_oauth.html /usr/local/lib/python3.9/site-packages/flask_appbuilder/templates/appbuilder/general/security/login_oauth.html
+COPY ./superset/custom_login/login_db.html /usr/local/lib/python3.9/site-packages/flask_appbuilder/templates/appbuilder/general/security/login_db.html
 # Session Clear
-COPY ./superset-frontend/src/assets/images/custom_login/session_clear.py /usr/local/lib/python3.9/site-packages/flask_login/utils.py
+COPY ./superset/custom_login/session_clear.py /usr/local/lib/python3.9/site-packages/flask_login/utils.py
+# CSight Auth
+COPY ./superset/custom_login/views.py /usr/local/lib/python3.9/site-packages/flask_appbuilder/security/views.py
