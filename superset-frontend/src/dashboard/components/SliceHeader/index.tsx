@@ -208,10 +208,10 @@ const SliceHeader: FC<SliceHeaderProps> = ({
                 ? '---' // this makes an empty title clickable
                 : '')
             }
-            canEdit={editMode}
+            canEdit={false}
             onSaveTitle={updateSliceName}
             showTooltip={false}
-            url={canExplore ? exploreUrl : undefined}
+            url={undefined}
           />
         </Tooltip>
         {!!Object.values(annotationQuery).length && (
