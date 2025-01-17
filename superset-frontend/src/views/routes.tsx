@@ -20,7 +20,8 @@
  */
 import { FeatureFlag, isFeatureEnabled } from '@superset-ui/core';
 import React, { lazy } from 'react';
-import MainLayout from 'src/components/MainLayout';
+import MainLayoutCsight from './layout/MainLayout';
+
 
 // not lazy loaded since this is the home page.
 // import Home from 'src/pages/Home';
@@ -145,7 +146,7 @@ export const routes: Routes = [
     {
     path: '/superset/dashboard/:idOrSlug/',
     Component: Dashboard,
-    layout: MainLayout
+    layout: MainLayoutCsight
   },
   {
     path: '/chart/add',

@@ -1,4 +1,5 @@
 /* eslint-disable */
+// @ts-nocheck
 import React from 'react'
 import { v4 as uuidv4 } from "uuid"
 import { GraphData, useAIBotContext } from '../../Context'
@@ -47,13 +48,13 @@ const AnswerContainer: React.FC<AnswerContainerProps> = ({ answer, isLoading, su
 
             {!isLoading && <div className='flex align-items-start gap-3 w-full'>
                 <img src="/static/assets/images/layout/images/ai-icon.svg" alt='Ai Icon' height={34} width={34} />
-                <div className={`answer_container flex flex-column`} >
+                <div className={`answer_container flex flex-column w-full`}>
                     <div style={{ width: isResize ? "70%" : "100%", whiteSpace: "pre-line" }}
                         dangerouslySetInnerHTML={{
                             __html: (answer).replaceAll(/\*\*(.*?)\*\*/g, '<b>$1</b>')
                         }}
                     />
-                    {isGraphType && graphData?.labels && graphData?.labels?.length > 0 && <div className="graph_container mt-2">
+                    {isGraphType && graphData?.labels && graphData?.labels?.length > 0 && <div className="graph_container mt-2 w-full" style={{ minWidth: '300px', margin: '0 auto' }}>
                         {graphType === "bar" && <BarEchart data={graphData?.values} labels={graphData?.labels} title={graphData?.title} />}
                         {graphType === "line" && <LineEchart data={graphData?.values} labels={graphData?.labels} title={graphData?.title} />}
                         {graphType === "pie" && <PieEchart data={graphData?.values} labels={graphData?.labels} title={graphData?.title} />}

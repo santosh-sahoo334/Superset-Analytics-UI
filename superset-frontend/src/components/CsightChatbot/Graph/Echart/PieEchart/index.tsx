@@ -1,4 +1,5 @@
 /* eslint-disable */
+// @ts-nocheck
 import ReactECharts, { EChartsOption } from "echarts-for-react";
 import React, { useEffect, useState } from 'react';
 import { GRAPH_COLORS, useAIBotContext } from '../../../Context';

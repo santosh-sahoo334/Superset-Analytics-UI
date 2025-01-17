@@ -1,4 +1,5 @@
 /* eslint-disable */
+// @ts-nocheck
 import axiosInstance from "../../CsightCommon/config/axiosInstance";
 import { useToast } from "../../CsightCommon/context/ToastContext";
 import React, {
@@ -188,8 +189,10 @@ const AIbotState = () => {
       // If a match is found, return the clean JSON content
       if (match && match[1]) {
         const cleanedString = match[1].trim();
-        const removeCommentFromCleanedJson =
-          removeCommentsFromJSON(cleanedString);
+        // Remove trailing commas before JSON parsing
+        const removeTrailingCommas = cleanedString.replace(/,(\s*[}\]])/g, '$1');
+        const removeCommentFromCleanedJson = 
+          removeCommentsFromJSON(removeTrailingCommas);
         const parsedString = JSON.parse(removeCommentFromCleanedJson);
 
         return {
@@ -239,8 +242,8 @@ const AIbotState = () => {
       }
 
       if (data && data?.result?.answer) {
-        setPrompts((prompts) =>
-          prompts?.map((p) => {
+        setPrompts((prompts:any) =>
+          prompts?.map((p:any) => {
             if (p.task_id === task_id) {
               const graphData = isGraphType
                 ? parseGraphData(data?.result?.answer)

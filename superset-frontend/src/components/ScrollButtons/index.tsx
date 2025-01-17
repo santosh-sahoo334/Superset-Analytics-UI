@@ -1,13 +1,17 @@
+/* eslint-disable */
+// @ts-nocheck
 import React from 'react';
 import { UpOutlined, DownOutlined } from '@ant-design/icons';
 import styled from '@emotion/styled';
 
 const ButtonContainer = styled.div`
   position: fixed;
-  right: 5px;
+  right: 2px;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 1000;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
 `;
 
 const ScrollBox = styled.div`
@@ -29,8 +33,9 @@ const ScrollButton = styled.button`
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  font-size: 16px;
+  font-size: 10px;
   padding: 0;
+  outline: none;
 
   &:first-of-type {
     border-bottom: 1px solid #ddd;
@@ -40,24 +45,35 @@ const ScrollButton = styled.button`
     background-color: #f0f0f0;
   }
 
+  &:active {
+    background-color: #e8e8e8;
+  }
+
   .anticon {
     color: #666;
+    font-size: 10px;
   }
 `;
 
 const ScrollButtons = () => {
   const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
+    const scrollableElement = document.querySelector('.ant-layout-content');
+    if (scrollableElement) {
+      scrollableElement.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
   };
 
   const scrollToBottom = () => {
-    window.scrollTo({
-      top: document.documentElement.scrollHeight,
-      behavior: 'smooth'
-    });
+    const scrollableElement = document.querySelector('.ant-layout-content');
+    if (scrollableElement) {
+      scrollableElement.scrollTo({
+        top: scrollableElement.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
   };
 
   return (

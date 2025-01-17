@@ -1,30 +1,29 @@
 /* eslint-disable */
+// @ts-nocheck
 import React, { useEffect, useState } from 'react';
-import { Cell, LabelList, Legend, Pie, PieChart, Tooltip } from 'recharts';
+import {  Legend, Pie, PieChart, Tooltip } from 'recharts';
 import { GRAPH_COLORS, useAIBotContext } from '../../Context';
 
-interface BarChartProps {
+interface DonutChartProps {
     title: string
     labels: string[]
-    data: string[]
+    data: number[] // Changed from string[] to number[]
 }
-const DonutGraph: React.FunctionComponent<BarChartProps> = ({ data, labels, title }) => {
+const DonutGraph: React.FunctionComponent<DonutChartProps> = ({ data, labels, title }) => {
     const [dataSet, setDataSet] = useState<any[]>([])
 
     const { isResize } = useAIBotContext()
 
     useEffect(() => {
         if (labels && labels?.length > 0) {
-            const graphData = labels?.map(((label, index) => {
-                return {
-                    name: label,
-                    value: data?.[index] || 0,
-                    fill: GRAPH_COLORS[index % GRAPH_COLORS.length]
-                }
-            }))
-            setDataSet(graphData)
+            const graphData = labels?.map((label, index) => ({
+                name: label,
+                value: Number(data?.[index]) || 0, // Ensure number conversion
+                fill: GRAPH_COLORS[index % GRAPH_COLORS.length]
+            }));
+            setDataSet(graphData);
         }
-    }, [JSON.stringify(labels)])
+    }, [JSON.stringify(labels), JSON.stringify(data)]); 
 
     if (dataSet?.length === 0) return <></>
 

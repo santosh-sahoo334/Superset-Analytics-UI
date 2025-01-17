@@ -1,0 +1,541 @@
+.stable-menu {
+  width: 100%;
+}
+
+/* Menu Group Title Styles */
+.stable-menu .ant-menu-item-group-title {
+  color: #000000 !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  padding: 8px 16px !important;
+  height: 32px !important;
+  line-height: 16px !important;
+  margin-top: 8px !important;
+}
+
+/* Common menu item styles */
+.stable-menu .ant-menu-item {
+  display: flex !important;
+  align-items: center !important;
+  margin: 0 !important;
+  padding: 0 16px !important;
+  height: 40px !important;
+  line-height: 40px !important;
+  border-radius: 0 !important;
+}
+
+/* Selected menu item styles - applies to all menu items including submenu items */
+.stable-menu .ant-menu-item.ant-menu-item-selected,
+.stable-menu .ant-menu-submenu .ant-menu-item.ant-menu-item-selected,
+.ant-menu-submenu-popup .ant-menu-item.ant-menu-item-selected {
+  background: #7B8CDB !important;
+  border-radius: 6px !important;
+  margin: 4px 8px !important;
+  padding: 0 16px !important;
+  width: calc(100% - 16px) !important;
+  color: #000000 !important;
+}
+
+.stable-menu .ant-menu-item.ant-menu-item-selected:hover,
+.stable-menu .ant-menu-submenu .ant-menu-item.ant-menu-item-selected:hover,
+.ant-menu-submenu-popup .ant-menu-item.ant-menu-item-selected:hover {
+  background: #7B8CDB !important;
+}
+
+/* Selected submenu parent styles when child is selected - only in expanded mode */
+.stable-menu:not(.ant-menu-inline-collapsed) .ant-menu-submenu-selected > .ant-menu-submenu-title {
+  background: transparent !important;
+}
+
+/* Selected submenu parent styles when child is selected - only in collapsed mode */
+.ant-menu-inline-collapsed .ant-menu-submenu-selected > .ant-menu-submenu-title {
+  background: #7B8CDB !important;
+  border-radius: 6px !important;
+  margin: 4px 8px !important;
+  padding: 0 !important;
+  width: calc(100% - 16px) !important;
+  color: #000000 !important;
+}
+
+/* Menu Item Group Content Padding */
+.stable-menu .ant-menu-item-group-list {
+  padding-left: 0 !important;
+}
+
+/* Ensure consistent icon positioning */
+.stable-menu .ant-menu-item .anticon,
+.stable-menu .ant-menu-item.ant-menu-item-selected .anticon {
+  font-size: 16px !important;
+  min-width: 14px !important;
+  margin: 0 8px !important;
+  transition: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Collapsed menu icon styles */
+.ant-menu-inline-collapsed .ant-menu-item .anticon,
+.ant-menu-inline-collapsed .ant-menu-item.ant-menu-item-selected .anticon,
+.ant-menu-inline-collapsed .ant-menu-submenu-title .anticon {
+  margin: 0 auto !important;
+  padding: 0 !important;
+  min-width: 24px !important;
+  line-height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Remove hover transform */
+.stable-menu .ant-menu-item:hover .anticon,
+.stable-menu .ant-menu-item.ant-menu-item-selected .anticon {
+  transform: none !important;
+}
+
+/* Submenu styles */
+.stable-menu .ant-menu-submenu {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.stable-menu .ant-menu-submenu-title {
+  display: flex !important;
+  align-items: center !important;
+  margin: 0 !important;
+  padding: 0 16px !important;
+  height: 40px !important;
+  line-height: 40px !important;
+}
+
+.stable-menu .ant-menu-submenu-title .anticon {
+  font-size: 16px !important;
+  min-width: 14px !important;
+  margin: 0 8px !important;
+  transition: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Collapsed submenu specific styles */
+.ant-menu-inline-collapsed .ant-menu-submenu-title {
+  padding: 0 !important;
+  display: flex !important;
+  justify-content: center !important;
+}
+
+.ant-menu-inline-collapsed .ant-menu-submenu-arrow {
+  display: none !important;
+}
+
+.ant-menu-inline-collapsed .ant-menu-submenu-title > span:last-child {
+  display: none !important;
+}
+
+/* Hide text in collapsed mode for budget submenu */
+.ant-menu-inline-collapsed .ant-menu-submenu-title .menu-icon {
+  margin: 0 auto !important;
+}
+
+.ant-menu-inline-collapsed .ant-menu-submenu-title span.ant-menu-title-content {
+  display: none !important;
+}
+
+.stable-menu .ant-menu-submenu-title:hover .anticon {
+  transform: none !important;
+}
+
+/* Fix for icon alignment */
+.stable-menu .ant-menu-item .anticon,
+.stable-menu .ant-menu-submenu-title .anticon {
+  position: relative !important;
+  top: 0 !important;
+  margin-top: 0 !important;
+}
+
+/* Submenu item styles */
+.stable-menu .ant-menu-sub {
+  background: transparent !important;
+}
+
+.stable-menu .ant-menu-sub .ant-menu-item {
+  padding-left: 40px !important;
+  height: 40px !important;
+  line-height: 40px !important;
+  margin: 0 !important;
+}
+
+/* Submenu selected item styles */
+.stable-menu .ant-menu-sub .ant-menu-item.ant-menu-item-selected {
+  margin: 4px 8px !important;
+  padding-left: 32px !important;
+}
+
+/* Popup submenu styles (for collapsed mode) */
+.ant-menu-submenu-popup > .ant-menu {
+  background: #FFFFFF !important;
+}
+
+.ant-menu-submenu-popup .ant-menu-item {
+  padding: 0 16px !important;
+  margin: 0 !important;
+  height: 40px !important;
+  line-height: 40px !important;
+}
+
+.ant-menu-submenu-popup .ant-menu-item.ant-menu-item-selected {
+  margin: 4px 8px !important;
+  padding: 0 16px !important;
+}
+
+/* Fix submenu arrow position */
+.stable-menu .ant-menu-submenu-arrow {
+  right: 16px !important;
+}
+
+/* Fix submenu title text alignment */
+.stable-menu .ant-menu-submenu-title > span:last-child {
+  margin-left: 8px !important;
+  flex: 1 !important;
+}
+
+/* Collapsed mode group title */
+.ant-menu-inline-collapsed .ant-menu-item-group-title {
+  display: none !important;
+}
+
+/* Logo container styles */
+.logo-container {
+  padding: 16px;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+  background: #FFFFFF !important;
+}
+
+.logo-title {
+  color: #000000;
+  font-size: 16px;
+  font-weight: 700;
+  opacity: 1;
+  transition: opacity 0.2s;
+  text-align: center;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Mobile drawer styles */
+.mobile-drawer .ant-drawer-header {
+  padding: 12px !important;
+  background: #FFFFFF !important;
+}
+
+.mobile-drawer .ant-drawer-close {
+  position: absolute !important;
+  right: 0 !important;
+  top: 0 !important;
+  padding: 12px !important;
+  z-index: 1 !important;
+}
+
+.mobile-drawer .ant-drawer-title {
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+.mobile-drawer .ant-menu-dark {
+  background: #FFFFFF !important;
+}
+
+.mobile-drawer .ant-menu-dark .ant-menu-item-selected {
+  background-color: #7B8CDB !important;
+  color: #FFFFFF !important;
+}
+
+.ant-layout-sider,
+.mobile-drawer .ant-drawer-body {
+  background: #FFFFFF !important;
+}
+
+.ant-menu.ant-menu-dark,
+.ant-menu-dark .ant-menu-sub,
+.ant-menu-submenu-popup > .ant-menu {
+  background: #FFFFFF !important;
+  color: #000000 !important;
+}
+
+.ant-menu-dark .ant-menu-item,
+.ant-menu-dark .ant-menu-item-group-title,
+.ant-menu-dark .ant-menu-item > a,
+.ant-menu-dark .ant-menu-item > span,
+.ant-menu-dark .ant-menu-submenu-title {
+  color: #000000 !important;
+}
+
+.ant-menu-dark .ant-menu-item .anticon,
+.ant-menu-dark .ant-menu-submenu-title .anticon {
+  color: #000000 !important;
+}
+
+.ant-menu-dark .ant-menu-item-selected {
+  background-color: #7B8CDB !important;
+  color: #FFFFFF !important;
+}
+
+.ant-menu-dark .ant-menu-item-selected .anticon,
+.ant-menu-dark .ant-menu-item-selected > a,
+.ant-menu-dark .ant-menu-item-selected > span {
+  color: #FFFFFF !important;
+}
+
+.ant-menu-dark .ant-menu-item:hover,
+.ant-menu-dark .ant-menu-submenu-title:hover {
+  background-color: rgba(123, 140, 219, 0.1) !important;
+  color: #000000 !important;
+}
+
+/* Menu items hover state */
+.ant-menu-dark .ant-menu-item:hover:not(.ant-menu-item-selected),
+.ant-menu-dark .ant-menu-submenu-title:hover:not(.ant-menu-submenu-selected) {
+  background-color: rgba(123, 140, 219, 0.1) !important;
+  color: #000000 !important;
+}
+
+.ant-menu-dark .ant-menu-item:hover:not(.ant-menu-item-selected) .anticon,
+.ant-menu-dark .ant-menu-submenu-title:hover:not(.ant-menu-submenu-selected) .anticon {
+  color: #000000 !important;
+}
+
+/* Selected state colors */
+.ant-menu-dark .ant-menu-item-selected,
+.ant-menu-dark .ant-menu-item-selected > a,
+.ant-menu-dark .ant-menu-item-selected > span,
+.ant-menu-dark .ant-menu-item-selected .anticon {
+  color: #000000 !important;
+}
+
+/* Budget dropdown and other submenu icons */
+.ant-menu-dark .ant-menu-submenu-title .anticon,
+.ant-menu-dark .ant-menu-submenu-arrow {
+  color: #000000 !important;
+}
+
+/* Ensure submenu arrow stays black on hover */
+.ant-menu-dark .ant-menu-submenu-title:hover .ant-menu-submenu-arrow {
+  color: #000000 !important;
+}
+
+/* Override any default ant-design hover styles */
+.ant-menu-item:hover,
+.ant-menu-item-active,
+.ant-menu:not(.ant-menu-inline) .ant-menu-submenu-open,
+.ant-menu-submenu-active,
+.ant-menu-submenu-title:hover {
+  color: #000000 !important;
+}
+
+/* Ensure submenu items follow the same rules */
+.ant-menu-dark .ant-menu-sub .ant-menu-item:hover:not(.ant-menu-item-selected) {
+  background-color: rgba(123, 140, 219, 0.1) !important;
+  color: #000000 !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-arrow::before,
+.ant-menu-dark .ant-menu-submenu-arrow::after {
+  background-color: #000000 !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-title:hover .ant-menu-submenu-arrow::before,
+.ant-menu-dark .ant-menu-submenu-title:hover .ant-menu-submenu-arrow::after {
+  background-color: #000000 !important;
+}
+
+/* Keep arrow white when submenu is selected */
+.ant-menu-dark .ant-menu-submenu-selected > .ant-menu-submenu-title .ant-menu-submenu-arrow::before,
+.ant-menu-dark .ant-menu-submenu-selected > .ant-menu-submenu-title .ant-menu-submenu-arrow::after {
+  background-color: #FFFFFF !important;
+}
+
+.menu-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  margin-right: 8px;
+}
+
+.ant-menu-inline-collapsed .menu-icon {
+  margin-right: 0;
+}
+
+/* Ensure icon container has consistent size */
+.stable-menu .ant-menu-item .ant-menu-item-icon,
+.stable-menu .ant-menu-submenu-title .ant-menu-item-icon {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 16px !important;
+  min-height: 16px !important;
+}
+
+/* Collapsed menu styles */
+.ant-menu-inline-collapsed {
+  width: 80px !important;
+}
+
+.ant-menu-inline-collapsed .ant-menu-item,
+.ant-menu-inline-collapsed .ant-menu-submenu-title {
+  padding: 0 !important;
+  text-align: center !important;
+}
+
+/* Hide all text in collapsed mode */
+.ant-menu-inline-collapsed .ant-menu-item .ant-menu-title-content,
+.ant-menu-inline-collapsed .ant-menu-submenu .ant-menu-submenu-title .ant-menu-title-content {
+  display: none !important;
+  opacity: 0 !important;
+}
+
+/* Center icons in collapsed mode */
+.ant-menu-inline-collapsed .menu-icon {
+  margin: 0 auto !important;
+}
+
+.ant-menu-inline-collapsed .ant-menu-submenu-title {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+/* Ensure selected menu items maintain black color */
+.ant-menu-dark .ant-menu-item-selected:hover,
+.ant-menu-dark .ant-menu-item-selected:active,
+.ant-menu-dark .ant-menu-item-selected:focus {
+  color: #000000 !important;
+}
+
+.ant-menu-dark .ant-menu-item-selected:hover .anticon,
+.ant-menu-dark .ant-menu-item-selected:active .anticon,
+.ant-menu-dark .ant-menu-item-selected:focus .anticon {
+  color: #000000 !important;
+}
+
+/* Selected submenu items should also be black */
+.ant-menu-dark .ant-menu-submenu-selected > .ant-menu-submenu-title,
+.ant-menu-dark .ant-menu-submenu-selected > .ant-menu-submenu-title .anticon {
+  color: #000000 !important;
+}
+
+/* Keep arrow black when submenu is selected */
+.ant-menu-dark .ant-menu-submenu-selected > .ant-menu-submenu-title .ant-menu-submenu-arrow::before,
+.ant-menu-dark .ant-menu-submenu-selected > .ant-menu-submenu-title .ant-menu-submenu-arrow::after {
+  background-color: #000000 !important;
+}
+
+.custom-sidebar.ant-menu-dark,
+.custom-sidebar .ant-menu-dark,
+.custom-sidebar .ant-menu-dark .ant-menu-sub {
+  background: #FFFFFF !important;
+  color: #000000 !important;
+}
+
+.custom-sidebar .ant-menu-item,
+.custom-sidebar .ant-menu-item-group-title,
+.custom-sidebar .ant-menu-item > a,
+.custom-sidebar .ant-menu-item > span,
+.custom-sidebar .ant-menu-submenu-title {
+  color: #000000 !important;
+}
+
+.custom-sidebar .ant-menu-item-selected {
+  background-color: #7B8CDB !important;
+  color: #000000 !important;
+}
+
+.custom-sidebar .ant-menu-item-selected .anticon,
+.custom-sidebar .ant-menu-item-selected > a,
+.custom-sidebar .ant-menu-item-selected > span {
+  color: #000000 !important;
+}
+
+.custom-sidebar .ant-menu-item:hover,
+.custom-sidebar .ant-menu-submenu-title:hover {
+  background-color: rgba(123, 140, 219, 0.1) !important;
+  color: #000000 !important;
+}
+
+.custom-sidebar .ant-menu-submenu-arrow::before,
+.custom-sidebar .ant-menu-submenu-arrow::after {
+  background-color: #000000 !important;
+}
+
+.custom-sidebar.ant-menu-inline-collapsed {
+  width: 80px !important;
+}
+
+.custom-sidebar.ant-menu-inline-collapsed .ant-menu-item,
+.custom-sidebar.ant-menu-inline-collapsed .ant-menu-submenu-title {
+  padding: 0 !important;
+  text-align: center !important;
+}
+
+.custom-sidebar.ant-menu-inline-collapsed .menu-icon {
+  margin: 0 auto !important;
+}
+
+.custom-sidebar .ant-menu-submenu-title {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.custom-sidebar.ant-menu-inline-collapsed .ant-menu-submenu-title {
+  justify-content: center !important;
+}
+
+.custom-sidebar .ant-menu-item-group-title {
+  color: #000000 !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+}
+
+.custom-sidebar .ant-menu-submenu-selected > .ant-menu-submenu-title {
+  color: #000000 !important;
+}
+
+.custom-sidebar .menu-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  margin-right: 8px;
+}
+
+.custom-sidebar.ant-menu-inline-collapsed .ant-menu-item .ant-menu-title-content,
+.custom-sidebar.ant-menu-inline-collapsed .ant-menu-submenu-title .ant-menu-title-content {
+  display: none !important;
+  opacity: 0 !important;
+}
+
+/* Mobile drawer specific styles */
+.mobile-drawer .custom-sidebar {
+  background: #FFFFFF !important;
+}
+
+.mobile-drawer .custom-sidebar .ant-menu-item-selected {
+  background-color: #7B8CDB !important;
+  color: #000000 !important;
+}
+
+/* Submenu popup styles */
+.ant-menu-submenu-popup .custom-sidebar {
+  background: #FFFFFF !important;
+}
+
+.ant-menu-submenu-popup .custom-sidebar .ant-menu-item-selected {
+  background-color: #7B8CDB !important;
+  color: #000000 !important;
+} 

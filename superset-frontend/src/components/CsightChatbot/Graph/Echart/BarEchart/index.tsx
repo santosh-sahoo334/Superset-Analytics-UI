@@ -1,4 +1,5 @@
 /* eslint-disable */
+// @ts-nocheck
 import ReactECharts, { EChartsOption } from "echarts-for-react";
 import React, { useEffect, useState } from 'react';
 import { GRAPH_COLORS, useAIBotContext } from '../../../Context';
@@ -10,7 +11,7 @@ interface BarEchartProps {
 const BarEchart: React.FunctionComponent<BarEchartProps> = ({ data, labels, title }) => {
     const [dataSet, setDataSet] = useState<any[]>([])
     const [option, setOptions] = useState<null | EChartsOption>(null)
-    const { isResize } = useAIBotContext()
+    const { isResize } = useAIBotContext();
 
     useEffect(() => {
         if (labels && labels?.length > 0) {
@@ -66,7 +67,7 @@ const BarEchart: React.FunctionComponent<BarEchartProps> = ({ data, labels, titl
     if (dataSet?.length === 0) return <></>
 
     return (
-        <div className='chart-container' style={{ width: isResize ? "60%" : 400, height: 400 }}>
+        <div className='chart-container' style={{ width: isResize ? "60%" : 460, height: 400 }}>
             <ReactECharts option={option} className="h-full w-full" />
         </div>
     );

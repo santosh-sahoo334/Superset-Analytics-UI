@@ -27,7 +27,7 @@ const AppBreadcrumb = () => {
     {from: 'Operate', labels: 'Governance'},
     {from: 'Operate', labels: 'Bud vs Act', replaceName: 'Budget vs Actuals'},
     {from: 'Operate', labels: 'Budget Unit'},
-    {from: 'Operate', labels: 'Green Ops'},
+    {from: 'Operate', labels: 'GreenOps', replaceName: 'Green Ops'},
 
     {from: null, labels: 'OnPrem'},
   ];
@@ -65,7 +65,7 @@ const AppBreadcrumb = () => {
   }
 
   return (
-    <nav className="layout-breadcrumb">
+    <nav className="layout-breadcrumb" style={{display: 'flex', marginLeft: '10px'}}>
       <ol>
         {breadcrumbs.map((item) => {
           if (item.labels === clickedNavItem) {
