@@ -36,7 +36,7 @@ const AddNewBudgetUnitForm: React.FunctionComponent<AddNewBudgetUnitProps> = ({
   const types = watch("type", []);
 
   return (
-    <div>
+    <div style={{ backgroundColor: "white" }}>
       <form
         className="flex gap-1 flex-column w-full"
         onSubmit={handleSubmit(addBudgetUnit)}
@@ -95,14 +95,14 @@ const AddNewBudgetUnitForm: React.FunctionComponent<AddNewBudgetUnitProps> = ({
           </div>
         </FieldWrapper>
 
-        <div className="text-right relative">
+        <div className="text-right relative bg-white h-full w-full \">
           <Button
             type="submit"
             label="Create Budget Unit"
             className="custom-bg-blue"
             severity="success"
             icon="pi pi-plus"
-            style={{ position: "absolute", right: "calc(30% - 80px)" }}
+            style={{ marginBottom: "20px" }}
           />
         </div>
       </form>

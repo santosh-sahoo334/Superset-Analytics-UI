@@ -1,9 +1,10 @@
 /* eslint-disable */
+// @ts-nocheck
 import { useEffect,  useState } from "react";
 import { Button } from "primereact/button";
 import { useHistory } from "react-router-dom";
 import { HTTP } from "../../../../CsightCommon/config/http-common";
-import { useAuth } from "../../../../CsightCommon/context/AuthContext";
+import { useAuth, useAuthContext } from "../../../../CsightCommon/context/AuthContext";
 import { useToast } from "../../../../CsightCommon/context/ToastContext";
 import AddNewBudgetForm from "../../../Components/AddNewBudgetForm";
 import { AddBudgetFormModel } from "../../../Components/intreface";
@@ -17,6 +18,13 @@ const CreateViewBudgetPage = () => {
   const [isSaveClickedCount, setIsSaveClickedCount] = useState(0);
   const [loading, setLoading] = useState<boolean>(false);
   const { accessToken } = useAuth();
+
+
+  const { 
+    budgetUnitData, setCreateNewBudget
+  } = useAuthContext();
+
+
   useEffect(() => {
     const getBudgetUnitsData = async () => {
       const params = {
@@ -80,7 +88,8 @@ const CreateViewBudgetPage = () => {
       // if (response?.status === 201) {
 
       // }
-      router.goBack();
+      // router.goBack();
+      setCreateNewBudget(false)
     } catch (error) {
       console.log("Response from budget list post from backend error:", error);
       showToast(
@@ -125,7 +134,9 @@ const CreateViewBudgetPage = () => {
             severity="warning"
             icon="pi pi-arrow-left"
             className="p-button-sm mr-2"
-            onClick={() => router.goBack()}
+            onClick={() => {
+              setCreateNewBudget(false)
+            }}
           />
           {expandAll ? (
             <Button

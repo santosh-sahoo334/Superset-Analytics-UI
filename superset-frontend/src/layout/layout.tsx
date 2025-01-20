@@ -11,6 +11,8 @@ import {
 } from "primereact/hooks";
 import AppTopbar from "./AppTopbar";
 import "../styles/UI/page.scss";
+import "../styles/UI/field.scss";
+import "../styles/UI/table.scss";
 // import AppFooter from './AppFooter';
 // import { useRouter } from "next/router";
 import AppConfig from "./AppConfig";

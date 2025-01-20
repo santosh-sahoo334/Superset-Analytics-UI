@@ -7,6 +7,7 @@ import { InputText } from "primereact/inputtext";
 import React, { useEffect, useMemo, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
+import { useAuthContext } from "../../CsightCommon/context/AuthContext";
 
 // import { AddBudgetFormModel } from "./intreface";
 import * as yup from "yup";
@@ -143,7 +144,15 @@ const AddNewBudgetForm: React.FunctionComponent<AddNewBudgetFormProps> = ({
   const budgetunit = watch("budgetunit");
   const period = watch("period");
   const amount = watch("amount");
-  const { budgetid } = useParams();
+
+
+  const { 
+    budgetUnitData, setCreateNewBudget
+  } = useAuthContext();
+
+  const budgetid  = budgetUnitData?.id;
+
+
   useEffect(() => {
     if (isSaveClickedCount !== 0) {
       handleBudgetSave();

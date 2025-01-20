@@ -11,7 +11,7 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { useHistory } from "react-router-dom";
 import { Dialog } from "primereact/dialog";
 import { Paginator, PaginatorPageChangeEvent } from "primereact/paginator";
-import { useAuth } from "../../CsightCommon/context/AuthContext";
+import { useAuth,useAuthContext } from "../../CsightCommon/context/AuthContext";
 import { useToast } from "../../CsightCommon/context/ToastContext";
 
 const BudgetUnitPage: React.FunctionComponent = ({}) => {
@@ -32,9 +32,12 @@ const BudgetUnitPage: React.FunctionComponent = ({}) => {
     name: "Name",
     orgname: "Organization",
     created_at: "Created At",
-    updated_at: "updated At",
+    updated_at: "Updated At",
   };
   const { accessToken } = useAuth();
+
+  const { budgetUnitSteps, setBudgetUnitSteps, budgetUnitCreate, setBudgetUnitCreate, editBudgetUnit, setEditBudgetUnit,setBudgetUnitData:setBudgetUnitDataContext,setBudgetUnitView:setBudgetUnitViewContext } = useAuthContext();
+
   const getTableData = async () => {
     try {
       const params = {
@@ -120,7 +123,11 @@ const BudgetUnitPage: React.FunctionComponent = ({}) => {
           icon="pi pi-pencil"
           className="custom-bg-blue-action"
           rounded
-          onClick={() => router.push(`/budget-unit/edit-unit/${data.id}`)}
+          onClick={() => {
+            setEditBudgetUnit(true)
+            setBudgetUnitDataContext(data)
+            // router.push(`/budget-unit/edit-unit/${data.id}`)
+          }}
         />
         <Button
           tooltip="View Budget List"
@@ -129,7 +136,12 @@ const BudgetUnitPage: React.FunctionComponent = ({}) => {
           icon="pi pi-eye"
           className="custom-bg-blue-action"
           rounded
-          onClick={() => router.push(`/budget-unit/view/${data.id}`)}
+          onClick={() => {
+            setBudgetUnitViewContext(true)
+            setBudgetUnitDataContext(data)
+            // router.push(`/budget-unit/view/${data.id}`)
+          }
+          }
         />
         <Button
           type="button"

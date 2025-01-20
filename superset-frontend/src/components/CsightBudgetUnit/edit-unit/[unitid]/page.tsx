@@ -13,7 +13,7 @@ import { HTTP } from "../../../CsightCommon/config/http-common";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { AddBudgetUnitFormModel } from "../../Components/intreface";
 import { Toast } from "primereact/toast";
-import { useAuth } from "../../../CsightCommon/context/AuthContext";
+import { useAuth,useAuthContext } from "../../../CsightCommon/context/AuthContext";
 
 const schema: yup.ObjectSchema<AddBudgetUnitFormModel> = yup
   .object()
@@ -34,9 +34,9 @@ const EditBudgetUnitFormPage = () => {
   const [budgetListData, setBudgetListData] = useState<any>({});
   const [loading, setLoading] = useState<Boolean>(true);
   const router = useHistory();
-  const { unitid } = useParams();
 
-  console.log("unitid", unitid);
+  const { budgetUnitSteps, setBudgetUnitSteps, budgetUnitCreate, setBudgetUnitCreate, editBudgetUnit, setEditBudgetUnit,budgetUnitData: budgetUnitDataContext,setBudgetUnitData:setBudgetUnitDataContext } = useAuthContext();
+
 
   const {
     register,
@@ -68,7 +68,7 @@ const EditBudgetUnitFormPage = () => {
 
   const fetchBudgetUnitData = async () => {
     try {
-      const budgetUnitsResponse = await HTTP.get(`budgetunit/${unitid}`, {
+      const budgetUnitsResponse = await HTTP.get(`budgetunit/${budgetUnitDataContext?.id}`, {
         headers: { Authorization: accessToken },
       });
       if (budgetUnitsResponse.status === 200) {
@@ -119,7 +119,7 @@ const EditBudgetUnitFormPage = () => {
   const updateBudgetUnit = async (values) => {
     try {
       const resp = await HTTP.put(
-        `budgetunit/${unitid}`,
+        `budgetunit/${budgetUnitDataContext?.id}`,
         {
           name: values?.name,
           orgname: values?.orgname,
@@ -135,7 +135,7 @@ const EditBudgetUnitFormPage = () => {
       }
 
       const filterBudgeListdata = budgetListData?.filter(
-        (item) => item.budgetunit == unitid
+        (item) => item.budgetunit == budgetUnitDataContext?.id
       );
 
       const updatedBudgetunitInfo = filterBudgeListdata?.map((budget) => {
@@ -185,7 +185,9 @@ const EditBudgetUnitFormPage = () => {
           )
         );
       }
-      router.push("/budget-unit");
+      // router.push("/budget-unit");
+      setEditBudgetUnit(false)
+      setBudgetUnitDataContext(null)
     } catch (error) {
       console.log("error while updating budget unit", error);
       showToast(
@@ -231,7 +233,10 @@ const EditBudgetUnitFormPage = () => {
                 severity="warning"
                 icon="pi pi-arrow-left"
                 className="p-button-sm mr-2"
-                onClick={() => router.goBack()}
+                onClick={() => {
+                  setEditBudgetUnit(false)
+                  setBudgetUnitDataContext(null)
+                }}
               />
               {expandAll ? (
                 <Button

@@ -1,4 +1,5 @@
 /* eslint-disable */
+// @ts-nocheck
 import LoadingContainer from "../LoadingContainer";
 import {
   deleteCookies,
@@ -25,6 +26,22 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   setIsLoading: React.Dispatch<SetStateAction<boolean>>;
+  editBudgetUnit?: string | number | null;
+  setEditBudgetUnit: React.Dispatch<SetStateAction<string | number | null>>;
+  budgetUnitCreate: boolean;
+  setBudgetUnitCreate: React.Dispatch<SetStateAction<boolean>>;
+  budgetUnitSteps: number;
+  setBudgetUnitSteps: React.Dispatch<SetStateAction<number>>;
+  budgetUnitData: any;
+  setBudgetUnitData: React.Dispatch<SetStateAction<any>>;
+  budgetUnitView: boolean;
+  setBudgetUnitView: React.Dispatch<SetStateAction<boolean>>;
+  budgetData: any;
+  setBudgetData: React.Dispatch<SetStateAction<any>>;
+  budgetEditView: boolean;
+  setBudgetEditView: React.Dispatch<SetStateAction<boolean>>;
+  createNewBudget: boolean;
+  setCreateNewBudget: React.Dispatch<SetStateAction<boolean>>;
 }
 
 const routesWithoutAuth = ["/login"];
@@ -36,6 +53,22 @@ const AuthContext = createContext<AuthContextType>({
   login: async (_u, _p) => {},
   logout: () => {},
   setIsLoading: () => false,
+  editBudgetUnit: null,
+  setEditBudgetUnit: () => null,
+  budgetUnitCreate: false,
+  setBudgetUnitCreate: () => false,
+  budgetUnitSteps: 0,
+  setBudgetUnitSteps: () => 0,
+  budgetUnitData: null,
+  setBudgetUnitData: () => null,
+  budgetUnitView: false,
+  setBudgetUnitView: () => false,
+  budgetData: null,
+  setBudgetData: () => null,
+  budgetEditView: false,
+  setBudgetEditView: () => false,
+  createNewBudget: false,
+  setCreateNewBudget: () => false,
 });
 
 export function useAuthContext(): AuthContextType {
@@ -55,6 +88,14 @@ const AuthState = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
   const history = useHistory(); 
+  const [editBudgetUnit, setEditBudgetUnit] = useState<string | null>(null);
+  const [budgetUnitSteps, setBudgetUnitSteps] = useState<number>(0);  
+  const [budgetUnitCreate, setBudgetUnitCreate] = useState<boolean>(false);
+  const [budgetUnitData, setBudgetUnitData] = useState<any>(null);
+  const [budgetUnitView, setBudgetUnitView] = useState<boolean>(false);
+  const [budgetData, setBudgetData] = useState<any>(null);
+  const [budgetEditView, setBudgetEditView] = useState<boolean>(false);
+  const [createNewBudget, setCreateNewBudget] = useState<boolean>(false);
 
   const isAuthenticated = !!accessToken;
 
@@ -226,6 +267,22 @@ const AuthState = () => {
     isAuthenticated,
     login,
     logout,
+    editBudgetUnit,
+    setEditBudgetUnit,
+    budgetUnitCreate,
+    setBudgetUnitCreate,
+    budgetUnitSteps,
+    setBudgetUnitSteps,
+    budgetUnitData,
+    setBudgetUnitData,
+    budgetUnitView,
+    setBudgetUnitView,
+    budgetData,
+    setBudgetData,
+    budgetEditView,
+    setBudgetEditView,
+    createNewBudget,
+    setCreateNewBudget,
   };
 };
 

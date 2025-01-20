@@ -50,6 +50,10 @@ import MainLayout from 'src/components/MainLayout';
 import RootLayoutCsight from './layout/layout';
 import MainLayoutCsight from './layout/MainLayout';
 
+import "../../src/styles/UI/page.scss";
+import "../../src/styles/UI/field.scss";
+import "../../src/styles/UI/stepper.scss";
+import "../../src/styles/layout/layout.scss";
 // import Login from 'src/pages/Login';
 
 setupApp();

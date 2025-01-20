@@ -5,7 +5,7 @@ import { Button } from "primereact/button";
 import Stepper from "../Components/Stepper";
 import { useHistory } from "react-router-dom";
 import { HTTP } from "../../CsightCommon/config/http-common";
-import { useAuth } from "../../CsightCommon/context/AuthContext";
+import { useAuth, useAuthContext } from "../../CsightCommon/context/AuthContext";
 import AddNewBudgetUnitForm from "../Components/AddNewBudgetUnitForm";
 import AddNewBudgetForm from "../Components/AddNewBudgetForm";
 
@@ -18,10 +18,13 @@ const CreateBudgetUnitPage = () => {
   const [budgetUnits, setBudgetUnits] = useState<any>([]);
   const [activeView, setActiveView] = useState("budget_unit");
   const [expandAll, setExpandAll] = useState(true);
-  const router = useHistory();
   const [selectedBudgetUnit, setSelectedBudgetUnit] = useState<string>("");
   const [budgetUnitdataCreated, setBudgetUnitdata] = useState({});
   const { accessToken } = useAuth();
+
+
+  const { budgetUnitSteps, setBudgetUnitSteps, budgetUnitCreate, setBudgetUnitCreate, editBudgetUnit, setEditBudgetUnit } = useAuthContext();
+
   useEffect(() => {
     const getBudgetUnitsData = async () => {
       const response = await HTTP.get("budgetunit/", {
@@ -57,8 +60,9 @@ const CreateBudgetUnitPage = () => {
 
   const handleView = (view: string) => {};
   const addBudget = async (value: AddBudgetFormModel) => {
+    
     try {
-      const response = await HTTP.post(
+      await HTTP.post(
         "budget/",
         {
           ...value,
@@ -88,7 +92,9 @@ const CreateBudgetUnitPage = () => {
         ...prevState,
         budget: true,
       }));
-      router.push("/budget-unit");
+      // router.push("/budget-unit");
+      setBudgetUnitSteps(0)
+      setBudgetUnitCreate(false)
     } catch (error) {
       console.log("Response from budget list post from backend error:", error);
     }
@@ -127,7 +133,7 @@ const CreateBudgetUnitPage = () => {
   };
 
   return (
-    <div className="mx-2">
+    <div className="mx-2 bg-white">
       <div className="flex justify-content-between p-3 mb-3 horizontal-border align-items-center">
         <div>
           <h4 className="mb-0">Budget/Unit Configuration</h4>
@@ -137,7 +143,14 @@ const CreateBudgetUnitPage = () => {
             severity="warning"
             icon="pi pi-arrow-left"
             className="p-button-sm mr-2"
-            onClick={() => router.goBack()}
+            onClick={() => {
+              if(budgetUnitSteps == 1){
+                setBudgetUnitSteps(0)
+                setBudgetUnitCreate(false)
+              }else{
+                setBudgetUnitSteps(budgetUnitSteps - 1)
+              }
+            }}
           />
           {expandAll ? (
             <Button
@@ -176,7 +189,7 @@ const CreateBudgetUnitPage = () => {
           <AddNewBudgetForm
             budgetUnitdataCreated={budgetUnitdataCreated}
             isSaveClickedCount={0}
-            addBudget={addBudget}
+            addBudget={(value:any)=>addBudget(value)}
             expandAll={expandAll}
             budgetUnitsData={budgetUnits?.result}
             setSelectedBudgetUnit={setSelectedBudgetUnit}

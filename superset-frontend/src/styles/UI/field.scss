@@ -39,12 +39,17 @@
     }
   
     .form-label {
+      color: #808080;
       font-size: 14px;
+      font-weight: 400;
       letter-spacing: 0.1px;
     }
   
     .dark-gray {
       color: #808080;
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.1px;
     }
   
     .p-tooltip {
@@ -226,6 +231,34 @@
       
     }
    }
+  }
+
+  .p-accordion {
+    .p-accordion-header {
+      .p-accordion-header-link {
+        text-decoration: none !important;
+        &:focus {
+          box-shadow: none !important;
+          outline: none !important;
+          text-decoration: none !important;
+        }
+        &:hover {
+          text-decoration: none !important;
+        }
+      }
+    }
+    
+    .p-accordion-header-text {
+      text-decoration: none !important;
+      &:focus {
+        box-shadow: none !important;
+        outline: none !important;
+        text-decoration: none !important;
+      }
+      &:hover {
+        text-decoration: none !important;
+      }
+    }
   }
 
 

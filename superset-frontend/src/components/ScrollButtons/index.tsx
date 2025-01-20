@@ -59,8 +59,9 @@ const ScrollButtons = () => {
   const scrollToTop = () => {
     const scrollableElement = document.querySelector('.ant-layout-content');
     if (scrollableElement) {
+      const newPosition = scrollableElement.scrollTop - 800;
       scrollableElement.scrollTo({
-        top: 0,
+        top: Math.max(0, newPosition),
         behavior: 'smooth'
       });
     }
@@ -69,8 +70,9 @@ const ScrollButtons = () => {
   const scrollToBottom = () => {
     const scrollableElement = document.querySelector('.ant-layout-content');
     if (scrollableElement) {
+      const newPosition = scrollableElement.scrollTop + 800;
       scrollableElement.scrollTo({
-        top: scrollableElement.scrollHeight,
+        top: Math.min(scrollableElement.scrollHeight - scrollableElement.clientHeight, newPosition),
         behavior: 'smooth'
       });
     }

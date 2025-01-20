@@ -6,9 +6,9 @@ import Cookies from "js-cookie";
 import { useHistory, useParams, useLocation } from "react-router-dom";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { EditBudgetFormModel } from "../../Components/intreface";
-import { HTTP } from "../../../../config/http-common";
-import { useAuth } from "../../../../context/AuthContext";
-import { useToast } from "../../../../context/ToastContext";
+import { HTTP } from "../../../CsightCommon/config/http-common";
+import { useAuth,useAuthContext } from "../../../CsightCommon/context/AuthContext";
+import { useToast } from "../../../CsightCommon/context/ToastContext";
 import BudgetPage from "../../Components/BudgetPage";
 
 const ViewBudgetPage = () => {
@@ -18,10 +18,18 @@ const ViewBudgetPage = () => {
   const [budgetData, setBudgetData] = useState<any>({});
   const token = Cookies.get("accessToken");
   const router = useHistory();
-  const { budgetid } = useParams();
   const { pathname: currentPath } = useLocation();
   const { accessToken } = useAuth();
   const { showToast } = useToast();
+
+  const { budgetUnitSteps, setBudgetUnitSteps, 
+    budgetUnitCreate, setBudgetUnitCreate, 
+    editBudgetUnit, setEditBudgetUnit,
+    budgetUnitData,setBudgetUnitData,
+    budgetUnitView,setCreateNewBudget,
+    setBudgetUnitView } = useAuthContext();
+
+
   // get Budget & Budget Unit Data
   useEffect(() => {
     const getBudgets = async () => {
@@ -39,7 +47,7 @@ const ViewBudgetPage = () => {
         const data = {
           ...response.data,
           result: response.data.result.filter(
-            (item) => item.budgetunit == budgetid
+            (item) => item.budgetunit == budgetUnitData?.id
           ),
         };
         setBudgetData(data);
@@ -93,14 +101,20 @@ const ViewBudgetPage = () => {
             label="Budget"
             className="custom-bg-blue mr-2 "
             icon="pi pi-plus"
-            onClick={() => router.push(`${currentPath}/create`)}
+            onClick={() => {
+              setCreateNewBudget(true)
+              // router.push(`${currentPath}/create`)}
+            }}
           />
           <Button
             tooltip="Back"
             tooltipOptions={{ position: "bottom" }}
             icon="pi pi-arrow-left"
             severity="warning"
-            onClick={() => router.goBack()}
+            onClick={() => {
+              setBudgetUnitView(false)
+              setBudgetUnitData(null)
+            }}
           />
         </div>
       </div>

@@ -62,7 +62,7 @@ import SyncDashboardState, {
 } from '../components/SyncDashboardState';
 import { LayoutContext } from 'src/layout/context/layoutcontext';
 import CsightDashboard from 'src/components/CsightDashboard';
-// import CsightBudgetUnit from 'src/components/CsightBudgetUnit';
+import CsightBudgetUnit from 'src/components/CsightBudgetUnit';
 import getBootstrapData from 'src/utils/getBootstrapData';
 
 export const DashboardPageIdContext = React.createContext('');
@@ -172,7 +172,7 @@ export const DashboardPage: FC<PageProps> = ({ idOrSlug,className }: PageProps) 
     component: <CsightDashboard/>,
     tabName: 'Dashboard'
   },{
-    component: <UnderConstruction/>,
+    component: <CsightBudgetUnit/>,
     tabName: 'Budget Unit'
   }];
 

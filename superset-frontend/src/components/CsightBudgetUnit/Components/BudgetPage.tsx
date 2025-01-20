@@ -10,6 +10,7 @@ import { EditBudgetFormModel } from "./intreface";
 import { Tooltip } from "primereact/tooltip";
 import moment from "moment";
 import { useHistory } from "react-router-dom";
+import { useAuthContext } from "../../CsightCommon/context/AuthContext";
 
 interface BudgetPageProps {
   budgets: any[];
@@ -42,6 +43,12 @@ const BudgetPage: React.FunctionComponent<BudgetPageProps> = ({
     amount: "Amount",
     period: "Period",
   };
+
+
+  const { 
+    setBudgetData, setBudgetEditView
+  } = useAuthContext();
+
   const cancelExpand = (id: string) => {
     setExpandedRows((er) => {
       const ern = Object.keys(er).filter((k) => k !== id);
@@ -61,7 +68,11 @@ const BudgetPage: React.FunctionComponent<BudgetPageProps> = ({
           icon="pi pi-pencil"
           className="custom-bg-blue-action"
           rounded
-          onClick={() => history.push(`/budget-unit/edit/${data.id}`)}
+          onClick={() => {
+            setBudgetData(data)
+            setBudgetEditView(true)
+            // history.push(`/budget-unit/edit/${data.id}`)
+          }}
         />
         <Button
           type="button"
@@ -99,7 +110,7 @@ const BudgetPage: React.FunctionComponent<BudgetPageProps> = ({
     );
   };
   return (
-    <div className="">
+    <div className="custom-table">
       <Dialog
         header="Confirmation"
         visible={openDeleteModal}
@@ -133,6 +144,7 @@ const BudgetPage: React.FunctionComponent<BudgetPageProps> = ({
         </div>
       </Dialog>
       <DataTable
+        className="custom-table dashboard-table"
         value={budgets}
         expandedRows={expandedRows}
         // rowExpansionTemplate={rowExpansionTemplate}

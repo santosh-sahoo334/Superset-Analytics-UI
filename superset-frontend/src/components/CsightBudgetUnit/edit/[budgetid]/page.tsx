@@ -20,6 +20,7 @@ import { useAuth } from "../../../CsightCommon/context/AuthContext";
 import { Dialog } from "primereact/dialog";
 import { useToast } from "../../../CsightCommon/context/ToastContext";
 import FieldWrapper from "../../Components/FieldWrapper";
+import { useAuthContext } from "../../../CsightCommon/context/AuthContext";
 
 const schema: yup.ObjectSchema<EditBudgetFormModel> = yup.object().shape({
   name: yup.string().required("Name is required field"),
@@ -38,6 +39,7 @@ const schema: yup.ObjectSchema<EditBudgetFormModel> = yup.object().shape({
 });
 
 const EditBudgetFormPage: React.FunctionComponent = () => {
+  const { budgetData } = useAuthContext();
   const [budgetUnitsData, setBudgetUnitsData] = useState<any>([]);
   const [data, setData] = useState<any>(null);
   const [budgetsListData, setBudgetsListData] = useState<any>([]);
@@ -57,11 +59,12 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
     resolver: yupResolver(schema),
   });
 
+  const { setBudgetEditView, setBudgetData } = useAuthContext();
+
   const [tableData, setTableData] = useState<any[]>([]);
   const [selectedBudgetUnit, setSelectedBudgetUnit] = useState<any>({});
   const [openEditModal, setOpenEditModal] = useState<boolean>(false);
 
-  const { budgetid } = useParams();
   const router = useHistory();
   const [expandAll, setExpandAll] = useState(true);
   const [isPeriodManualChange, setIsPeriodManualChange] = useState(false);
@@ -70,8 +73,6 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
     { name: "Quarterly", code: "quarterly" },
     { name: "Yearly", code: "yearly" },
   ];
-
-  console.log("budgetid", budgetid);
 
   const period = watch("period");
   const startDate = watch("start_date");
@@ -96,7 +97,7 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
         setLoading(true);
         const [budgetResponse, budgetsListResponse, budgetUnitsResponse] =
           await Promise.all([
-            HTTP.get(`budget/${budgetid}`, {
+            HTTP.get(`budget/${budgetData?.id}`, {
               headers: { Authorization: accessToken },
             }),
             HTTP.get("budget/", { headers: { Authorization: accessToken } }),
@@ -189,7 +190,7 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
             ? { type: updatePrevInfoType }
             : updatePrevInfoType;
           const resp = await HTTP.put(
-            `budget/${budgetid}`,
+            `budget/${budgetData?.id}`,
             {
               name: values?.name,
               start_date: values?.start_date,
@@ -207,7 +208,9 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
           showToast("Record successfully Updated", "success", "Success");
 
           if (budgetUnit) {
-            router.push(`/budget-unit/view/${budgetUnit}`);
+            // router.push(`/budget-unit/view/${budgetUnit}`);
+            setBudgetEditView(false)  
+            setBudgetData(null)
           }
         } catch (error) {
           showToast(error.message || "Error while updating", "error", "Error");
@@ -537,7 +540,10 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
                 severity="warning"
                 icon="pi pi-arrow-left"
                 className="p-button-sm mr-2"
-                onClick={() => router.goBack()}
+                onClick={() => {            
+                  setBudgetEditView(false)  
+                  setBudgetData(null)
+                }}
               />
               {expandAll ? (
                 <Button
