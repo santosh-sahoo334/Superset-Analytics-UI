@@ -433,16 +433,6 @@ const SliceHeaderControls = (props: SliceHeaderControlsPropsWithRouter) => {
         </Menu.Item>
       )}
 
-      {canExplore && (
-        <Menu.Item key={MENU_KEYS.EXPLORE_CHART}>
-          <Link to={props.exploreUrl}>
-            <Tooltip title={getSliceHeaderTooltip(props.slice.slice_name)}>
-              {t('Edit chart')}
-            </Tooltip>
-          </Link>
-        </Menu.Item>
-      )}
-
       {canEditCrossFilters && (
         <>
           <Menu.Item key={MENU_KEYS.CROSS_FILTER_SCOPING}>
@@ -450,21 +440,6 @@ const SliceHeaderControls = (props: SliceHeaderControlsPropsWithRouter) => {
           </Menu.Item>
           <Menu.Divider />
         </>
-      )}
-
-      {(canExplore || canViewQuery) && (
-        <Menu.Item key={MENU_KEYS.VIEW_QUERY}>
-          <ModalTrigger
-            triggerNode={
-              <span data-test="view-query-menu-item">{t('View query')}</span>
-            }
-            modalTitle={t('View query')}
-            modalBody={<ViewQueryModal latestQueryFormData={props.formData} />}
-            draggable
-            resizable
-            responsive
-          />
-        </Menu.Item>
       )}
 
       {(canExplore || canViewTable) && (

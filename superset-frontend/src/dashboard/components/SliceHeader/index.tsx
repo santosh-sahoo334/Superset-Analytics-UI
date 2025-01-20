@@ -39,6 +39,8 @@ import Icons from 'src/components/Icons';
 import { RootState } from 'src/dashboard/types';
 import { getSliceHeaderTooltip } from 'src/dashboard/util/getSliceHeaderTooltip';
 import { DashboardPageIdContext } from 'src/dashboard/containers/DashboardPage';
+import { isUserAdmin } from 'src/dashboard/util/permissionUtils';
+import { useSelector } from 'react-redux';
 
 const extensionsRegistry = getExtensionsRegistry();
 
@@ -196,11 +198,19 @@ const SliceHeader: FC<SliceHeaderProps> = ({
   }, [sliceName, width, height, canExplore]);
 
   const exploreUrl = `/explore/?dashboard_page_id=${dashboardPageId}&slice_id=${slice.slice_id}`;
+  // TekSecur Customized
+  // Access the user object from the Redux store
+  const user = useSelector(state => state.user);
+
+  // TekSecur - Assuming `user` is an object representing the current user
+  const isAdmin = isUserAdmin(user);
+
+  // Check if the dashboard is in edit mode
+  const canEditTitle = isAdmin && editMode;
 
   return (
     <ChartHeaderStyles data-test="slice-header" ref={innerRef}>
       <div className="header-title" ref={headerRef}>
-        <Tooltip title={headerTooltip}>
           <EditableTitle
             title={
               sliceName ||
@@ -208,12 +218,11 @@ const SliceHeader: FC<SliceHeaderProps> = ({
                 ? '---' // this makes an empty title clickable
                 : '')
             }
-            canEdit={editMode}
+            canEdit={canEditTitle}
             onSaveTitle={updateSliceName}
             showTooltip={false}
-            url={canExplore ? exploreUrl : undefined}
+            url={!editMode && isAdmin ? exploreUrl : undefined}
           />
-        </Tooltip>
         {!!Object.values(annotationQuery).length && (
           <Tooltip
             id="annotations-loading-tooltip"
