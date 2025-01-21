@@ -13,6 +13,9 @@ import { useHistory } from "react-router-dom";
 import LoadingSpinner from "../CsightCommon/LoadingSpinner";
 import { useAuth } from "../CsightCommon/context/AuthContext";
 import { LayoutContext } from "src/layout/context/layoutcontext";
+import DashboardCards from "../CsightCommon/dashboardCardData/dashboardCards";
+import { DollarOutlined, EditOutlined } from "@ant-design/icons";
+import BlogsCard from "../CsightCommon/dashboardCardData/blogsCards";
 
 const searchIconsData = {
   cost: { icon: "/static/assets/images/layout/images/bill.png", title: "Cost" },
@@ -222,24 +225,32 @@ const CsightDashboard = () => {
 
   return (
     <div className="flex flex-column w-full gap-2 pl-2 pr-2 mt-[50px]">
-      <Card className="card-bg w-full custom-dashboard-card">
-        <div className="flex flex-column md:flex-row gap-4 justify-content-between align-items-center">
+      <Card className="card-bg bg-white w-full custom-dashboard-card">
+        <div className="flex flex-column lg:flex-row gap-4 justify-content-between align-items-center">
           {/* Left Side Potential Savings */}
-          <div className="w-full md:w-3 relative percenatge-saved-card ">
-            <div className="percenatge-saved-left-card flex-shrink-0 w-full md:w-3 equal-card-size">
-              <PotentalSavings
+          <div className="w-full lg:w-3 relative percenatge-saved-card ">
+            <div className="percenatge-saved-left-card flex-shrink-0 w-full lg:w-3 equal-card-size">
+              {/* <PotentalSavings
                 title="Monthly Cost"
                 result={costData?.result}
                 loading={loading}
+              /> */}
+              <DashboardCards
+                title="Monthly Cost"
+                result={costData?.result}
+                loading={loading}
+                icon={<DollarOutlined className="text-2xl image-bg p-1.5"/>}
+                showRight={true}
               />
             </div>
           </div>
 
           {/* Centered Circle Icon Section */}
-          <div className="flex flex-column align-items-center w-full md:w-6">
+          <div className="flex flex-column align-items-center w-full lg:w-6">
             <SearchDashboard onClickItem={handleItemClick} />
+            <span className="text-grey-400 text-start input-w">Recent Searches:</span>
             <div
-              className={`md:gap-0 gap-4 flex flex-column justify-content-center md:w-full sm:flex-row dashboard-width`}
+              className={`lg:gap-0 gap-4 flex flex-column justify-content-start lg:w-full sm:flex-row dashboard-width`}
             >
               {" "}
               <div
@@ -247,7 +258,7 @@ const CsightDashboard = () => {
                   searchOrder.length < 1
                     ? "empty-circle-container px-1 py-2"
                     : ""
-                } flex justify-content-center`}
+                } flex justify-content-start gap-3`}
               >
                 {recentSearchLoader ? (
                   <div className="circle-container-loader px-1 py-2">
@@ -257,19 +268,37 @@ const CsightDashboard = () => {
                 ) : (
                   searchOrder?.map((item, index) => {
                     return (
-                      <div className="circle-container px-1 py-2" key={index}>
-                        <div className="circle-border">
+                      // <div className="circle-container px-1 py-2" key={index}>
+                      //   <div className="circle-border">
+                      //     <img
+                      //       src={
+                      //         searchIconsData[item.keyword?.toLowerCase()]?.icon
+                      //       }
+                      //       alt="CSIGHT"
+                      //       width={60}
+                      //       height={60}
+                      //       className="circle-image"
+                      //     />
+                      //   </div>
+                      //   <div className="text-center mt-2 font-bold">
+                      //     {item.keyword?.length > 11
+                      //       ? item.keyword?.slice(0, 8) + ".."
+                      //       : item.keyword}
+                      //   </div>
+                      // </div>
+                      <div className="search-card px-2 py-2" key={index}>
+                        <div className="">
                           <img
                             src={
                               searchIconsData[item.keyword?.toLowerCase()]?.icon
                             }
                             alt="CSIGHT"
-                            width={60}
-                            height={60}
+                            width={50}
+                            height={50}
                             className="circle-image"
                           />
                         </div>
-                        <div className="text-center mt-2 font-bold">
+                        <div className="text-center mt-0 font-semibold">
                           {item.keyword?.length > 11
                             ? item.keyword?.slice(0, 8) + ".."
                             : item.keyword}
@@ -283,43 +312,62 @@ const CsightDashboard = () => {
           </div>
 
           {/* Right Side Potential Savings */}
-          <div className="w-full md:w-3 relative percenatge-saved-card ">
-            <div className="percenatge-saved-right-card flex-shrink-0 w-full md:w-3 equal-card-size">
-              <PotentalSavings
+          <div className="w-full lg:w-3 relative percenatge-saved-card ">
+            <div className="percenatge-saved-right-card flex-shrink-0 w-full lg:w-3 equal-card-size">
+              <DashboardCards
                 title="Potential Savings"
                 result={savingsData?.result}
                 loading={loading}
+                // icon={<DollarOutlined className="text-3xl"/>}
+                // icon={<PiggyBank />}
+                icon={<img
+                  src={
+                    '/static/assets/images/layout/images/piggy-bank.png'
+                  }
+                  alt="piggy-bank"
+                  width={30}
+                  height={30}
+                  className="text-sm p-1 image-bg"
+                />}
+                showLeft={true}
               />
             </div>
           </div>
         </div>
       </Card>
 
-      <div className="flex flex-column gap-4 md:flex-row">
+      <div className="flex flex-column gap-4 lg:flex-row">
         <div
-          className="card-bg w-full text-center text-2xl font-bold md:w-6"
+          className="card-bg w-full text-center text-2xl font-bold lg:w-6"
           style={{ height: "330px" }}
         >
           <AlertsTableUI />
         </div>
 
         <div
-          className="card-bg w-full text-center text-2xl md:h-4 font-bold md:w-6"
-          style={{ height: "330px" }}
-        >
-          <RecommendationsTable />
-        </div>
-      </div>
-
-      <div className="flex flex-column gap-4 md:flex-row">
-        <div
-          className="card-bg w-full text-center text-2xl font-bold md:w-6"
+          className="card-bg w-full text-center text-2xl font-bold lg:w-6"
           style={{ height: "330px" }}
         >
           <ResourcesTable />
         </div>
-        <Card className="card-bg w-full md:w-6">
-          <div className="text-center text-2xl font-bold pt-2">
+      </div>
+
+      <div className="flex flex-column gap-4 lg:flex-row">
+        <div
+          className="card-bg w-full text-center text-2xl font-bold lg:w-6"
+          style={{ height: "330px" }}
+        >
+          <RecommendationsTable />
+        </div>
+        
+        <div
+          className="card-bg w-full text-center text-2xl font-bold lg:w-6"
+          style={{ height: "330px" }}
+        >
+          <BlogsCard />
+        </div>
+        {/* <Card className="card-bg w-full lg:w-6"> */}
+          {/* <div className="text-center text-2xl font-bold pt-2">
             Knowledge Corner
           </div>
           <ul>
@@ -345,8 +393,14 @@ const CsightDashboard = () => {
             >
               Unit Economics
             </li>
-          </ul>
-        </Card>
+          </ul> */}
+          {/* <div>
+          <div className="flex justify-start title-card gap-2 p-2 title-color">
+          <EditOutlined className="text-xl" />
+            <span className="text-3xl font-medium">Blogs</span>
+          </div>
+          </div>
+        </Card> */}
       </div>
     </div>
   );
