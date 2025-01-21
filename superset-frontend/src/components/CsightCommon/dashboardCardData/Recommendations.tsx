@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Card } from "primereact/card";
@@ -7,115 +7,117 @@ import { Tooltip } from "primereact/tooltip";
 import { HTTP } from "../config/http-common";
 import { useAuth } from "../context/AuthContext";
 import LoadingSpinner from "../LoadingSpinner";
-import { Paginator, PaginatorPageChangeEvent } from "primereact/paginator";
-import { ArrowUpOutlined, DollarOutlined } from "@ant-design/icons";
+import { ArrowUpOutlined, DollarOutlined, SettingOutlined } from "@ant-design/icons";
 
 export const RecommendationsTable = () => {
-  const [recommenddationsData, setRecommendationsData] = useState<any>([]);
-  const [loading, setLoading] = useState<Boolean>(true);
-  const [tableLoading, setTableLoading] = useState<boolean>(true);
-  const [paginationState, setPaginationState] = useState({
-    currentPage: 0,
-    countPerPage: 5,
-  });
-  const maxTextLength = 10;
+  const [recommenddationsData, setRecommendationsData] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [tableLoading, setTableLoading] = useState<boolean>(false);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [pageSize] = useState<number>(5); // Number of rows to fetch per page
+  const tableRef = useRef<HTMLDivElement>(null); // Ref for scrollable table container
   const { accessToken } = useAuth();
-  useEffect(() => {
-    const getRecommendations = async () => {
-      try {
-        setTableLoading(true);
-        const params = {
-          q: JSON.stringify({
-            page: paginationState.currentPage,
-            page_size: paginationState.countPerPage,
-          }),
-        };
-        const response = await HTTP.get("/recommendations/", {
-          params,
-          headers: { Authorization: accessToken },
-        });
-        setRecommendationsData(response.data);
-      } catch (error) {
-        console.error("Failed to fetch recommendations:", error);
-      } finally {
-        setLoading(false);
-        setTableLoading(false);
-      }
-    };
-    getRecommendations();
-  }, [paginationState]);
 
-  const { result, list_columns, label_columns } = recommenddationsData;
+  // Fetch data for the table
+  const getRecommendations = async (page: number) => {
+    try {
+      setTableLoading(true);
+      const params = {
+        q: JSON.stringify({
+          page: page,
+          page_size: pageSize,
+        }),
+      };
+      const response = await HTTP.get("/recommendations/", {
+        params,
+        headers: { Authorization: accessToken },
+      });
+      if (response.data) {
+        const newRecommendations = response.data.result;
+        setRecommendationsData((prevData) => [...prevData, ...newRecommendations]);
+        setHasMore(newRecommendations.length === pageSize); // Check if more data is available
+      }
+    } catch (error) {
+      console.error("Failed to fetch recommendations:", error);
+    } finally {
+      setLoading(false);
+      setTableLoading(false);
+    }
+  };
+
+  // Initial data fetch
+  useEffect(() => {
+    getRecommendations(0);
+  }, []);
+
+  // Scroll handler for infinite scrolling
+  const handleScroll = () => {
+    if (!tableRef.current || !hasMore || tableLoading) return;
+    const { scrollTop, scrollHeight, clientHeight } = tableRef.current;
+    if (scrollTop + clientHeight >= scrollHeight - 10) {
+      const nextPage = currentPage + 1;
+      setCurrentPage(nextPage);
+      getRecommendations(nextPage);
+    }
+  };
+
+  useEffect(() => {
+    const ref = tableRef.current;
+    if (ref) {
+      ref.addEventListener("scroll", handleScroll);
+      return () => {
+        ref.removeEventListener("scroll", handleScroll);
+      };
+    }
+  }, [hasMore, tableLoading, currentPage]);
 
   const customizeLabels = {
-    billing_account_name: "Account",
-    service_name: "Resource",
-    service_component: "Component",
-    recommendation_message: "Recommendation",
+    billing_account_name: (
+      <div>
+        Account <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} />
+      </div>
+    ),
+    service_name: (
+      <div>
+        Resource <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} />
+      </div>
+    ),
+    service_component: (
+      <div>
+        Component 
+        {/* <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} /> */}
+      </div>
+    ),
+    recommendation_message: (
+      <div>
+        Recommendation 
+        {/* <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} /> */}
+      </div>
+    ),
     current_cost: (
       <div>
-        {/* <Tooltip target=".dollar_current" mouseTrack mouseTrackLeft={10} /> */}
-        <DollarOutlined className="pi pi-dollar text-xl" />
-        <ArrowUpOutlined
-          className="pi pi-arrow-up  text-xl"
-          style={{ color: "red", fontWeight: "bold" }}
-        />
+       Costing
+        <ArrowUpOutlined className="text-xl" style={{ color: "#667084", fontWeight: "bold" }} />
       </div>
     ),
     proposed_cost: (
       <div>
-        {/* <Tooltip target=".dollar_proposed" mouseTrack mouseTrackLeft={10}>
-          <i className="pi pi-arrow-up" style={{ color: "red" }} />
-        </Tooltip>
-        <img
-          className="dollar_proposed"
-          alt="dollar_proposed"
-          src="/layout/images/dollar-symbol.png"
-          style={{ width: "20px", height: "20px" }}
-          data-pr-tooltip="Proposed"
-          data-pr-position="bottom"
-        /> */}
-        {/* <Tooltip target=".dollar_proposed" mouseTrack mouseTrackLeft={10}> */}
-        <DollarOutlined className="text-xl pi pi-dollar" />
-        <ArrowUpOutlined
-          className="pi pi-arrow-up  text-xl"
-          style={{ color: "green", fontWeight: "bold" }}
-        />
-        {/* </Tooltip>
-        <img
-          className="dollar_proposed"
-          alt="dollar_proposed"
-          src="/layout/images/dollar-symbol.png"
-          style={{ width: "18px", height: "18px" }}
-          data-pr-position="bottom"
-        /> */}
+        Costing
+        <ArrowUpOutlined className="text-xl" style={{ color: "#667084", fontWeight: "bold" }} />
       </div>
     ),
-    datekey: "Month",
-  };
-  const filteredColumns =
-    list_columns &&
-    list_columns?.filter((column) => !["id", "datekey"].includes(column));
-
-  const formatDateToMonthYear = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleString("en-US", { month: "short", year: "numeric" });
-  };
-
-  const handlePageChange = (event: PaginatorPageChangeEvent) => {
-    setPaginationState({
-      currentPage: event.page,
-      countPerPage: event.rows,
-    });
+    datekey: (
+      <div>
+        Month <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} />
+      </div>
+    ),
   };
 
   // Function to truncate text and add tooltip
-  const truncatedBodyTemplate = (rowData, columnKey, rowIndex) => {
+  const truncatedBodyTemplate = (rowData, columnKey, rowIndex, maxTextLength) => {
     const value = rowData[columnKey] || "";
-    const truncatedText =
-      value.length > maxTextLength
-        ? `${value.slice(0, maxTextLength)}...`
-        : value;
+    const truncatedText = value.length > maxTextLength ? `${value.slice(0, maxTextLength)}...` : value;
     const tooltipId = `${columnKey}-${rowIndex}`;
 
     return (
@@ -132,56 +134,59 @@ export const RecommendationsTable = () => {
   };
 
   return (
-    <Card title="Recommendations" className="w-full h-full relative">
+    <Card title="" className="w-full h-full relative pr-1">
       {loading ? (
         <div className="flex justify-center items-center">
           <LoadingSpinner />
         </div>
       ) : (
         <>
-          <DataTable
-            value={result}
-            scrollable
-            scrollHeight="280px"
-            loading={tableLoading}
-            className="w-full dashboard-table"
-          >
-            {filteredColumns &&
-              filteredColumns?.map((columnKey) => (
-                <Column
-                  key={columnKey}
-                  field={columnKey}
-                  style={{ whiteSpace: "nowrap" }}
-                  header={
-                    customizeLabels[columnKey] ||
-                    label_columns[columnKey] ||
-                    columnKey
-                  }
-                  body={(rowData, { rowIndex }) => {
-                    // Format the cost and date columns specifically
-                    if (
-                      columnKey === "current_cost" ||
-                      columnKey === "proposed_cost"
-                    ) {
-                      return formatCurrency(rowData[columnKey]);
-                    }
-                    // if (columnKey === "datekey") {
-                    //   return formatDateToMonthYear(rowData[columnKey]);
-                    // }
-                    return truncatedBodyTemplate(rowData, columnKey, rowIndex);
-                  }}
-                  headerStyle={{ backgroundColor: "#0032a5", color: "#ffffff" }}
-                />
-              ))}
-          </DataTable>
-          <Paginator
-            first={paginationState.currentPage * paginationState.countPerPage}
-            rows={paginationState.countPerPage}
-            rowsPerPageOptions={[2, 5, 10]}
-            onPageChange={handlePageChange}
-            totalRecords={recommenddationsData?.count}
-            className="custom-paginator"
-          />
+          <div className="flex justify-start title-card gap-2 p-2 title-color">
+            <img
+              src={
+                '/static/assets/images/circle-check-big.png'
+              }
+              alt="piggy-bank"
+              width={30}
+              height={30}
+              className="text-sm p-1"
+            />
+            <span className="text-3xl font-medium">Recommendations</span>
+          </div>
+          <div ref={tableRef} style={{ maxHeight: "260px", overflowY: "auto" }}>
+            <DataTable
+              value={recommenddationsData}
+              scrollable
+              className="w-full dashboard-table-update"
+              // loading={tableLoading}
+            >
+              {recommenddationsData.length > 0 &&
+                Object.keys(recommenddationsData[0])
+                .filter((column) => !["id", "datekey"].includes(column))
+                .map((columnKey) => (
+                  <Column
+                    key={columnKey}
+                    field={columnKey}
+                    header={customizeLabels[columnKey] || columnKey}
+                    body={(rowData, { rowIndex }) => {
+                      if (columnKey === "current_cost" || columnKey === "proposed_cost") {
+                        return formatCurrency(rowData[columnKey]);
+                      }
+                      if (columnKey === "datekey") {
+                        return rowData[columnKey];
+                      }
+                      return truncatedBodyTemplate(rowData, columnKey, rowIndex, 10);
+                    }}
+                    headerStyle={{ backgroundColor: "#f2f3f6", color: "#667084", width: columnKey === "recommendation_message" ? '120px' : columnKey === "service_name" ? "95px" : "80px" }}
+                  />
+                ))}
+            </DataTable>
+            {tableLoading && (
+              <div className="flex justify-center items-center mt-4">
+                <LoadingSpinner />
+              </div>
+            )}
+          </div>
         </>
       )}
     </Card>
