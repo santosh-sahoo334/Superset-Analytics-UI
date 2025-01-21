@@ -12,6 +12,7 @@ const ButtonContainer = styled.div`
   z-index: 9999;
   display: flex;
   flex-direction: column;
+  pointer-events: none;
 `;
 
 const ScrollBox = styled.div`
@@ -21,6 +22,7 @@ const ScrollBox = styled.div`
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
   overflow: hidden;
+  pointer-events: auto;
 `;
 
 const ScrollButton = styled.button`

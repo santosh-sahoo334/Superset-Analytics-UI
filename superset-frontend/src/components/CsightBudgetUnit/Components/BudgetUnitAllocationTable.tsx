@@ -487,7 +487,7 @@ const BudgetUnitAllocationTable: React.FunctionComponent<
           />
         </div>
       )}
-      <DataTable value={data}>
+      <DataTable value={data} className="tabelHeader">
         {columns.map((item, index) => (
           <Column
             key={item.field}

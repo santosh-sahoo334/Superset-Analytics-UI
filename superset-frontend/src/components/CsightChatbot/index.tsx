@@ -1,5 +1,6 @@
 /* eslint-disable */
 // @ts-nocheck
+import React, { useContext } from 'react';
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
@@ -15,6 +16,7 @@ import { Input } from 'antd'; // Import Input from Ant Design
 const { TextArea } = Input; // Destructure TextArea from Input
 import { OverlayPanel } from 'primereact/overlaypanel';
 import { useRef } from 'react';
+import { LayoutContext } from "../../layout/context/layoutcontext";
 
 
 interface GRAPH_ITEMS {
@@ -76,6 +78,8 @@ const ChatBot = () => {
     selectedDropDownGraph,
     setselectedDropDownGraph,
   } = useAIBotContext();
+
+  const { clickedNavItem } = useContext(LayoutContext);
 
   const { showToast } = useToast();
 
@@ -186,7 +190,7 @@ const ChatBot = () => {
           style={{ padding: "0px 24px 0px 24px" }}
           ref={messageContainerRef}
         >
-          <FalshCard />
+          <FalshCard clickedNavItem={clickedNavItem}/>
           {prompts?.map((p, index) => {
             return (
               <div
@@ -218,10 +222,10 @@ const ChatBot = () => {
         <div style={{ height: "120px" }} />
 
         <div
-          className="py-1 px-4 flex flex-column align-items-start w-full border-top-1 absolute bottom-0"
+          className="py-1 px-1 flex flex-column align-items-start w-full border-top-1 absolute bottom-0"
           style={{ borderColor: "#D0D5DD", background: "white" }}
         >
-          <div className="flex align-items-center w-full">
+          <div className="flex flex-column w-full">
             <TextArea
               id="questionInput"
               value={question}
@@ -230,58 +234,73 @@ const ChatBot = () => {
               }}
               onKeyDown={handleKeyDown}
               placeholder="How can Cindy help you today?"
-              // style={{ 
-              //   fontSize: "16px", 
-              //   width: "100%", 
-              //   marginRight: '5px', 
-              //   marginTop: '5px',
-              //   resize: 'none'
-              // }}
+              style={{ 
+                width: '100%',
+                resize: 'vertical',
+                minHeight: '44px',
+                maxHeight: '200px',
+                padding: '8px 12px',
+                lineHeight: '1.5'
+              }}
               rows={3}
               minLength={2}
-              // autoSize={{ 
-              //   minRows: 3, 
-              //   maxRows: 15
-              // }}
               disabled={isLoading}
             />
-            <Button
-              disabled={isLoading}
-              icon="pi pi-send"
-              onClick={onClickSend}
-              className="border-none border-circle shadow-none text-white"
-              style={{
-                marginTop: '5px',
-                marginLeft: '5px',
-                background: "#18279a",
-                minWidth: "40px",
-                height: "40px",
-                transform: "rotate(40deg)",
-              }}
-            />
-          </div>
+            
+            {/* Icons row */}
+            <div className="flex justify-content-between align-items-center w-full">
+              {/* Left side - Chart controls with reduced size */}
+              <div className="flex align-items-center">
+                <Button
+                  icon="pi pi-chart-bar"
+                  className="p-button-rounded p-button-text"
+                  onClick={(e) => op.current?.toggle(e)}
+                  tooltip="Select Chart Type"
+                  style={{ 
+                    width: '2rem',
+                    height: '2rem',
+                    padding: '0.25rem'
+                  }}
+                />
+                {selectedDropDownGraph && (
+                  <span className="text-sm text-500 ml-2 flex align-items-center">
+                    {selectedDropDownGraph.name}
+                    <i 
+                      className="pi pi-times text-500 cursor-pointer hover:text-700 ml-2" 
+                      style={{ fontSize: '0.875rem' }}
+                      onClick={() => {
+                        setSelectedGraph({
+                          graph_type: null,
+                          isSelected: false,
+                          type: null,
+                        });
+                        setselectedDropDownGraph(null);
+                      }}
+                      title="Clear Selection"
+                    />
+                  </span>
+                )}
+              </div>
 
-          {/* Chart selection row */}
-          <div className="w-full flex align-items-center mt-1">
-            <Button
-              icon="pi pi-chart-bar"
-              className="p-button-rounded p-button-text"
-              onClick={(e) => op.current?.toggle(e)}
-              tooltip="Select Chart Type"
-              style={{ 
-                width: '2rem', 
-                height: '2rem',
-                padding: '0'
-              }}
-            />
-            {selectedDropDownGraph && (
-              <span className="text-sm text-500">
-                Selected: {selectedDropDownGraph.name}
-              </span>
-            )}
-          </div>
 
-          <OverlayPanel ref={op} className="w-20rem">
+              {/* Right side - Send button with reduced size */}
+              <Button
+                disabled={isLoading}
+                icon="pi pi-send"
+                onClick={onClickSend}
+                className="p-button-rounded p-button-text"
+                style={{
+                  transform: "rotate(40deg)",
+                  width: '2rem',
+                  height: '2rem',
+                  padding: '0.25rem'
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <OverlayPanel ref={op} className="w-20rem">
             <div className="grid grid-nogutter">
               {GRAPHS.map((graph) => (
                 <div
@@ -318,30 +337,8 @@ const ChatBot = () => {
                   </div>
                 </div>
               ))}
-              <div
-                className="col-12 flex justify-content-end p-1 border-top-1"
-                onClick={() => {
-                  setSelectedGraph({
-                    graph_type: null,
-                    isSelected: false,
-                    type: null,
-                  });
-                  setselectedDropDownGraph(null);
-                  op.current?.hide();
-                }}
-              >
-                <i 
-                  className="pi pi-times text-500 cursor-pointer hover:text-700" 
-                  style={{ 
-                    fontSize: '0.875rem',
-                    padding: '4px'
-                  }}
-                  title="Clear Selection"
-                />
               </div>
-            </div>
           </OverlayPanel>
-        </div>
       </Dialog>
       {!opneChatModal && (
         <div

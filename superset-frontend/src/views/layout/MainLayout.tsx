@@ -22,7 +22,8 @@ import {
   ExperimentOutlined,
   CalculatorOutlined,
   DeploymentUnitOutlined,
-  ReconciliationOutlined 
+  ReconciliationOutlined,
+  CloseOutlined
 } from '@ant-design/icons'
 import { Layout, Menu, Button, Drawer, Dropdown, Space } from 'antd'
 import { useMediaQuery } from 'react-responsive'
@@ -35,6 +36,8 @@ import { RootState } from 'src/dashboard/reducers/types'
 import { useSelector } from 'react-redux'
 import AppBreadCrumb from 'src/layout/AppBreadCrumb'
 import { useAuth } from 'src/components/CsightCommon/context/AuthContext'
+import ChatBot from "src/components/CsightChatbot";
+import { useAIBotContext } from "src/components/CsightChatbot/Context";
 
 const { Header, Sider, Content } = Layout
 
@@ -47,6 +50,8 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [openKeys, setOpenKeys] = useState<string[]>([])
   const isMobile = useMediaQuery({ maxWidth: 768 });
+
+  const {  setFlashCardData } = useAIBotContext();
 
   const dashboardLayout = useSelector<RootState, DashboardLayout>(
     state => state.dashboardLayout.present,
@@ -118,9 +123,7 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
       // Trigger the click event if the element exists
       if (tabElement) {
         tabElement.click();
-      } else {
-        console.error("Tab element not found!");
-      }
+      } 
     }
   }
 
@@ -159,6 +162,7 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
   }, [clickedNavItem]);
 
   const handleMenuClick = (info: MenuInfo) => {
+    setFlashCardData([]);
     const key:any = info.key.toString();
     setActiveNavItem(navItems[key].replaceName || navItems[key].name);
     setClickedNavItem(navItems[key].name);
@@ -175,7 +179,7 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
     }
 
     // Scroll to top on menu item click
-    const contentElement = document.querySelector('.main-content');
+    const contentElement = document.querySelector('.site-content');
     if (contentElement) {
       contentElement.scrollTo({
         top: 0,
@@ -376,14 +380,17 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
           visible={mobileOpen}
           className="mobile-drawer stable-menu"
           width={250}
+          maskClosable={false}
+          closeIcon={<CloseOutlined style={{ color: '#fff' }} />}  // Add this line to set close icon color
         >
           {sidebarContent}
         </Drawer>
       )}
 
       <Layout className={`custom-menu-item site-layout ${collapsed ? 'collapsed' : ''}`}>
-        <Content className="site-content" style={{ overflow: 'auto', height: 'calc(100vh - 64px)' }}>
+        <Content className="site-content" style={{ overflow: 'auto', height: 'calc(100vh - 60px)' }}>
           <ScrollButtons />
+          <ChatBot />
           {children}
         </Content>
       </Layout>

@@ -13,6 +13,14 @@
   color: #fff !important;
 }
 
+.ant-input:focus, .ant-input-focused {
+  box-shadow: none !important;
+  border: 1px solid #9A9A9A !important;
+}
+// .p-accordion-tab.p-accordion-tab-active.p-highlight {
+//   background-color: transparent !important;
+//   border-color: transparent !important; /* Ensures border color matches */
+// }
 // .custom-bg-blue-action {
 //   background-color: #000 !important;
 //   border-color: #000 !important; /* Ensures border color matches */
@@ -27,6 +35,20 @@ th:first-child {
 }
 th:last-child {
   border-top-right-radius: 10px;
+}
+
+.tabelHeader {
+  .p-datatable-table {
+    background-color: transparent;
+    color: #fff;
+    padding: 10px;
+    .p-datatable-thead {
+      padding: 10px;
+    }
+    .p-column-header-content {
+      padding: 10px;
+    }
+  }
 }
 .custom-table {
   .p-datatable-wrapper {

@@ -11,7 +11,7 @@ import 'primeicons/primeicons.css';
 
 import "../../styles/layout/layout.scss";
 import { ToastProvider } from "src/components/CsightCommon/context/ToastContext";
-import ChatBot from "src/components/CsightChatbot";
+
 
 export default function RootLayout({
   children,
@@ -49,11 +49,11 @@ export default function RootLayout({
           href={`/static/assets/images/csight.png`}
           type="image/x-icon"
         ></link>
-        <link
+        {/* <link
           id="theme-link"
           href={`/theme/theme-light/blue/theme.css`}
           rel="stylesheet"
-        ></link>
+        ></link> */}
       </head>
       <body>
         <PrimeReactProvider>
@@ -62,7 +62,7 @@ export default function RootLayout({
           {/* <AuthProvider> */}
                  {children}
             {/* </AuthProvider> */}
-              <ChatBot />
+             
             </LayoutProvider>
           </ToastProvider>
             
