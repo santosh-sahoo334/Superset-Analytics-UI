@@ -9,6 +9,20 @@ import {
   BellOutlined,
   UserOutlined,
   LogoutOutlined,
+  DashboardOutlined,
+  MoneyCollectOutlined,
+  DollarOutlined,
+  TagsOutlined,
+  EyeOutlined,
+  AlertOutlined,
+  LikeOutlined,
+  SafetyCertificateOutlined,
+  CalculatorOutlined,
+  DesktopOutlined,
+  ExperimentOutlined,
+  CalculatorOutlined,
+  DeploymentUnitOutlined,
+  ReconciliationOutlined 
 } from '@ant-design/icons'
 import { Layout, Menu, Button, Drawer, Dropdown, Space } from 'antd'
 import { useMediaQuery } from 'react-responsive'
@@ -159,6 +173,15 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
     if (isMobile) {
       setMobileOpen(false);
     }
+
+    // Scroll to top on menu item click
+    const contentElement = document.querySelector('.main-content');
+    if (contentElement) {
+      contentElement.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
   };
 
   const onOpenChange = (keys: string[]) => {
@@ -189,64 +212,98 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
       onClick={handleMenuClick}
       className="custom-sidebar stable-menu"
     >
-      <Menu.Item key="dashboard" icon={<img src="/static/assets/images/layout/images/dashboard.png" alt="Dashboard" className="menu-icon" />}>
+      <Menu.Item key="dashboard" icon={<DashboardOutlined />}>
         Dashboard
       </Menu.Item>
 
-      <Menu.Item key="onprem" icon={<img src="/static/assets/images/layout/images/money.png" alt="OnPrem" className="menu-icon" />}>
-        OnPrem
-      </Menu.Item>
+      {/* <hr style={{ 
+        margin: '8px 16px',
+        borderColor: 'rgba(255, 255, 255, 0.2)',
+        borderStyle: 'solid',
+        borderWidth: '0 0 1px 0'
+      }} /> */}
 
-      {/* Observe Section */}
-      <Menu.ItemGroup key="observe-group" title="Observe">
-        <Menu.Item key="cost" icon={<img src="/static/assets/images/layout/images/bill.png" alt="Cost" className="menu-icon" />}>
+      <Menu.ItemGroup key="observe-group" title="OBSERVE">
+        <Menu.Item key="cost" icon={<ReconciliationOutlined />}>
           Cost
         </Menu.Item>
-        <Menu.Item key="utilization" icon={<img src="/static/assets/images/layout/images/cpu.png" alt="Utilization" className="menu-icon" />}>
+        <Menu.Item key="utilization" icon={<DesktopOutlined />}>
           Utilization
         </Menu.Item>
-        <Menu.Item key="billing" icon={<img src="/static/assets/images/layout/images/bill.png" alt="Billing" className="menu-icon" />}>
+        <Menu.Item key="billing" icon={<DollarOutlined />}>
           Billing
         </Menu.Item>
-        <Menu.Item key="tags" icon={<img src="/static/assets/images/layout/images/price-tag.png" alt="Tags" className="menu-icon" />}>
+        <Menu.Item key="tags" icon={<TagsOutlined />}>
           Tags
         </Menu.Item>
       </Menu.ItemGroup>
 
-      {/* Optimize Section */}
-      <Menu.ItemGroup key="optimize-group" title="Optimize">
-        <Menu.Item key="observability" icon={<img src="/static/assets/images/layout/images/save-the-planet.png" alt="Observability" className="menu-icon" />}>
+      <hr style={{ 
+        margin: '8px 16px',
+        borderColor: 'rgba(255, 255, 255, 0.2)',
+        borderStyle: 'solid',
+        borderWidth: '0 0 1px 0'
+      }} />
+
+      <Menu.ItemGroup key="optimize-group" title="OPTIMIZE">
+        <Menu.Item key="observability" icon={<EyeOutlined />}>
           Observability
         </Menu.Item>
-        <Menu.Item key="anomaly" icon={<img src="/static/assets/images/layout/images/glitch.png" alt="Anomaly" className="menu-icon" />}>
+        <Menu.Item key="anomaly" icon={<AlertOutlined />}>
           Anomaly
         </Menu.Item>
-        <Menu.Item key="recommendations" icon={<img src="/static/assets/images/layout/images/like.png" alt="Recommendations" className="menu-icon" />}>
+        <Menu.Item key="recommendations" icon={<LikeOutlined />}>
           Recommendations
         </Menu.Item>
       </Menu.ItemGroup>
 
-      {/* Operate Section */}
-      <Menu.ItemGroup key="operate-group" title="Operate">
-        <Menu.Item key="governance" icon={<img src="/static/assets/images/layout/images/government.png" alt="Governance" className="menu-icon" />}>
+      <hr style={{ 
+        margin: '8px 16px',
+        borderColor: 'rgba(255, 255, 255, 0.2)',
+        borderStyle: 'solid',
+        borderWidth: '0 0 1px 0'
+      }} />
+
+      <Menu.ItemGroup key="operate-group" title="OPERATE">
+        <Menu.Item key="governance" icon={<SafetyCertificateOutlined />}>
           Governance
         </Menu.Item>
         <Menu.SubMenu 
           key="budget" 
-          icon={<img src="/static/assets/images/layout/images/bill.png" alt="Budget" className="menu-icon" />}
-          title={(!collapsed || isMobile) ? "Budget" : ""}
+          icon={<CalculatorOutlined style={{ color: '#fff' }} />}
+          title={<span style={{ color: '#fff' }}>Budget</span>}
+          className="budget-submenu"
         >
-          <Menu.Item key="bud-vs-act" icon={<img src="/static/assets/images/layout/images/profit.png" alt="Bud vs Act" className="menu-icon" />}>
-            Bud vs Act
+          <Menu.Item 
+            key="bud-vs-act" 
+            className="budget-menu-item"
+            icon={<DollarOutlined style={{ color: '#fff' }} />}
+          >
+            <span style={{ color: '#fff' }}>Bud vs Act</span>
           </Menu.Item>
-          <Menu.Item key="budget-unit" icon={<img src="/static/assets/images/layout/images/calculator.png" alt="Budget Unit" className="menu-icon" />}>
-            Budget Unit
+          <Menu.Item 
+            key="budget-unit" 
+            className="budget-menu-item"
+            icon={<DeploymentUnitOutlined style={{ color: '#fff' }} />}
+          >
+            <span style={{ color: '#fff' }}>Budget Unit</span>
           </Menu.Item>
         </Menu.SubMenu>
-        <Menu.Item key="green-ops" icon={<img src="/static/assets/images/layout/images/save-the-planet.png" alt="Green Ops" className="menu-icon" />}>
+        <Menu.Item key="green-ops" icon={<ExperimentOutlined />}>
           Green Ops
         </Menu.Item>
       </Menu.ItemGroup>
+
+      <hr style={{ 
+        margin: '8px 16px',
+        borderColor: 'rgba(255, 255, 255, 0.2)',
+        borderStyle: 'solid',
+        borderWidth: '0 0 1px 0'
+      }} />
+
+      <Menu.Item key="onprem" icon={<MoneyCollectOutlined />}>
+        OnPrem
+      </Menu.Item>
     </Menu>
   )
 
@@ -254,135 +311,78 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
 
   
   return (
-    <Layout style={{ minHeight: '100vh' }}>
+    <Layout style={{ minHeight: '100vh' }} className=''>
+      <Header className="app-header">
+        <div className="header-left">
+          <img 
+            src="/static/assets/images/layout/images/csight.png"
+            alt="Logo"
+            className="header-logo"
+          />
+          <span className="header-title">
+            {process.env.REACT_APP_LOGO_TEXT || 'Multi-Cloud FinOps'}
+          </span>
+          {isMobile && (
+            <Button
+              type="text"
+              icon={<MenuUnfoldOutlined />}
+              onClick={() => setMobileOpen(true)}
+              className="mobile-trigger"
+            />
+          )}
+          {!isMobile && <AppBreadCrumb />}
+        </div>
+        
+        <Space size={16} className="header-right">
+          <BellOutlined />
+          <SlidersOutlined />
+          <Dropdown overlay={(
+            <Menu>
+              <Menu.Item key="profile" icon={<UserOutlined />}>
+                Profile
+              </Menu.Item>
+              <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={() => logout()}>
+                Logout
+              </Menu.Item>
+            </Menu>
+          )} placement="bottomRight" trigger={['click']}>
+            <SettingOutlined />
+          </Dropdown>
+        </Space>
+      </Header>
+
       {!isMobile ? (
-        // Desktop Sidebar
         <Sider 
           trigger={null} 
           collapsible 
           collapsed={collapsed}
-          breakpoint="lg"
-          collapsedWidth={isMobile ? 0 : 80}
-          style={{
-            overflow: 'auto',
-            height: '100vh',
-            position: 'fixed',
-            left: 0,
-            top: 0,
-            bottom: 0,
-          }}
+          width={200}
+          collapsedWidth={80}
+          className="app-sidebar stable-menu"
         >
-          <div className="logo-container">
-            <img 
-              src={collapsed ? '/static/assets/images/layout/images/csight_circle.png' : '/static/assets/images/layout/images/csight.png'}
-              alt="Logo"
-              style={{
-                width: collapsed ? '32px' : '60px',
-                height: 'auto',
-                transition: 'all 0.2s'
-              }}
-            />
-            {!collapsed && (
-              <div className="logo-title">
-               {process.env.REACT_APP_LOGO_TEXT || 'Multi-Cloud FinOps'}
-              </div>
-            )}
-          </div>
+          <Button
+            type="text"
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={() => setCollapsed(!collapsed)}
+            className="sidebar-trigger"
+          />
           {sidebarContent}
         </Sider>
       ) : (
-        // Mobile Drawer
         <Drawer
-          title={
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginRight: '24px' }}>
-              <img 
-                src={'/static/assets/images/layout/images/csight.png'}
-                alt="Logo"
-                style={{
-                  width: '40px',
-                  height: 'auto'
-                }}
-              />
-              <span style={{ color: '#000', fontSize: '16px', fontWeight: 600 }}>
-                {process.env.REACT_APP_LOGO_TEXT || 'Multi-Cloud FinOps'}
-              </span>
-            </div>
-          }
           placement="left"
           closable={true}
           onClose={() => setMobileOpen(false)}
           visible={mobileOpen}
-          bodyStyle={{ padding: 0, background: '#001529' }}
+          className="mobile-drawer stable-menu"
           width={250}
-          className="mobile-drawer"
         >
           {sidebarContent}
         </Drawer>
       )}
-      
-      <Layout style={{ 
-        marginLeft: isMobile ? 0 : (collapsed ? 80 : 200), 
-        transition: 'margin-left 0.2s',
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column'
-      }}>
-        <Header style={{ 
-          maxHeight: 40,
-          padding: '0 16px', 
-          background: '#fff',
-          position: 'fixed',
-          top: 0,
-          right: 0,
-          width: `calc(100% - ${isMobile ? 0 : (collapsed ? 80 : 200)}px)`,
-          zIndex: 1000,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          transition: 'width 0.2s',
-          boxShadow: '0 1px 4px rgba(0,21,41,.08)'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Button
-              type="text"
-              icon={isMobile ? <MenuUnfoldOutlined /> : (collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />)}
-              onClick={() => isMobile ? setMobileOpen(true) : setCollapsed(!collapsed)}
-              style={{
-                fontSize: '16px',
-                width: 40,
-                height: 40
-              }}
-            />
-            <AppBreadCrumb />
-          </div>
-          
-          <Space size={16}>
-            <BellOutlined style={{ fontSize: '15px', cursor: 'pointer' }} />
-            <SlidersOutlined style={{ fontSize: '15px', cursor: 'pointer' }} />
-            <Dropdown overlay={(
-              <Menu>
-                <Menu.Item key="profile" icon={<UserOutlined />} onClick={() => console.log('Profile clicked')}>
-                  Profile
-                </Menu.Item>
-                <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={() => logout()}>
-                  Logout
-                </Menu.Item>
-              </Menu>
-            )} placement="bottomRight" trigger={['click']}>
-              <span className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-                <SettingOutlined style={{ fontSize: '15px', cursor: 'pointer' }} />
-              </span>
-            </Dropdown>
-          </Space>
-        </Header>
 
-        <Content style={{ 
-          marginTop: 40,
-          padding: '2px',
-          overflow: 'auto',
-          flex: 1,
-          background: '#f0f2f5'
-        }}>
+      <Layout className={`custom-menu-item site-layout ${collapsed ? 'collapsed' : ''}`}>
+        <Content className="site-content" style={{ overflow: 'auto', height: 'calc(100vh - 64px)' }}>
           <ScrollButtons />
           {children}
         </Content>

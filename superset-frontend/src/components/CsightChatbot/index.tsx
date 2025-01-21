@@ -13,6 +13,8 @@ import { useAIBotContext } from "./Context";
 import { useToast } from "../CsightCommon/context/ToastContext";
 import { Input } from 'antd'; // Import Input from Ant Design
 const { TextArea } = Input; // Destructure TextArea from Input
+import { OverlayPanel } from 'primereact/overlaypanel';
+import { useRef } from 'react';
 
 
 interface GRAPH_ITEMS {
@@ -76,6 +78,8 @@ const ChatBot = () => {
   } = useAIBotContext();
 
   const { showToast } = useToast();
+
+  const op = useRef<OverlayPanel>(null);
 
   const onClickChatIcon = () => {
     setOpenChatModal(!opneChatModal);
@@ -217,100 +221,30 @@ const ChatBot = () => {
           className="py-1 px-4 flex flex-column align-items-start w-full border-top-1 absolute bottom-0"
           style={{ borderColor: "#D0D5DD", background: "white" }}
         >
-          {question && (
-            <div className="pt-2 align-right w-full flex justify-content-end">
-              <Dropdown
-                value={selectedDropDownGraph}
-                showClear
-                onChange={(e) => {
-                  if (!e?.value) {
-                    setSelectedGraph({
-                      graph_type: null,
-                      isSelected: false,
-                      type: null,
-                    });
-                    setselectedDropDownGraph(e.value);
-                    return;
-                  }
-                  setSelectedGraph({
-                    graph_type: e?.value?.code,
-                    isSelected: true,
-                    type: e?.value?.type,
-                  });
-                  setselectedDropDownGraph(e.value);
-                }}
-                options={GRAPHS}
-                optionLabel="name"
-                placeholder="Select a Chart Type"
-                className="w-full md:w-18rem"
-                itemTemplate={countryOptionTemplate}
-              />
-              {/* <div className="flex mb-2 align-items-center py-2 gap-3">
-                                <div className={selectedGraph?.type === "g1" && selectedGraph?.isSelected ? "icon-container-sel" : "icon-container"} onClick={() => onClickGraph("g1", "bar")} title='Bar Graph'>
-                                    <img
-                                        src={selectedGraph?.type === "g1" && selectedGraph?.isSelected ? "/graph/g1_sel.svg" : "/graph/g1.svg"}
-                                        alt=""
-                                        height={35}
-                                        width={44}
-                                    />
-                                </div>
-                                <div className={selectedGraph?.type === "g2" && selectedGraph?.isSelected ? "icon-container-sel" : "icon-container"} onClick={() => onClickGraph("g2", "donut")} title='Donut Graph'>
-                                    <img
-                                        src={selectedGraph?.type === "g2" && selectedGraph?.isSelected ? "/graph/g2_sel.svg" : "/graph/g2.svg"}
-                                        alt=""
-                                        height={35}
-                                        width={44}
-                                    />
-                                </div> */}
-              {/* <div className={selectedGraph?.type === "g3" && selectedGraph?.isSelected ? "icon-container-sel" : "icon-container"} onClick={() => onClickGraph("g3", "bar")}>
-                            <img
-                                src={selectedGraph?.type === "g3" && selectedGraph?.isSelected ? "/graph/g3_sel.svg" : "/graph/g3.svg"}
-                                alt=""
-                                height={35}
-                                width={34}
-                            />
-                        </div> */}
-              {/* <div className={selectedGraph?.type === "g4" && selectedGraph?.isSelected ? "icon-container-sel" : "icon-container"} onClick={() => onClickGraph("g4", "pie")} title='Pie Graph'>
-                                    <img
-                                        src={selectedGraph?.type === "g4" && selectedGraph?.isSelected ? "/graph/g4_sel.svg" : "/graph/g4.svg"}
-                                        alt=""
-                                        height={35}
-                                        width={41}
-                                    />
-                                </div>
-                                <div className={selectedGraph?.type === "g5" && selectedGraph?.isSelected ? "icon-container-sel" : "icon-container"} onClick={() => onClickGraph("g5", "line")} title='Line Graph'>
-                                    <img
-                                        src={selectedGraph?.type === "g5" && selectedGraph?.isSelected ? "/graph/g5_sel.svg" : "/graph/g5.svg"}
-                                        alt=""
-                                        height={35}
-                                        width={35}
-                                    />
-                                </div> */}
-              {/* <div className={selectedGraph?.type === "g6" && selectedGraph?.isSelected ? "icon-container-sel" : "icon-container"} onClick={() => onClickGraph("g6", "bar")}>
-                            <img
-                                src={selectedGraph?.type === "g6" && selectedGraph?.isSelected ? "/graph/g6_sel.svg" : "/graph/g6.svg"}
-                                alt=""
-                                height={35}
-                                width={39}
-                            />
-                        </div> */}
-              {/* </div> */}
-            </div>
-          )}
           <div className="flex align-items-center w-full">
-          <TextArea
-                id="questionInput"
-                value={question}
-                onChange={(e) => {
-                  setQuestion(e.target.value);
-                }}
-                onKeyDown={handleKeyDown}
-                placeholder="How can Cindy help you today?"
-                style={{ fontSize: "16px", width: "100%", marginRight: '5px', marginTop: '5px' }}
-                minLength={1}
-                rows={1} // Set the number of visible rows
-                disabled={isLoading}
-              />
+            <TextArea
+              id="questionInput"
+              value={question}
+              onChange={(e) => {
+                setQuestion(e.target.value);
+              }}
+              onKeyDown={handleKeyDown}
+              placeholder="How can Cindy help you today?"
+              // style={{ 
+              //   fontSize: "16px", 
+              //   width: "100%", 
+              //   marginRight: '5px', 
+              //   marginTop: '5px',
+              //   resize: 'none'
+              // }}
+              rows={3}
+              minLength={2}
+              // autoSize={{ 
+              //   minRows: 3, 
+              //   maxRows: 15
+              // }}
+              disabled={isLoading}
+            />
             <Button
               disabled={isLoading}
               icon="pi pi-send"
@@ -318,6 +252,7 @@ const ChatBot = () => {
               className="border-none border-circle shadow-none text-white"
               style={{
                 marginTop: '5px',
+                marginLeft: '5px',
                 background: "#18279a",
                 minWidth: "40px",
                 height: "40px",
@@ -325,6 +260,87 @@ const ChatBot = () => {
               }}
             />
           </div>
+
+          {/* Chart selection row */}
+          <div className="w-full flex align-items-center mt-1">
+            <Button
+              icon="pi pi-chart-bar"
+              className="p-button-rounded p-button-text"
+              onClick={(e) => op.current?.toggle(e)}
+              tooltip="Select Chart Type"
+              style={{ 
+                width: '2rem', 
+                height: '2rem',
+                padding: '0'
+              }}
+            />
+            {selectedDropDownGraph && (
+              <span className="text-sm text-500">
+                Selected: {selectedDropDownGraph.name}
+              </span>
+            )}
+          </div>
+
+          <OverlayPanel ref={op} className="w-20rem">
+            <div className="grid grid-nogutter">
+              {GRAPHS.map((graph) => (
+                <div
+                  key={graph.type}
+                  className="col-6 cursor-pointer p-3 hover:surface-100"
+                  onClick={() => {
+                    const value = graph;
+                    if (!value) {
+                      setSelectedGraph({
+                        graph_type: null,
+                        isSelected: false,
+                        type: null,
+                      });
+                      setselectedDropDownGraph(null);
+                    } else {
+                      setSelectedGraph({
+                        graph_type: value.code,
+                        isSelected: true,
+                        type: value.type,
+                      });
+                      setselectedDropDownGraph(value);
+                    }
+                    op.current?.hide();
+                  }}
+                >
+                  <div className="flex align-items-center gap-2">
+                    <img
+                      src={`/static/assets/images/graph/${graph.type}.svg`}
+                      alt=""
+                      height={20}
+                      width={20}
+                    />
+                    <span>{graph.name}</span>
+                  </div>
+                </div>
+              ))}
+              <div
+                className="col-12 flex justify-content-end p-1 border-top-1"
+                onClick={() => {
+                  setSelectedGraph({
+                    graph_type: null,
+                    isSelected: false,
+                    type: null,
+                  });
+                  setselectedDropDownGraph(null);
+                  op.current?.hide();
+                }}
+              >
+                <i 
+                  className="pi pi-times text-500 cursor-pointer hover:text-700" 
+                  style={{ 
+                    fontSize: '0.875rem',
+                    padding: '4px'
+                  }}
+                  title="Clear Selection"
+                />
+              </div>
+            </div>
+          </OverlayPanel>
         </div>
       </Dialog>
       {!opneChatModal && (

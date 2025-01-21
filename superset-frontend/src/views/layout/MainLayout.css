@@ -28,7 +28,7 @@
 .stable-menu .ant-menu-item.ant-menu-item-selected,
 .stable-menu .ant-menu-submenu .ant-menu-item.ant-menu-item-selected,
 .ant-menu-submenu-popup .ant-menu-item.ant-menu-item-selected {
-  background: #7B8CDB !important;
+  background: #F3E7BF !important;
   border-radius: 6px !important;
   margin: 4px 8px !important;
   padding: 0 16px !important;
@@ -36,10 +36,20 @@
   color: #000000 !important;
 }
 
+.ant-menu-item .anticon:hover {
+  color: #000000 !important;
+}   
+
+
+.ant-menu-item:hover {
+  color: #000000 !important;
+}
+
 .stable-menu .ant-menu-item.ant-menu-item-selected:hover,
 .stable-menu .ant-menu-submenu .ant-menu-item.ant-menu-item-selected:hover,
 .ant-menu-submenu-popup .ant-menu-item.ant-menu-item-selected:hover {
-  background: #7B8CDB !important;
+  background: #F3E7BF !important;
+  color: #000000 !important;
 }
 
 /* Selected submenu parent styles when child is selected - only in expanded mode */
@@ -49,7 +59,7 @@
 
 /* Selected submenu parent styles when child is selected - only in collapsed mode */
 .ant-menu-inline-collapsed .ant-menu-submenu-selected > .ant-menu-submenu-title {
-  background: #7B8CDB !important;
+  background: #F3E7BF !important;
   border-radius: 6px !important;
   margin: 4px 8px !important;
   padding: 0 !important;
@@ -91,6 +101,7 @@
 .stable-menu .ant-menu-item:hover .anticon,
 .stable-menu .ant-menu-item.ant-menu-item-selected .anticon {
   transform: none !important;
+  color: #000000 !important;
 }
 
 /* Submenu styles */
@@ -144,6 +155,7 @@
 
 .stable-menu .ant-menu-submenu-title:hover .anticon {
   transform: none !important;
+  color: #000000 !important;
 }
 
 /* Fix for icon alignment */
@@ -172,21 +184,67 @@
   padding-left: 32px !important;
 }
 
-/* Popup submenu styles (for collapsed mode) */
+/* Popup submenu styles for collapsed mode */
+.ant-menu-submenu-popup {
+  background: #18279A !important;
+}
+
 .ant-menu-submenu-popup > .ant-menu {
-  background: #FFFFFF !important;
+  background: #18279A !important;
+  color: #fff !important;
 }
 
-.ant-menu-submenu-popup .ant-menu-item {
-  padding: 0 16px !important;
-  margin: 0 !important;
-  height: 40px !important;
-  line-height: 40px !important;
+/* Default state for all items in popup */
+.ant-menu-submenu-popup .ant-menu-item,
+.ant-menu-submenu-popup .ant-menu-submenu-title {
+  color: #fff !important;
+  background: #18279A !important;
 }
 
-.ant-menu-submenu-popup .ant-menu-item.ant-menu-item-selected {
+/* Ensure icons are white by default */
+.ant-menu-submenu-popup .ant-menu-item .anticon,
+.ant-menu-submenu-popup .ant-menu-submenu-title .anticon {
+  color: #fff !important;
+}
+
+/* Ensure text content is white by default */
+.ant-menu-submenu-popup .ant-menu-item .ant-menu-title-content,
+.ant-menu-submenu-popup .ant-menu-submenu-title .ant-menu-title-content {
+  color: #fff !important;
+}
+
+/* Dark theme overrides to ensure white text */
+.ant-menu-dark.ant-menu-submenu-popup .ant-menu-item,
+.ant-menu-dark.ant-menu-submenu-popup .ant-menu-submenu-title {
+  color: #fff !important;
+}
+
+/* Hover styles */
+.ant-menu-submenu-popup .ant-menu-item:hover {
+  background: #F3E7BF !important;
+  color: #000 !important;
+  border-radius: 6px !important;
   margin: 4px 8px !important;
-  padding: 0 16px !important;
+  width: calc(100% - 16px) !important;
+}
+
+.ant-menu-submenu-popup .ant-menu-item:hover .anticon,
+.ant-menu-submenu-popup .ant-menu-item:hover .ant-menu-title-content {
+  color: #000 !important;
+}
+
+/* Selected styles */
+.ant-menu-submenu-popup .ant-menu-item.ant-menu-item-selected {
+  background: #F3E7BF !important;
+  color: #000 !important;
+  border-radius: 6px !important;
+  margin: 4px 8px !important;
+  width: calc(100% - 16px) !important;
+}
+
+.ant-menu-submenu-popup .ant-menu-item.ant-menu-item-selected .anticon,
+.ant-menu-submenu-popup .ant-menu-item.ant-menu-item-selected .ant-menu-title-content {
+  color: #000 !important;
 }
 
 /* Fix submenu arrow position */
@@ -254,12 +312,11 @@
 }
 
 .mobile-drawer .ant-menu-dark .ant-menu-item-selected {
-  background-color: #7B8CDB !important;
+  background-color: #F3E7BF !important;
   color: #FFFFFF !important;
 }
 
-.ant-layout-sider,
-.mobile-drawer .ant-drawer-body {
+.ant-layout-sider {
   background: #FFFFFF !important;
 }
 
@@ -284,7 +341,7 @@
 }
 
 .ant-menu-dark .ant-menu-item-selected {
-  background-color: #7B8CDB !important;
+  background-color: #F3E7BF !important;
   color: #FFFFFF !important;
 }
 
@@ -296,11 +353,17 @@
 
 .ant-menu-dark .ant-menu-item:hover,
 .ant-menu-dark .ant-menu-submenu-title:hover {
-  background-color: rgba(123, 140, 219, 0.1) !important;
+  background-color: #F3E7BF !important;
   color: #000000 !important;
+
+    border-radius: 6px !important;
+    margin: 4px 8px !important;
+    padding: 0 16px !important;
+    width: calc(100% - 16px) !important;
+    color: #000000 !important;
 }
 
-/* Menu items hover state */
+/* Menu items hover state
 .ant-menu-dark .ant-menu-item:hover:not(.ant-menu-item-selected),
 .ant-menu-dark .ant-menu-submenu-title:hover:not(.ant-menu-submenu-selected) {
   background-color: rgba(123, 140, 219, 0.1) !important;
@@ -310,7 +373,7 @@
 .ant-menu-dark .ant-menu-item:hover:not(.ant-menu-item-selected) .anticon,
 .ant-menu-dark .ant-menu-submenu-title:hover:not(.ant-menu-submenu-selected) .anticon {
   color: #000000 !important;
-}
+} */
 
 /* Selected state colors */
 .ant-menu-dark .ant-menu-item-selected,
@@ -322,9 +385,13 @@
 
 /* Budget dropdown and other submenu icons */
 .ant-menu-dark .ant-menu-submenu-title .anticon,
-.ant-menu-dark .ant-menu-submenu-arrow {
+.ant-menu-dark {
   color: #000000 !important;
 }
+
+.ant-menu-submenu-arrow {
+    color: #FFFFFF !important;
+  }
 
 /* Ensure submenu arrow stays black on hover */
 .ant-menu-dark .ant-menu-submenu-title:hover .ant-menu-submenu-arrow {
@@ -342,14 +409,19 @@
 
 /* Ensure submenu items follow the same rules */
 .ant-menu-dark .ant-menu-sub .ant-menu-item:hover:not(.ant-menu-item-selected) {
-  background-color: rgba(123, 140, 219, 0.1) !important;
-  color: #000000 !important;
+    background-color: #F3E7BF !important;
+    color: #000000 !important;
+    border-radius: 6px !important;
+    margin: 4px 8px !important;
+    padding: 0 16px !important;
+    width: calc(100% - 16px) !important;
+    color: #000000 !important;
 }
 
-.ant-menu-dark .ant-menu-submenu-arrow::before,
+/* .ant-menu-dark .ant-menu-submenu-arrow::before,
 .ant-menu-dark .ant-menu-submenu-arrow::after {
   background-color: #000000 !important;
-}
+} */
 
 .ant-menu-dark .ant-menu-submenu-title:hover .ant-menu-submenu-arrow::before,
 .ant-menu-dark .ant-menu-submenu-title:hover .ant-menu-submenu-arrow::after {
@@ -427,7 +499,8 @@
 
 /* Selected submenu items should also be black */
 .ant-menu-dark .ant-menu-submenu-selected > .ant-menu-submenu-title,
-.ant-menu-dark .ant-menu-submenu-selected > .ant-menu-submenu-title .anticon {
+.ant-menu-dark .ant-menu-submenu-selected > .ant-menu-submenu-title .ant-menu-submenu-arrow::before,
+.ant-menu-dark .ant-menu-submenu-selected > .ant-menu-submenu-title .ant-menu-submenu-arrow::after {
   color: #000000 !important;
 }
 
@@ -452,6 +525,40 @@
   color: #000000 !important;
 }
 
+.custom-sidebar .ant-menu-item > span:hover {
+  color: #000000 !important;
+}
+.custom-sidebar .ant-menu-item:hover {
+  color: #000000 !important;
+  .custom-sidebar .ant-menu-item .anticon:hover {
+    color: #000000 !important;
+  }
+}
+
+
+
+.custom-sidebar .ant-menu-item > li:hover {
+  color: #000000 !important;
+}
+.custom-sidebar .ant-menu-item > li > span:hover {
+    color: #000000 !important;
+  }
+
+.ant-menu-item > li:hover {
+  color: #000000 !important;
+}
+
+.ant-menu-item > li > span:hover {
+    color: #000000 !important;
+  }
+
+.custom-sidebar .ant-menu-item > li :hover {
+    color: #000000 !important;
+    .custom-sidebar .ant-menu-item .anticon:hover {
+      color: #000000 !important;
+    }
+  }
+
 .custom-sidebar .ant-menu-item-selected {
   background-color: #7B8CDB !important;
   color: #000000 !important;
@@ -463,16 +570,17 @@
   color: #000000 !important;
 }
 
-.custom-sidebar .ant-menu-item:hover,
+/* .custom-sidebar .ant-menu-item:hover,
 .custom-sidebar .ant-menu-submenu-title:hover {
-  background-color: rgba(123, 140, 219, 0.1) !important;
-  color: #000000 !important;
+  background-color: #F3E7BF !important;
+  color: #000 !important;
 }
 
-.custom-sidebar .ant-menu-submenu-arrow::before,
-.custom-sidebar .ant-menu-submenu-arrow::after {
-  background-color: #000000 !important;
-}
+.custom-sidebar .ant-menu-item:hover .anticon,
+.custom-sidebar .ant-menu-submenu-title:hover .anticon {
+    background-color: #F3E7BF !important;
+    color: #000 !important;
+} */
 
 .custom-sidebar.ant-menu-inline-collapsed {
   width: 80px !important;
@@ -526,7 +634,7 @@
 }
 
 .mobile-drawer .custom-sidebar .ant-menu-item-selected {
-  background-color: #7B8CDB !important;
+  background-color: #F3E7BF !important;
   color: #000000 !important;
 }
 
@@ -536,6 +644,706 @@
 }
 
 .ant-menu-submenu-popup .custom-sidebar .ant-menu-item-selected {
-  background-color: #7B8CDB !important;
+  background-color: #F3E7BF !important;
   color: #000000 !important;
-} 
+}
+
+/* Header Styles */
+.app-header {
+  position: fixed;
+  width: 100%;
+  height: 64px;
+  padding: 0 24px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 4px rgba(0,21,41,.08);
+  z-index: 1000;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-logo {
+  height: 40px;
+  width: auto;
+}
+
+.header-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #000;
+  margin-right: 24px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.header-right .anticon {
+  font-size: 16px;
+  color: #000;
+  cursor: pointer;
+  padding: 8px;
+}
+
+/* Sidebar Styles */
+.app-sidebar {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  height: calc(100vh - 64px);
+  background: #18279A !important;
+  z-index: 999;
+  overflow-y: auto;
+}
+
+.ant-menu ant-menu-sub ant-menu-inline::after {
+  background: #18279A !important;
+}
+
+.sidebar-trigger {
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-bottom: 1px solid rgba(255,255,255,0.2) !important;
+  padding-bottom: 8px !important;
+  margin-bottom: 8px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #18279A !important;
+  color: #fff !important;
+}
+
+.sidebar-trigger:hover {
+  color: #fff !important;
+  background: #18279A !important;
+}
+
+/* Layout Styles */
+.site-layout {
+  margin-left: 200px;
+  margin-top: 64px;
+  transition: all 0.2s;
+  min-height: calc(100vh - 64px);
+  width: calc(100% - 200px);
+}
+
+.site-layout.collapsed {
+  margin-left: 80px;
+  width: calc(100% - 50px);
+}
+
+.site-content {
+  padding: 4px;
+  padding-right: 8px;
+  min-height: calc(100vh - 64px);
+  background: #f0f2f5;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+/* Menu Styles */
+.custom-sidebar.ant-menu-dark,
+.custom-sidebar .ant-menu-dark,
+.custom-sidebar .ant-menu-dark .ant-menu-sub {
+  background: #18279A !important;
+  color: #fff !important;
+}
+
+.custom-sidebar .ant-menu-item,
+.custom-sidebar .ant-menu-item-group-title,
+.custom-sidebar .ant-menu-item > a,
+.custom-sidebar .ant-menu-item > span,
+.custom-sidebar .ant-menu-submenu-title {
+  color: #fff !important;
+}
+
+.custom-sidebar .ant-menu-item .anticon,
+.custom-sidebar .ant-menu-submenu-title .anticon {
+  color: #fff !important;
+}
+
+.custom-sidebar .ant-menu-submenu-title .anticon:hover {
+    color: #000 !important;
+  }
+
+/* Selected state */
+.custom-sidebar .ant-menu-item-selected {
+  background-color: #F3E7BF !important;
+  color: #000 !important;
+}
+
+.custom-sidebar .ant-menu-item-selected .anticon,
+.custom-sidebar .ant-menu-item-selected > a,
+.custom-sidebar .ant-menu-item-selected > span {
+  color: #000 !important;
+}
+
+/* Hover states */
+/* .custom-sidebar .ant-menu-item:hover,
+.custom-sidebar .ant-menu-submenu-title:hover {
+    background-color: #F3E7BF !important;
+    color: #000 !important;
+}
+
+.custom-sidebar .ant-menu-item:hover .anticon,
+.custom-sidebar .ant-menu-submenu-title:hover .anticon {
+    background-color: #F3E7BF !important;
+    color: #000 !important;
+} */
+
+/* Mobile drawer styles */
+.mobile-drawer {
+  position: fixed !important;
+  height: 100vh !important;
+}
+
+.mobile-drawer .ant-drawer-content-wrapper,
+.mobile-drawer .ant-drawer-content,
+.mobile-drawer .ant-drawer-wrapper-body,
+.mobile-drawer .ant-drawer-body {
+  height: 100% !important;
+}
+
+.mobile-drawer .ant-drawer-content {
+  background: #18279A !important;
+}
+
+.mobile-drawer .ant-drawer-header {
+  background: #18279A !important;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.mobile-drawer .ant-drawer-title {
+  color: #fff !important;
+}
+
+.mobile-trigger {
+  padding: 0 12px;
+  margin-left: 8px;
+  color: #000;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .site-layout {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+  
+  .header-left {
+    flex: 1;
+  }
+  
+  .header-title {
+    flex: 1;
+    margin-right: 0;
+  }
+  
+  .app-breadcrumb {
+    display: none;
+  }
+}
+
+/* Replace existing styles with custom classes */
+.custom-sidebar {
+  background: #18279A !important;
+}
+
+.custom-menu {
+  background: #18279A !important;
+}
+
+.custom-menu-item {
+  color: #fff !important;
+}
+
+/* Selected state only */
+.custom-menu-item.selected {
+  background-color: #F3E7BF !important;
+  color: #000 !important;
+  border-radius: 6px !important;
+  margin: 4px 8px !important;
+  padding: 0 16px !important;
+  width: calc(100% - 16px) !important;
+}
+
+.custom-menu-item.selected .anticon,
+.custom-menu-item.selected .custom-menu-text {
+  color: #000 !important;
+}
+
+/* Submenu styles */
+.custom-submenu-title {
+  color: #fff !important;
+}
+
+.custom-submenu-arrow {
+  color: #fff !important;
+}
+
+/* Group title */
+.custom-menu-group-title {
+  color: rgba(255,255,255,0.65) !important;
+}
+
+/* Submenu items */
+.custom-submenu .custom-menu-item {
+  padding-left: 40px !important;
+}
+
+.custom-submenu .custom-menu-item.selected {
+  padding-left: 32px !important;
+}
+
+/* Layout styles */
+.main-layout {
+  min-height: 100vh;
+}
+
+.main-header {
+  position: fixed;
+  width: 100%;
+  height: 64px;
+  padding: 0 24px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 4px rgba(0,21,41,.08);
+  z-index: 1000;
+}
+
+.main-sidebar {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  height: calc(100vh - 64px);
+  background: #18279A !important;
+  z-index: 999;
+  overflow-y: auto;
+}
+/* Mobile styles */
+.mobile-drawer {
+  position: fixed !important;
+  height: 100vh !important;
+}
+
+.mobile-drawer .drawer-content {
+  height: 100% !important;
+  background: #18279A !important;
+}
+
+/* Custom menu styles */
+.custom-sidebar {
+  background: #18279A !important;
+}
+
+.custom-menu {
+  background: #18279A !important;
+}
+
+/* Ensure all submenu types have correct background */
+.ant-menu.ant-menu-sub,
+.ant-menu.ant-menu-sub.ant-menu-inline,
+.ant-menu-submenu > .ant-menu,
+.ant-menu-submenu-popup > .ant-menu {
+  background: #18279A !important;
+}
+
+/* Normal state for all menu items including submenu */
+.custom-menu-item,
+.custom-submenu .custom-menu-item,
+.ant-menu-submenu .ant-menu-item {
+  color: #fff !important;
+  background: #18279A !important;
+}
+
+/* Selected state for all items including submenu items */
+.custom-menu-item.selected,
+.ant-menu-submenu .ant-menu-item.ant-menu-item-selected {
+  background-color: #F3E7BF !important;
+  color: #000 !important;
+  border-radius: 6px !important;
+  margin: 4px 8px !important;
+  padding: 0 16px !important;
+  width: calc(100% - 16px) !important;
+}
+
+/* Selected state icons and text */
+.custom-menu-item.selected .anticon,
+.custom-menu-item.selected .custom-menu-text,
+.ant-menu-submenu .ant-menu-item.ant-menu-item-selected .anticon,
+.ant-menu-submenu .ant-menu-item.ant-menu-item-selected .custom-menu-text {
+  color: #000 !important;
+}
+
+/* Group title */
+.custom-menu-group-title {
+  color: rgba(255,255,255,0.65) !important;
+}
+
+/* Remove hover effects for non-selected items */
+.custom-menu-item:not(.ant-menu-item-selected):hover,
+.ant-menu-submenu .ant-menu-item:not(.ant-menu-item-selected):hover {
+  background: transparent !important;
+  color: #fff !important;
+}
+
+/* Ensure submenu items maintain white text when not selected */
+.ant-menu-submenu .ant-menu-item:not(.ant-menu-item-selected) .anticon,
+.ant-menu-submenu .ant-menu-item:not(.ant-menu-item-selected) .custom-menu-text {
+  color: #fff !important;
+}
+
+.ant-menu-submenu .ant-menu-item:not(.ant-menu-item-selected) .anticon:hover,
+.ant-menu-submenu .ant-menu-item:not(.ant-menu-item-selected) .custom-menu-text:hover {
+  color: #000 !important;
+}
+
+/* Submenu items padding */
+.ant-menu-submenu .ant-menu-item {
+  padding-left: 40px !important;
+}
+
+.ant-menu-submenu .ant-menu-item.ant-menu-item-selected {
+  padding-left: 32px !important;
+}
+
+/* Budget section styles */
+.budget-section {
+  background: #18279A !important;
+}
+
+.budget-section .budget-parent {
+  color: #fff !important;
+  background: #18279A !important;
+  margin: 0 !important;
+  padding: 0 16px !important;
+  height: 40px !important;
+  line-height: 40px !important;
+}
+
+.budget-section .budget-parent:hover {
+  background: transparent !important;
+}
+
+.budget-section .budget-parent.ant-menu-item-selected {
+  background: #F3E7BF !important;
+  color: #000 !important;
+  border-radius: 6px !important;
+  margin: 4px 8px !important;
+  width: calc(100% - 16px) !important;
+}
+
+.budget-children {
+  background: #18279A !important;
+}
+
+.budget-children .ant-menu-item {
+  padding-left: 40px !important;
+  color: #fff !important;
+  background: #18279A !important;
+}
+
+.budget-children .ant-menu-item.ant-menu-item-selected {
+  background: #F3E7BF !important;
+  color: #000 !important;
+  border-radius: 6px !important;
+  margin: 4px 8px !important;
+  padding-left: 32px !important;
+  width: calc(100% - 16px) !important;
+}
+
+.budget-children .ant-menu-item:hover {
+  background: transparent !important;
+}
+
+/* Ensure icons have correct color */
+.budget-section .anticon {
+  color: #fff !important;
+}
+
+.budget-section .ant-menu-item-selected .anticon {
+  color: #000 !important;
+}
+
+/* Budget submenu styles */
+.ant-menu-submenu.budget-parent {
+  background: #18279A !important;
+}
+
+.ant-menu-submenu.budget-parent .ant-menu-submenu-title {
+  color: #fff !important;
+  background: #18279A !important;
+}
+
+/* Hover styles for budget parent */
+.ant-menu-submenu.budget-parent .ant-menu-submenu-title:hover {
+  background: #F3E7BF !important;
+  color: #000 !important;
+}
+
+.ant-menu-submenu.budget-parent .ant-menu-submenu-title:hover .anticon,
+.ant-menu-submenu.budget-parent .ant-menu-submenu-title:hover .ant-menu-title-content {
+  color: #000 !important;
+}
+
+/* Budget children styles */
+.budget-children {
+  background: #18279A !important;
+}
+
+.budget-children .ant-menu-item {
+  padding-left: 40px !important;
+  color: #fff !important;
+  background: #18279A !important;
+}
+
+/* Hover styles for budget children */
+.budget-children .ant-menu-item:hover {
+  background: #F3E7BF !important;
+  color: #000 !important;
+  border-radius: 6px !important;
+  margin: 4px 8px !important;
+  width: calc(100% - 16px) !important;
+}
+
+.budget-children .ant-menu-item:hover .anticon,
+.budget-children .ant-menu-item:hover .ant-menu-title-content {
+  color: #000 !important;
+}
+
+/* Selected styles for budget children */
+.budget-children .ant-menu-item.ant-menu-item-selected {
+  background: #F3E7BF !important;
+  color: #000 !important;
+  border-radius: 6px !important;
+  margin: 4px 8px !important;
+  padding-left: 32px !important;
+  width: calc(100% - 16px) !important;
+}
+
+.budget-children .ant-menu-item.ant-menu-item-selected .anticon,
+.budget-children .ant-menu-item.ant-menu-item-selected .ant-menu-title-content {
+  color: #000 !important;
+}
+
+/* Ensure submenu arrow is also black on hover */
+.ant-menu-submenu.budget-parent .ant-menu-submenu-title:hover .ant-menu-submenu-arrow::before,
+.ant-menu-submenu.budget-parent .ant-menu-submenu-title:hover .ant-menu-submenu-arrow::after {
+  background-color: #000 !important;
+}
+
+/* Keep arrow black when submenu is selected */
+.ant-menu-submenu.budget-parent.ant-menu-submenu-selected > .ant-menu-submenu-title .ant-menu-submenu-arrow::before,
+.ant-menu-submenu.budget-parent.ant-menu-submenu-selected > .ant-menu-submenu-title .ant-menu-submenu-arrow::after {
+  background-color: #000 !important;
+}
+
+/* Custom scrollbar styles */
+.app-sidebar::-webkit-scrollbar {
+  width: 2px !important;
+}
+
+.app-sidebar::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+.app-sidebar::-webkit-scrollbar-thumb {
+  background: #18279A !important;
+  border-radius: 1px !important;
+}
+
+/* For Firefox */
+.app-sidebar {
+  scrollbar-width: thin !important;
+  scrollbar-color: #18279A transparent !important;
+}
+
+/* Mobile drawer scrollbar */
+.mobile-drawer .ant-drawer-body::-webkit-scrollbar {
+  width: 2px !important;
+}
+
+.mobile-drawer .ant-drawer-body::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+.mobile-drawer .ant-drawer-body::-webkit-scrollbar-thumb {
+  background: #18279A !important;
+  border-radius: 1px !important;
+}
+
+/* For Firefox in mobile drawer */
+.mobile-drawer .ant-drawer-body {
+  scrollbar-width: thin !important;
+  scrollbar-color: #18279A transparent !important;
+}
+
+.budget-submenu-item {
+  color: #fff !important;
+}
+
+.budget-submenu-item:hover {
+  color: #000 !important;
+}
+
+.budget-submenu-item .anticon,
+.budget-submenu-item span {
+  color: inherit !important;
+}
+
+/* Popup menu styles */
+.ant-menu-submenu-popup > .ant-menu {
+  background: #18279A !important;
+}
+
+.budget-popup-item {
+  color: #fff !important;
+  background: #18279A !important;
+}
+
+.budget-popup-item .anticon,
+.budget-popup-item .ant-menu-title-content {
+  color: #fff !important;
+}
+
+/* Hover styles */
+.budget-popup-item:hover {
+  background: #F3E7BF !important;
+  color: #000 !important;
+}
+
+.budget-popup-item:hover .anticon,
+.budget-popup-item:hover .ant-menu-title-content {
+  color: #000 !important;
+}
+
+/* Selected styles */
+.budget-popup-item.ant-menu-item-selected {
+  background: #F3E7BF !important;
+  color: #000 !important;
+}
+
+.budget-popup-item.ant-menu-item-selected .anticon,
+.budget-popup-item.ant-menu-item-selected .ant-menu-title-content {
+  color: #000 !important;
+}
+
+/* Budget menu popup styles */
+.ant-menu-submenu-popup {
+  background: #18279A !important;
+}
+
+.ant-menu-submenu-popup .ant-menu {
+  background: #18279A !important;
+}
+
+/* Default state - white text and icons */
+.ant-menu-submenu-popup .budget-menu-item,
+.ant-menu-submenu-popup .budget-menu-item .ant-menu-title-content,
+.ant-menu-submenu-popup .budget-menu-item span,
+.ant-menu-submenu-popup .budget-menu-item .anticon {
+  color: #fff !important;
+  background: #18279A !important;
+}
+
+/* Hover state - black text and icons */
+.ant-menu-submenu-popup .budget-menu-item:hover,
+.ant-menu-submenu-popup .budget-menu-item:hover .ant-menu-title-content,
+.ant-menu-submenu-popup .budget-menu-item:hover span,
+.ant-menu-submenu-popup .budget-menu-item:hover .anticon {
+  color: #000 !important;
+  background: #F3E7BF !important;
+}
+
+/* Selected state - black text and icons */
+.ant-menu-submenu-popup .budget-menu-item.ant-menu-item-selected,
+.ant-menu-submenu-popup .budget-menu-item.ant-menu-item-selected .ant-menu-title-content,
+.ant-menu-submenu-popup .budget-menu-item.ant-menu-item-selected span,
+.ant-menu-submenu-popup .budget-menu-item.ant-menu-item-selected .anticon {
+  color: #000 !important;
+  background: #F3E7BF !important;
+}
+
+/* Override any default ant-design styles */
+.ant-menu-submenu-popup .ant-menu-vertical .ant-menu-item {
+  color: #fff !important;
+}
+
+.ant-menu-submenu-popup .ant-menu-item .ant-menu-title-content {
+  color: #fff !important;
+}
+
+/* Target the specific menu item with all classes */
+.ant-menu-item.budget-popup-item.budget-submenu-item.css-f2v215,
+.ant-menu-item.budget-popup-item.budget-submenu-item.css-f2v215 span,
+.ant-menu-item.budget-popup-item.budget-submenu-item.css-f2v215 .ant-menu-title-content {
+  color: #fff !important;
+}
+
+/* Ensure all nested spans and text content are white */
+.ant-menu-item.budget-popup-item.budget-submenu-item.css-f2v215 * {
+  color: #fff !important;
+}
+
+/* Hover state */
+.ant-menu-item.budget-popup-item.budget-submenu-item.css-f2v215:hover,
+.ant-menu-item.budget-popup-item.budget-submenu-item.css-f2v215:hover span,
+.ant-menu-item.budget-popup-item.budget-submenu-item.css-f2v215:hover .ant-menu-title-content,
+.ant-menu-item.budget-popup-item.budget-submenu-item.css-f2v215:hover * {
+  color: #000 !important;
+  background: #F3E7BF !important;
+}
+
+/* Selected state */
+.ant-menu-item.budget-popup-item.budget-submenu-item.css-f2v215.ant-menu-item-selected,
+.ant-menu-item.budget-popup-item.budget-submenu-item.css-f2v215.ant-menu-item-selected span,
+.ant-menu-item.budget-popup-item.budget-submenu-item.css-f2v215.ant-menu-item-selected .ant-menu-title-content,
+.ant-menu-item.budget-popup-item.budget-submenu-item.css-f2v215.ant-menu-item-selected * {
+  color: #000 !important;
+  background: #F3E7BF !important;
+}
+
+/* Budget submenu popup styles */
+.ant-menu-submenu-popup {
+  background-color: #18279A !important;
+}
+
+.budget-menu-item {
+  background-color: #18279A !important;
+}
+
+.budget-menu-item span,
+.budget-menu-item .anticon {
+  color: #fff !important;
+}
+
+/* Hover styles */
+.budget-menu-item:hover {
+  background-color: #F3E7BF !important;
+}
+
+.budget-menu-item:hover span,
+.budget-menu-item:hover .anticon {
+  color: #000 !important;
+}
+
+/* Selected styles */
+.budget-menu-item.ant-menu-item-selected {
+  background-color: #F3E7BF !important;
+}
+
+.budget-menu-item.ant-menu-item-selected span,
+.budget-menu-item.ant-menu-item-selected .anticon {
+  color: #000 !important;
+}

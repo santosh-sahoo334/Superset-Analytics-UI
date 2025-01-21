@@ -56,23 +56,18 @@ const ScrollButton = styled.button`
 `;
 
 const ScrollButtons = () => {
-  const scrollToTop = () => {
-    const scrollableElement = document.querySelector('.ant-layout-content');
-    if (scrollableElement) {
-      const newPosition = scrollableElement.scrollTop - 800;
-      scrollableElement.scrollTo({
-        top: Math.max(0, newPosition),
-        behavior: 'smooth'
-      });
-    }
-  };
+  const scrollAmount = 800; // Adjust this value to control scroll distance
 
-  const scrollToBottom = () => {
-    const scrollableElement = document.querySelector('.ant-layout-content');
+  const scrollToDirection = (direction: 'up' | 'down') => {
+    const scrollableElement = document.querySelector('.site-content');
     if (scrollableElement) {
-      const newPosition = scrollableElement.scrollTop + 800;
+      const currentScroll = scrollableElement.scrollTop;
+      const newPosition = direction === 'up' 
+        ? Math.max(0, currentScroll - scrollAmount)
+        : currentScroll + scrollAmount;
+      
       scrollableElement.scrollTo({
-        top: Math.min(scrollableElement.scrollHeight - scrollableElement.clientHeight, newPosition),
+        top: newPosition,
         behavior: 'smooth'
       });
     }
@@ -81,10 +76,10 @@ const ScrollButtons = () => {
   return (
     <ButtonContainer>
       <ScrollBox>
-        <ScrollButton onClick={scrollToTop} title="Scroll to top">
+        <ScrollButton onClick={() => scrollToDirection('up')} title="Scroll up">
           <UpOutlined />
         </ScrollButton>
-        <ScrollButton onClick={scrollToBottom} title="Scroll to bottom">
+        <ScrollButton onClick={() => scrollToDirection('down')} title="Scroll down">
           <DownOutlined />
         </ScrollButton>
       </ScrollBox>
