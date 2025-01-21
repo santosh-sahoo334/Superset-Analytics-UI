@@ -1,121 +1,83 @@
 /* eslint-disable */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Card } from "primereact/card";
 import { Tooltip } from "primereact/tooltip";
 import { HTTP } from "../config/http-common";
 import LoadingSpinner from "../LoadingSpinner";
-import { Paginator, PaginatorPageChangeEvent } from "primereact/paginator";
 import { useAuth } from "../context/AuthContext";
-import { ArrowUpOutlined, CalendarOutlined, DollarOutlined, PercentageOutlined } from "@ant-design/icons";
-export const AlertsTableUI = () => {
-  const [alertsData, setALertsData] = useState<any>([]);
-  const [loading, setLoading] = useState<Boolean>(true);
-  const [tableLoading, setTableLoading] = useState<boolean>(true);
-  const [paginationState, setPaginationState] = useState({
-    currentPage: 0,
-    countPerPage: 5,
-  });
-  // const maxTextLength = 4;
-  const { accessToken } = useAuth();
-  useEffect(() => {
-    const getAlerts = async () => {
-      try {
-        setTableLoading(true);
-        const params = {
-          q: JSON.stringify({
-            page: paginationState.currentPage,
-            page_size: paginationState.countPerPage,
-          }),
-        };
-        const response = await HTTP.get("/alerts/", {
-          params,
-          headers: { Authorization: accessToken },
-        });
-        setALertsData(response.data);
-      } catch (error) {
-        console.error("Failed to fetch alerts data:", error);
-      } finally {
-        setLoading(false);
-        setTableLoading(false);
-      }
-    };
-    getAlerts();
-  }, [paginationState]);
+import {
+  ArrowUpOutlined,
+  CalendarOutlined,
+  DollarOutlined,
+  InfoCircleOutlined,
+  PercentageOutlined,
+} from "@ant-design/icons";
 
-  const { result, list_columns, label_columns } = alertsData;
-  const handlePageChange = (event: PaginatorPageChangeEvent) => {
-    setPaginationState({
-      currentPage: event.page,
-      countPerPage: event.rows,
-    });
+export const AlertsTableUI = () => {
+  const [alertsData, setAlertsData] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [tableLoading, setTableLoading] = useState<boolean>(false);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [pageSize] = useState<number>(5); // Number of rows to fetch per page
+  const tableRef = useRef<HTMLDivElement>(null); // Ref for the scrollable table container
+  const { accessToken } = useAuth();
+
+  // Fetch data for the table
+  const getAlerts = async (page: number) => {
+    try {
+      setTableLoading(true);
+      const params = {
+        q: JSON.stringify({
+          page: page,
+          page_size: pageSize,
+        }),
+      };
+      const response = await HTTP.get("/alerts/", {
+        params,
+        headers: { Authorization: accessToken },
+      });
+      if (response.data) {
+        const newAlerts = response.data.result;
+        setAlertsData((prevData) => [...prevData, ...newAlerts]);
+        setHasMore(newAlerts.length === pageSize); // Check if more data is available
+      }
+    } catch (error) {
+      console.error("Failed to fetch alerts data:", error);
+    } finally {
+      setLoading(false);
+      setTableLoading(false);
+    }
   };
-  const customizeLabels = {
-    billing_account_name: "Account",
-    resource_name: "Resource",
-    cost_on_datekey: (
-      <div>
-        {/* <Tooltip target=".dollar_date" mouseTrack mouseTrackLeft={10} /> */}
-        {/* <img
-          className="dollar_date"
-          alt="dollar_date"
-          src="/layout/images/dollar_date.png"
-          style={{ width: "14px", height: "14px" }}
-          data-pr-tooltip="Cost"
-          data-pr-position="bottom"
-        /> */}
-        <CalendarOutlined className="text-xl	pi pi-calendar" />
-      </div>
-    ),
-    // prev_day_cost: (
-    //   <div>
-    //     {/* <Tooltip target=".dollar_date_prev" mouseTrack mouseTrackLeft={10} /> */}
-    //     <img
-    //       className="dollar_date_prev"
-    //       alt="dollar_date_prev"
-    //       src="/layout/images/dollar_date.png"
-    //       style={{ width: "24px", height: "24px" }}
-    //       data-pr-tooltip="on Prev. Day"
-    //       data-pr-position="bottom"
-    //     />
-    //   </div>
-    // ),
-    cost_diff: (
-      <div>
-        {/* <Tooltip target=".dollar_Increased" mouseTrack mouseTrackLeft={10}> */}
-        <DollarOutlined className="text-xl	pi pi-dollar" />
-        <ArrowUpOutlined className="text-xl	pi pi-arrow-up" style={{ color: "red" }} />
-        {/* </Tooltip>
-        <img
-          className="dollar_Increased"
-          alt="dollar_Increased"
-          src="/layout/images/price-growth.png"
-          style={{ width: "24px", height: "24px" }}
-          data-pr-position="bottom"
-        /> */}
-      </div>
-    ),
-    dod_percentage_change: (
-      <div>
-        {/* <Tooltip target=".percent_Increased" mouseTrack mouseTrackLeft={10}> */}
-        <PercentageOutlined className="pi pi-percentage text-xl	" />
-        <ArrowUpOutlined className="text-xl	pi pi-arrow-up" style={{ color: "red" }} />
-        {/* </Tooltip>
-        <img
-          className="percent_Increased"
-          alt="percent_Increased"
-          src="/layout/images/percent_increase.png"
-          style={{ width: "18px", height: "18px" }}
-          data-pr-position="bottom"
-        /> */}
-      </div>
-    ),
-    datekey: "Date",
+
+  // Initial data fetch
+  useEffect(() => {
+    getAlerts(0);
+  }, []);
+
+  // Scroll handler for infinite scrolling
+  const handleScroll = () => {
+    if (!tableRef.current || !hasMore || tableLoading) return;
+
+    const { scrollTop, scrollHeight, clientHeight } = tableRef.current;
+    if (scrollTop + clientHeight >= scrollHeight - 10) {
+      const nextPage = currentPage + 1;
+      setCurrentPage(nextPage);
+      getAlerts(nextPage);
+    }
   };
-  const filteredColumns =
-    list_columns &&
-    list_columns?.filter((column) => !["id", "prev_day_cost"].includes(column));
+
+  useEffect(() => {
+    const ref = tableRef.current;
+    if (ref) {
+      ref.addEventListener("scroll", handleScroll);
+      return () => {
+        ref.removeEventListener("scroll", handleScroll);
+      };
+    }
+  }, [hasMore, tableLoading, currentPage]);
 
   const formatDateToMonthYear = (dateString) => {
     const date = new Date(dateString);
@@ -126,7 +88,6 @@ export const AlertsTableUI = () => {
     });
   };
 
-  // Function to truncate text and add tooltip
   const truncatedBodyTemplate = (
     rowData,
     columnKey,
@@ -139,7 +100,6 @@ export const AlertsTableUI = () => {
         ? `${value.slice(0, maxTextLength)}...`
         : value;
     const tooltipId = `${columnKey}-${rowIndex}`;
-
     return (
       <>
         <span id={tooltipId}>{truncatedText}</span>
@@ -153,89 +113,104 @@ export const AlertsTableUI = () => {
     return `$ ${Number(amount).toLocaleString()}`; // Format with commas
   };
 
-  const specificColumnWidth = "10px";
-  const columnsWithFixedWidth = [
-    "prev_day_cost",
-    "cost_diff",
-    "dod_percentage_change",
-    "datekey",
-  ];
+  const customizeLabels = {
+    billing_account_name: (
+      <div>
+        Account
+        <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} />
+      </div>
+    ),
+    resource_name: (
+      <div>
+        Resource
+        <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} />
+      </div>
+    ),
+    cost_on_datekey: (
+      <div>
+        <CalendarOutlined className="text-xl" />
+        <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} />
+      </div>
+    ),
+    cost_diff: (
+      <div>
+        Costing
+        <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} />
+      </div>
+    ),
+    dod_percentage_change: (
+      <div>
+        Percent
+        <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} />
+      </div>
+    ),
+    datekey: (
+      <div>
+        Date
+        <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} />
+      </div>
+    ),
+  };
 
   return (
-    <Card title="Alerts" className="w-full h-full relative">
+    <Card title="" className="w-full h-full relative">
       {loading ? (
         <div className="flex justify-center items-center">
           <LoadingSpinner />
         </div>
       ) : (
         <>
-          <DataTable
-            value={result}
-            scrollable
-            scrollHeight="280px"
-            loading={tableLoading}
-            className="w-full alert-table dashboard-table"
+          <div className="flex justify-start title-card gap-2 p-2 title-color">
+            <InfoCircleOutlined className="text-xl" />
+            <span className="text-3xl font-medium">Alerts</span>
+          </div>
+          <div
+            ref={tableRef}
+            style={{ maxHeight: "260px", overflowY: "auto" }} // Scrollable container
           >
-            {filteredColumns &&
-              filteredColumns?.map((columnKey) => (
-                <Column
-                  key={columnKey}
-                  field={columnKey}
-                  style={{
-                    whiteSpace: "nowrap",
-                    // width: columnsWithFixedWidth.includes(columnKey)
-                    //   ? specificColumnWidth
-                    //   : undefined,
-                  }}
-                  header={
-                    customizeLabels[columnKey] ||
-                    label_columns[columnKey] ||
-                    columnKey
-                  }
-                  body={(rowData, { rowIndex }) => {
-                    // Format the cost and date columns specifically
-                    if (
-                      columnKey === "cost_on_datekey" ||
-                      columnKey === "prev_day_cost"
-                    ) {
-                      return formatCurrency(rowData[columnKey]);
-                    }
-                    if (columnKey === "datekey") {
-                      return formatDateToMonthYear(rowData[columnKey]);
-                    }
-                    if (columnsWithFixedWidth.includes(columnKey)) {
+            <DataTable
+              value={alertsData}
+              scrollable
+              className="w-full alert-table dashboard-table-update"
+            >
+              {alertsData.length > 0 &&
+                Object.keys(alertsData[0])
+                .filter((columnKey) => !["id", "prev_day_cost"].includes(columnKey))
+                .map((columnKey) => (
+                  <Column
+                    key={columnKey}
+                    field={columnKey}
+                    header={customizeLabels[columnKey] || columnKey}
+                    body={(rowData, { rowIndex }) => {
+                      if (
+                        columnKey === "cost_on_datekey" ||
+                        columnKey === "prev_day_cost"
+                      ) {
+                        return formatCurrency(rowData[columnKey]);
+                      }
+                      if (columnKey === "datekey") {
+                        return formatDateToMonthYear(rowData[columnKey]);
+                      }
                       return truncatedBodyTemplate(
                         rowData,
                         columnKey,
                         rowIndex,
-                        4
+                        10
                       );
-                    }
-                    return truncatedBodyTemplate(
-                      rowData,
-                      columnKey,
-                      rowIndex,
-                      10
-                    );
-                  }}
-                  headerStyle={{
-                    backgroundColor: "#0032a5",
-                    color: "#ffffff",
-                    // display: "flex",
-                    // justifyContent: "center", // Centers the header items horizontally
-                    // alignItems: "center",
-                  }}
-                />
-              ))}
-          </DataTable>
-          <Paginator
-            first={paginationState.currentPage * paginationState.countPerPage}
-            rows={paginationState.countPerPage}
-            rowsPerPageOptions={[2, 5, 10]}
-            onPageChange={handlePageChange}
-            totalRecords={alertsData?.count}
-            className="custom-paginator"
-          />
+                    }}
+                    headerStyle={{
+                      backgroundColor: "#f2f3f6",
+                      color: "#667084",
+                    }}
+                  />
+                ))}
+            </DataTable>
+            {tableLoading && (
+              <div className="flex justify-center items-center mt-4">
+                <LoadingSpinner />
+              </div>
+            )}
+          </div>
         </>
       )}
     </Card>
