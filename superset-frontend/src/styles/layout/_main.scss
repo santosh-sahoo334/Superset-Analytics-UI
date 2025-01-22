@@ -175,7 +175,7 @@ a {
 @media (min-width: 1650px) {
   .dashboard-width {
     // padding-left: 4rem !important;
-    width: 40% !important;
+    width: 100% !important;
   }
 }
 
@@ -333,13 +333,27 @@ a {
   justify-content: space-between;
 }
 
+.search-card-list {
+  min-width: 100px;
+  /* display: flex; */
+  align-items: center;
+  gap: 2px;
+  /* background-color: #f2f3f6; */
+  /* border-radius: 38px; */
+  color: #667058;
+  justify-content: center;
+}
+
 .search-card{
+  min-width: 100px;
   display: flex;
   align-items: center;
   gap: 2px;
   background-color: #f2f3f6;
   border-radius: 38px;
-  color: #667058
+  color: #667058;
+  justify-content: center;
+
 }
 
 .currency {

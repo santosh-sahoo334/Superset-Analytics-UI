@@ -1,4 +1,5 @@
 /* eslint-disable */
+// @ts-nocheck
 import React, { useEffect, useState, useRef } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -117,37 +118,37 @@ export const AlertsTableUI = () => {
     billing_account_name: (
       <div>
         Account
-        <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} />
+        <ArrowUpOutlined className="text-lg" style={{ color: "#667084", marginLeft: "3px" }} />
       </div>
     ),
     resource_name: (
       <div>
         Resource
-        <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} />
+        <ArrowUpOutlined className="text-lg" style={{ color: "#667084", marginLeft: "3px"  }} />
       </div>
     ),
     cost_on_datekey: (
       <div>
-        <CalendarOutlined className="text-xl" />
-        <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} />
+        <CalendarOutlined className="text-lg" />
+        <ArrowUpOutlined className="text-lg" style={{ color: "#667084", marginLeft: "3px"  }} />
       </div>
     ),
     cost_diff: (
       <div>
         Costing
-        <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} />
+        <ArrowUpOutlined className="text-lg" style={{ color: "#667084", marginLeft: "3px"  }} />
       </div>
     ),
     dod_percentage_change: (
       <div>
         Percent
-        <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} />
+        <ArrowUpOutlined className="text-lg" style={{ color: "#667084", marginLeft: "3px"  }} />
       </div>
     ),
     datekey: (
       <div>
         Date
-        <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} />
+        <ArrowUpOutlined className="text-lg" style={{ color: "#667084", marginLeft: "3px"  }} />
       </div>
     ),
   };
@@ -155,7 +156,7 @@ export const AlertsTableUI = () => {
   return (
     <Card title="" className="w-full h-full relative">
       {loading ? (
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center self-center h-full w-full">
           <LoadingSpinner />
         </div>
       ) : (

@@ -1,6 +1,29 @@
 /* eslint-disable */
 // @ts-nocheck
-
+import {
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  SlidersOutlined,
+  SettingOutlined,
+  BellOutlined,
+  UserOutlined,
+  LogoutOutlined,
+  DashboardOutlined,
+  MoneyCollectOutlined,
+  DollarOutlined,
+  TagsOutlined,
+  EyeOutlined,
+  AlertOutlined,
+  LikeOutlined,
+  SafetyCertificateOutlined,
+  CalculatorOutlined,
+  DesktopOutlined,
+  ExperimentOutlined,
+  CalculatorOutlined,
+  DeploymentUnitOutlined,
+  ReconciliationOutlined,
+  CloseOutlined
+} from '@ant-design/icons'
 import { Card } from "primereact/card";
 import React, { useContext, useEffect, useState } from "react";
 import SearchDashboard from "../CsightCommon/SearchDashboard";
@@ -17,43 +40,53 @@ import DashboardCards from "../CsightCommon/dashboardCardData/dashboardCards";
 import { DollarOutlined, EditOutlined } from "@ant-design/icons";
 import BlogsCard from "../CsightCommon/dashboardCardData/blogsCards";
 
+const iconStyle = {
+  minWidth: '5px',
+  minHeight: '5px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  // marginLeft: '5px', 
+  marginRight: '5px',
+}
+
 const searchIconsData = {
-  cost: { icon: "/static/assets/images/layout/images/bill.png", title: "Cost" },
-  utilization: { icon: "/static/assets/images/layout/images/cpu.png", title: "Utilization" },
+  cost: { icon: <ReconciliationOutlined style={iconStyle} />, title: "Cost" },
+  utilization: { icon: <DesktopOutlined style={iconStyle} />, title: "Utilization" },
   dashboard: {
-    icon: "/static/assets/images/layout/images/satisfaction-scale.png",
+    icon: <DashboardOutlined style={iconStyle} />,
     title: "Dashboard",
   },
   recommendations: {
-    icon: "/static/assets/images/layout/images/notebook.png",
+    icon: <LikeOutlined style={iconStyle}   />,
     title: "Recommendation",
   },
   anomaly: {
-    icon: "/static/assets/images/layout/images/glitch.png",
+    icon: <AlertOutlined style={iconStyle} />,
     title: "Anomaly",
   },
   billing: {
-    icon: "/static/assets/images/layout/images/bill.png",
+    icon: <DollarOutlined style={iconStyle} />,
     title: "Billing",
   },
   governance: {
-    icon: "/static/assets/images/layout/images/government.png",
+    icon: <SafetyCertificateOutlined style={iconStyle}  />,
     title: "Governance",
   },
   'green ops': {
-    icon: "/static/assets/images/layout/images/save-the-planet.png",
+    icon: <ExperimentOutlined style={iconStyle} />,
     title: "GreenOps",
   },
   observability: {
-    icon: "/static/assets/images/layout/images/save-the-planet.png",
+    icon: <EyeOutlined style={iconStyle} />,
     title: "Observability",
   },
   tags: {
-    icon: "/static/assets/images/layout/images/price-tag.png",
+    icon: <TagsOutlined style={iconStyle}   />,
     title: "Tags",
   },
   budget: {
-    icon: "/static/assets/images/layout/images/profit.png",
+    icon: <DollarOutlined style={iconStyle}/>,
     title: "Budget",
   }
 };
@@ -248,22 +281,18 @@ const CsightDashboard = () => {
           {/* Centered Circle Icon Section */}
           <div className="flex flex-column align-items-center w-full lg:w-6">
             <SearchDashboard onClickItem={handleItemClick} />
-            <span className="text-grey-400 text-start input-w">Recent Searches:</span>
+            
             <div
-              className={`lg:gap-0 gap-4 flex flex-column justify-content-start lg:w-full sm:flex-row dashboard-width`}
+              className={``}
             >
-              {" "}
+              <span className="text-grey-400 text-start input-w text-xs">Recent Searches :</span>
               <div
-                className={`${
-                  searchOrder.length < 1
-                    ? "empty-circle-container px-1 py-2"
-                    : ""
-                } flex justify-content-start gap-3`}
+                className={`flex justify-content-start gap-3 mt-2`}
               >
                 {recentSearchLoader ? (
                   <div className="circle-container-loader px-1 py-2">
                     {" "}
-                    <LoadingSpinner size="30px" />
+                    <LoadingSpinner size="20px" />
                   </div>
                 ) : (
                   searchOrder?.map((item, index) => {
@@ -286,18 +315,10 @@ const CsightDashboard = () => {
                       //       : item.keyword}
                       //   </div>
                       // </div>
-                      <div className="search-card px-2 py-2" key={index}>
-                        <div className="">
-                          <img
-                            src={
-                              searchIconsData[item.keyword?.toLowerCase()]?.icon
-                            }
-                            alt="CSIGHT"
-                            width={50}
-                            height={50}
-                            className="circle-image"
-                          />
-                        </div>
+                      <div className="search-card px-2 py-2 cursor-pointer" key={index}>
+                        
+                          {searchIconsData[item.keyword?.toLowerCase()]?.icon}
+                        
                         <div className="text-center mt-0 font-semibold">
                           {item.keyword?.length > 11
                             ? item.keyword?.slice(0, 8) + ".."
@@ -336,7 +357,7 @@ const CsightDashboard = () => {
         </div>
       </Card>
 
-      <div className="flex flex-column gap-4 lg:flex-row">
+      <div className="flex flex-column gap-1 lg:flex-row">
         <div
           className="card-bg w-full text-center text-2xl font-bold lg:w-6"
           style={{ height: "330px" }}
@@ -352,7 +373,7 @@ const CsightDashboard = () => {
         </div>
       </div>
 
-      <div className="flex flex-column gap-4 lg:flex-row">
+      <div className="flex flex-column gap-1 lg:flex-row mb-4">
         <div
           className="card-bg w-full text-center text-2xl font-bold lg:w-6"
           style={{ height: "330px" }}

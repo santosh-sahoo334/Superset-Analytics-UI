@@ -69,7 +69,7 @@ const SearchDashboard = ({ onClickItem = (route) => {} }) => {
         </div>
       </div>
       {searchTerm && (
-        <Card className="search-result search-card">
+        <Card className="search-result search-card-list">
           {filteredItems.length > 0 ? (
             <ul className="list-none p-0">
               {filteredItems.map((item, index) => (
