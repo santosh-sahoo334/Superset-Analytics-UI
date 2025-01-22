@@ -177,12 +177,12 @@ export const AlertsTableUI = () => {
           </div>
           <div
             ref={tableRef}
-            style={{ maxHeight: "260px", overflowY: "auto" }} // Scrollable container
+            style={{ maxHeight: "270px", overflowY: "auto" }} // Scrollable container
           >
             <DataTable
               value={alertsData}
               scrollable
-              className="w-full alert-table dashboard-table-update"
+              className="w-full alert-table dashboard-table-update h-full"
             >
               {columnOrder.map((columnKey) => (
                 <Column

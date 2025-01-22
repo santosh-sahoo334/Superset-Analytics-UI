@@ -10,6 +10,19 @@ import { useAuth } from "../context/AuthContext";
 import LoadingSpinner from "../LoadingSpinner";
 import { ArrowUpOutlined, DollarOutlined, SettingOutlined } from "@ant-design/icons";
 
+const TruncatedHeader = ({ text }: { text: string }) => {
+  const truncatedText = text.length > 10 ? `${text.slice(0, 10)}...` : text;
+  // Sanitize the ID by removing special characters and spaces
+  const tooltipId = `header-${text.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`;
+  
+  return (
+    <>
+      <span id={tooltipId}>{truncatedText}</span>
+      {text.length > 10 && <Tooltip target={`#${tooltipId}`} content={text} />}
+    </>
+  );
+};
+
 export const RecommendationsTable = () => {
   const [recommenddationsData, setRecommendationsData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -76,44 +89,37 @@ export const RecommendationsTable = () => {
   const customizeLabels = {
     billing_account_name: (
       <div>
-        Account
-        {/* <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} /> */}
+        <TruncatedHeader text="Account" />
       </div>
     ),
     service_name: (
       <div>
-        Resource
-        {/* <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} /> */}
+        <TruncatedHeader text="Resource" />
       </div>
     ),
     service_component: (
       <div>
-        Component 
-        {/* <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} /> */}
+        <TruncatedHeader text="Component" />
       </div>
     ),
     recommendation_message: (
       <div>
-        Recommendation 
-        {/* <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} /> */}
+        <TruncatedHeader text="Recommendation" />
       </div>
     ),
     current_cost: (
       <div>
-       Current $
-        {/* <ArrowUpOutlined className="text-xl" style={{ color: "#667084", fontWeight: "bold" }} /> */}
+        <TruncatedHeader text="Current $" />
       </div>
     ),
     proposed_cost: (
       <div>
-        Proposed $
-        {/* <ArrowUpOutlined className="text-xl" style={{ color: "#667084", fontWeight: "bold" }} /> */}
+        <TruncatedHeader text="Proposed $" />
       </div>
     ),
     datekey: (
       <div>
-        Month 
-        {/* <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} /> */}
+        <TruncatedHeader text="Month" />
       </div>
     ),
   };
@@ -168,11 +174,11 @@ export const RecommendationsTable = () => {
             />
             <span className="text-2xl font-medium">Recommendations</span>
           </div>
-          <div ref={tableRef} style={{ maxHeight: "260px", overflowY: "auto" }}>
+          <div ref={tableRef} style={{ maxHeight: "300px", overflowY: "auto" }}>
             <DataTable
               value={recommenddationsData}
               scrollable
-              className="w-full dashboard-table-update"
+              className="w-full dashboard-table-update  h-full"
             >
               {columnOrder.map((columnKey) => (
                 <Column

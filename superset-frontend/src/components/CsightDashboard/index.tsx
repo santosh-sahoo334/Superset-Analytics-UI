@@ -285,7 +285,7 @@ const CsightDashboard = () => {
   };
 
   return (
-    <div className="flex flex-column w-full gap-2 pl-2 pr-2 mt-[50px]">
+    <div className="flex flex-column w-full gap-2 pl-2 pr-2 mt-[50px]" >
       <Card className="card-bg bg-white w-full custom-dashboard-card">
         <div className="flex flex-column lg:flex-row gap-4 justify-content-between align-items-center">
           {/* Left Side Potential Savings */}
@@ -315,7 +315,7 @@ const CsightDashboard = () => {
             >
               {/* <span className="text-grey-400 text-start input-w text-xs">Recent Searches :</span> */}
               <div
-                className={`flex justify-content-start gap-3 mt-2`}
+                className={`flex justify-content-start gap-3 mt-1`}
               >
                 {recentSearchLoader ? (
                   <div className="circle-container-loader px-1 py-2">
@@ -388,30 +388,30 @@ const CsightDashboard = () => {
       <div className="flex flex-column gap-1 lg:flex-row">
         <div
           className="card-bg w-full text-center text-2xl font-bold lg:w-6"
-          style={{ height: "330px" }}
+          style={{ minHeight: "330px" }}
         >
           <AlertsTableUI />
         </div>
 
         <div
           className="card-bg w-full text-center text-2xl font-bold lg:w-6"
-          style={{ height: "330px" }}
+          style={{ minHeight: "330px" }}
         >
           <ResourcesTable />
         </div>
       </div>
 
-      <div className="flex flex-column gap-1 lg:flex-row">
+      <div className="flex flex-column gap-1 lg:flex-row" style={{paddingBottom: '20px !important'}}>
         <div
           className="card-bg w-full text-center text-2xl font-bold lg:w-6"
-          style={{ height: "330px" }}
+          style={{ minHeight: "330px" }}
         >
           <RecommendationsTable />
         </div>
         
         <div
           className="card-bg w-full text-center text-2xl font-bold lg:w-6"
-          style={{ height: "330px" }}
+          style={{ minHeight: "330px" }}
         >
           <BlogsCard />
         </div>
@@ -451,6 +451,7 @@ const CsightDashboard = () => {
           </div>
         </Card> */}
       </div>
+      <div style={{ minHeight: "50px !important" }}></div>
     </div>
   );
 };

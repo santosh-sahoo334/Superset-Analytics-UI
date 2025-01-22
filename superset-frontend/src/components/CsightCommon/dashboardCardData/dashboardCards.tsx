@@ -30,6 +30,26 @@ export const DashboardCards: React.FC<PotentialType> = ({
     }
   }
 
+  function getTextSizeClass(value: string | number) {
+    const stringValue = value?.toString() || '';
+    const length = stringValue.length;
+    
+    if (length <= 4) return 'text-4xl'; // Larger text for smaller numbers
+    if (length <= 6) return 'text-3xl'; // Medium text for medium numbers
+    if (length <= 8) return 'text-2xl'; // Smaller text for larger numbers
+    return 'text-xl'; // Smallest text for very large numbers
+  }
+
+  const getValue = () => {
+    if (title === 'Monthly Cost') {
+      return result && formatCurrency(result[0]?.total_cost);
+    }
+    return result && `${result[0]?.potential_savings_percentage ?? ''} %`;
+  };
+
+  const value = getValue();
+  const textSizeClass = getTextSizeClass(value);
+
   return (
     <div
       className={` flex items-center w-full ${
@@ -47,13 +67,11 @@ export const DashboardCards: React.FC<PotentialType> = ({
           <ArrowDownOutlined />{" + 6.5 % "}
           </span>
           since last month</p>}
-        <p className={`saving-value font-medium m-0`}>
+        <p className={`saving-value font-medium m-0 ${textSizeClass}`}>
           {loading ? (
             <LoadingSpinner size="20px" />
-          ) : title === 'Monthly Cost' ? (
-            result && formatCurrency(result[0]?.total_cost)
           ) : (
-            result && `${result[0]?.potential_savings_percentage ?? ''} %`
+            value
           )}
         </p>
         {showRight && <p className="m-0 text-sm">
