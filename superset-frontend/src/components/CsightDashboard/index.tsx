@@ -39,54 +39,82 @@ import { LayoutContext } from "src/layout/context/layoutcontext";
 import DashboardCards from "../CsightCommon/dashboardCardData/dashboardCards";
 import { DollarOutlined, EditOutlined } from "@ant-design/icons";
 import BlogsCard from "../CsightCommon/dashboardCardData/blogsCards";
+import { 
+  LayoutDashboard, 
+  CircleDollarSign, 
+  LayoutList, 
+  FileText, 
+  Tag, 
+  Eye, 
+  ChartNetwork, 
+  ThumbsUp, 
+  Building2, 
+  FileSpreadsheet, 
+  Boxes, 
+  Combine, 
+  Leaf, 
+  LayoutPanelTop 
+} from 'lucide-react';
 
 const iconStyle = {
-  minWidth: '5px',
-  minHeight: '5px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  // marginLeft: '5px', 
-  marginRight: '5px',
+  fontSize: '12px',
+  // minWidth: '5px',
+  // minHeight: '5px',
+  // display: 'flex',
+  // alignItems: 'center',
+  // justifyContent: 'center',
+  // // marginLeft: '5px', 
+  // marginRight: '5px',
 }
 
 const searchIconsData = {
-  cost: { icon: <ReconciliationOutlined style={iconStyle} />, title: "Cost" },
-  utilization: { icon: <DesktopOutlined style={iconStyle} />, title: "Utilization" },
+  cost: { icon: <CircleDollarSign size={12}
+  strokeWidth={1.5} style={{marginRight: '10px'}}/>, title: "Cost" },
+  utilization: { icon: <LayoutList size={12}
+  strokeWidth={1.5} style={{marginRight: '10px'}}/>, title: "Utilization" },
   dashboard: {
-    icon: <DashboardOutlined style={iconStyle} />,
+    icon: <LayoutDashboard size={12}
+    strokeWidth={1.5} style={{marginRight: '10px'}}/>,
     title: "Dashboard",
   },
   recommendations: {
-    icon: <LikeOutlined style={iconStyle}   />,
+    icon: <ThumbsUp size={12}
+    strokeWidth={1.5}  style={{marginRight: '10px'}}/>,
     title: "Recommendation",
   },
   anomaly: {
-    icon: <AlertOutlined style={iconStyle} />,
+    icon: <ChartNetwork size={12}
+    strokeWidth={1.5}  style={{marginRight: '10px'}}/>,
     title: "Anomaly",
   },
   billing: {
-    icon: <DollarOutlined style={iconStyle} />,
+    icon: <FileText size={12}
+    strokeWidth={1.5}  style={{marginRight: '10px'}}/>,
     title: "Billing",
   },
   governance: {
-    icon: <SafetyCertificateOutlined style={iconStyle}  />,
+    icon: <Building2 size={12}
+    strokeWidth={1.5} style={{marginRight: '10px'}}/>,
     title: "Governance",
   },
   'green ops': {
-    icon: <ExperimentOutlined style={iconStyle} />,
+    icon: <Leaf size={12}
+    strokeWidth={1.5} style={{marginRight: '10px'}}/>,
     title: "GreenOps",
   },
   observability: {
-    icon: <EyeOutlined style={iconStyle} />,
+    icon: <Eye size={12}
+    strokeWidth={1.5}  style={{marginRight: '10px'}}/>,
     title: "Observability",
   },
   tags: {
-    icon: <TagsOutlined style={iconStyle}   />,
+    icon: <Tag size={12}
+    strokeWidth={1.5}  style={{marginRight: '10px'}}/>,
     title: "Tags",
   },
   budget: {
-    icon: <DollarOutlined style={iconStyle}/>,
+    icon: <Combine  size={12}
+    strokeWidth={1.5} style={{marginRight: '10px'}}/>,
     title: "Budget",
   }
 };
@@ -285,7 +313,7 @@ const CsightDashboard = () => {
             <div
               className={``}
             >
-              <span className="text-grey-400 text-start input-w text-xs">Recent Searches :</span>
+              {/* <span className="text-grey-400 text-start input-w text-xs">Recent Searches :</span> */}
               <div
                 className={`flex justify-content-start gap-3 mt-2`}
               >
@@ -319,7 +347,7 @@ const CsightDashboard = () => {
                         
                           {searchIconsData[item.keyword?.toLowerCase()]?.icon}
                         
-                        <div className="text-center mt-0 font-semibold">
+                        <div className="text-center mt-0">
                           {item.keyword?.length > 11
                             ? item.keyword?.slice(0, 8) + ".."
                             : item.keyword}
@@ -373,7 +401,7 @@ const CsightDashboard = () => {
         </div>
       </div>
 
-      <div className="flex flex-column gap-1 lg:flex-row mb-4">
+      <div className="flex flex-column gap-1 lg:flex-row">
         <div
           className="card-bg w-full text-center text-2xl font-bold lg:w-6"
           style={{ height: "330px" }}

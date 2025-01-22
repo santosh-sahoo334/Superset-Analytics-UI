@@ -1,4 +1,5 @@
 /* eslint-disable */
+// @ts-nocheck
 import React, { useEffect, useState, useRef } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -72,31 +73,44 @@ export const ResourcesTable = () => {
     }
   }, [hasMore, tableLoading, currentPage]);
 
-  const columnLabelsList = {
-    // resource_name: "Resource",
-    resource_name: (
-      <div>
-        Resource <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} />
-      </div>
-    ),
-    // count_new_resources_added: "# New Resources Added",
-    count_new_resources_added: (
-      <div>
-        # New Assets <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} />
-      </div>
-    ),
-    cost_new_resources: (
-      <div>
-        Costing<ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} />
-      </div>
-    ),
-    // new_resources_added_datekey: "Date Added",
-    new_resources_added_datekey: (
-      <div>
-        Date Added <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} />
-      </div>
-    ),
-  };
+  const columnLabelsList = [
+    {
+      field: 'resource_name',
+      header: (
+        <div>
+          Resource 
+          {/* <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} /> */}
+        </div>
+      )
+    },
+    {
+      field: 'count_new_resources_added',
+      header: (
+        <div>
+          # Newly Added
+          {/* <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} /> */}
+        </div>
+      )
+    },
+    {
+      field: 'new_resources_added_datekey',
+      header: (
+        <div>
+          Date
+          {/* <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} /> */}
+        </div>
+      )
+    },
+    {
+      field: 'cost_new_resources',
+      header: (
+        <div>
+          {/* $ Cost */}
+          <DollarOutlined className="text-xl" />
+        </div>
+      )
+    }
+  ];
 
   const formatDate = (dateString: string): string => {
     const options: Intl.DateTimeFormatOptions = {
@@ -138,34 +152,32 @@ export const ResourcesTable = () => {
         <>
           <div className="flex justify-start title-card gap-2 p-2 title-color">
           <SettingOutlined className="text-xl"/>
-            <span className="text-3xl font-medium">New Assets</span>
+            <span className="text-2xl font-medium">New Assets</span>
           </div>
           <div ref={tableRef} style={{ maxHeight: "260px", overflowY: "auto" }}>
             <DataTable
               value={resourcesData}
               scrollable
               className="w-full dashboard-table-update"
-              // loading={tableLoading}
             >
-              {resourcesData.length > 0 &&
-                Object.keys(resourcesData[0]).filter((column) => column !== "id").map((columnKey) => (
-                  <Column
-                    key={columnKey}
-                    field={columnKey}
-                    header={columnLabelsList[columnKey] || columnKey}
-                    style={{ width: "25%", whiteSpace: "nowrap" }}
-                    body={(rowData, { rowIndex }) => {
-                      if (columnKey === "cost_new_resources") {
-                        return formatCurrency(rowData[columnKey]);
-                      }
-                      if (columnKey === "new_resources_added_datekey") {
-                        return formatDate(rowData[columnKey]);
-                      }
-                      return truncatedBodyTemplate(rowData, columnKey, rowIndex);
-                    }}
-                    headerStyle={{ backgroundColor: "#f2f3f6", color: "#667084"}}
-                  />
-                ))}
+              {columnLabelsList.map((col) => (
+                <Column
+                  key={col.field}
+                  field={col.field}
+                  header={col.header}
+                  style={{ width: "25%", whiteSpace: "nowrap" }}
+                  body={(rowData, { rowIndex }) => {
+                    if (col.field === "cost_new_resources") {
+                      return formatCurrency(rowData[col.field]);
+                    }
+                    if (col.field === "new_resources_added_datekey") {
+                      return formatDate(rowData[col.field]);
+                    }
+                    return truncatedBodyTemplate(rowData, col.field, rowIndex);
+                  }}
+                  headerStyle={{ backgroundColor: "#f2f3f6", color: "#667084"}}
+                />
+              ))}
             </DataTable>
             {tableLoading && (
               <div className="flex justify-center items-center mt-4">

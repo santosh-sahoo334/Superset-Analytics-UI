@@ -119,7 +119,10 @@ const App = () => {
           </Route>
         ))}
       </Switch>
-      <ToastContainer />
+      {
+      userEmail && adminList?.includes(userEmail) ?
+      <ToastContainer /> : null
+      }
         </RootContextProviders>
       </RootLayout>
       </AIBotProvider>

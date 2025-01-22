@@ -225,9 +225,11 @@ function Welcome({ user, addDangerToast }: WelcomeProps) {
     ];
   }, []);
 
+  const userEmail:any = user?.username || null;
+  const adminList =process.env.ADMIN_EMAIL || [];
+
   useEffect(()=>{
-    const userEmail:any = user?.username || null;
-    const adminList =process.env.ADMIN_EMAIL || [];
+  
     if(userEmail && !adminList?.includes(userEmail)){
       const slug = Cookies.get('slug') || 'teksecur';
       history.replace( `/superset/dashboard/${slug}`);
@@ -243,6 +245,9 @@ function Welcome({ user, addDangerToast }: WelcomeProps) {
   },[])
 
   useEffect(() => {
+    if(userEmail && !adminList?.includes(userEmail)){
+      return
+    }
     if (!otherTabFilters) {
       return;
     }
@@ -332,6 +337,9 @@ function Welcome({ user, addDangerToast }: WelcomeProps) {
   };
 
   useEffect(() => {
+    if(userEmail && !adminList?.includes(userEmail)){
+      return
+    }
     if (!collapseState && queryData?.length) {
       setActiveState(activeState => [...activeState, '4']);
     }
@@ -346,6 +354,9 @@ function Welcome({ user, addDangerToast }: WelcomeProps) {
   }, [chartData, queryData, dashboardData]);
 
   useEffect(() => {
+    if(userEmail && !adminList?.includes(userEmail)){
+      return
+    }
     if (!collapseState && activityData?.[TableTab.Viewed]?.length) {
       setActiveState(activeState => ['1', ...activeState]);
     }

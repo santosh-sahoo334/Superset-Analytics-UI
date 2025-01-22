@@ -114,41 +114,51 @@ export const AlertsTableUI = () => {
     return `$ ${Number(amount).toLocaleString()}`; // Format with commas
   };
 
+  const columnOrder = [
+    'billing_account_name',
+    'resource_name',
+    'datekey',
+    'cost_on_datekey',
+    'cost_diff',
+    'dod_percentage_change'
+  ];
+
   const customizeLabels = {
     billing_account_name: (
       <div>
         Account
-        <ArrowUpOutlined className="text-lg" style={{ color: "#667084", marginLeft: "3px" }} />
+        {/* <ArrowUpOutlined className="text-lg" style={{ color: "#667084", marginLeft: "3px" }} /> */}
       </div>
     ),
     resource_name: (
       <div>
         Resource
-        <ArrowUpOutlined className="text-lg" style={{ color: "#667084", marginLeft: "3px"  }} />
-      </div>
-    ),
-    cost_on_datekey: (
-      <div>
-        <CalendarOutlined className="text-lg" />
-        <ArrowUpOutlined className="text-lg" style={{ color: "#667084", marginLeft: "3px"  }} />
-      </div>
-    ),
-    cost_diff: (
-      <div>
-        Costing
-        <ArrowUpOutlined className="text-lg" style={{ color: "#667084", marginLeft: "3px"  }} />
-      </div>
-    ),
-    dod_percentage_change: (
-      <div>
-        Percent
-        <ArrowUpOutlined className="text-lg" style={{ color: "#667084", marginLeft: "3px"  }} />
+        {/* <ArrowUpOutlined className="text-lg" style={{ color: "#667084", marginLeft: "3px"  }} /> */}
       </div>
     ),
     datekey: (
       <div>
         Date
-        <ArrowUpOutlined className="text-lg" style={{ color: "#667084", marginLeft: "3px"  }} />
+        {/* <ArrowUpOutlined className="text-lg" style={{ color: "#667084", marginLeft: "3px"  }} /> */}
+      </div>
+    ),
+    cost_on_datekey: (
+      <div>
+        {/* <CalendarOutlined className="text-lg" /> */}
+        <DollarOutlined className="text-lg" style={{ color: "#667084", marginLeft: "3px"  }} />
+        {/* $ on Date */}
+      </div>
+    ),
+    cost_diff: (
+      <div>
+         <span className="font-bold">$</span> 
+        <ArrowUpOutlined className="text-lg  text-red-500" style={{  marginLeft: "3px"  }} />
+      </div>
+    ),
+    dod_percentage_change: (
+      <div>
+        <span className="font-bold">%</span> 
+        <ArrowUpOutlined className="text-lg  text-red-500" style={{  marginLeft: "3px"  }} />
       </div>
     ),
   };
@@ -163,7 +173,7 @@ export const AlertsTableUI = () => {
         <>
           <div className="flex justify-start title-card gap-2 p-2 title-color">
             <InfoCircleOutlined className="text-xl" />
-            <span className="text-3xl font-medium">Alerts</span>
+            <span className="text-2xl font-medium">Alerts</span>
           </div>
           <div
             ref={tableRef}
@@ -174,37 +184,34 @@ export const AlertsTableUI = () => {
               scrollable
               className="w-full alert-table dashboard-table-update"
             >
-              {alertsData.length > 0 &&
-                Object.keys(alertsData[0])
-                .filter((columnKey) => !["id", "prev_day_cost"].includes(columnKey))
-                .map((columnKey) => (
-                  <Column
-                    key={columnKey}
-                    field={columnKey}
-                    header={customizeLabels[columnKey] || columnKey}
-                    body={(rowData, { rowIndex }) => {
-                      if (
-                        columnKey === "cost_on_datekey" ||
-                        columnKey === "prev_day_cost"
-                      ) {
-                        return formatCurrency(rowData[columnKey]);
-                      }
-                      if (columnKey === "datekey") {
-                        return formatDateToMonthYear(rowData[columnKey]);
-                      }
-                      return truncatedBodyTemplate(
-                        rowData,
-                        columnKey,
-                        rowIndex,
-                        10
-                      );
-                    }}
-                    headerStyle={{
-                      backgroundColor: "#f2f3f6",
-                      color: "#667084",
-                    }}
-                  />
-                ))}
+              {columnOrder.map((columnKey) => (
+                <Column
+                  key={columnKey}
+                  field={columnKey}
+                  header={customizeLabels[columnKey] || columnKey}
+                  body={(rowData, { rowIndex }) => {
+                    if (
+                      columnKey === "cost_on_datekey" ||
+                      columnKey === "prev_day_cost"
+                    ) {
+                      return formatCurrency(rowData[columnKey]);
+                    }
+                    if (columnKey === "datekey") {
+                      return formatDateToMonthYear(rowData[columnKey]);
+                    }
+                    return truncatedBodyTemplate(
+                      rowData,
+                      columnKey,
+                      rowIndex,
+                      10
+                    );
+                  }}
+                  headerStyle={{
+                    backgroundColor: "#f2f3f6",
+                    color: "#667084",
+                  }}
+                />
+              ))}
             </DataTable>
             {tableLoading && (
               <div className="flex justify-center items-center mt-4">

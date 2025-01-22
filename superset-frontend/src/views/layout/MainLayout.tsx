@@ -38,6 +38,8 @@ import AppBreadCrumb from 'src/layout/AppBreadCrumb'
 import { useAuth } from 'src/components/CsightCommon/context/AuthContext'
 import ChatBot from "src/components/CsightChatbot";
 import { useAIBotContext } from "src/components/CsightChatbot/Context";
+import { LayoutDashboard, CircleDollarSign, LayoutList, FileText, Tag, Eye, ChartNetwork, ThumbsUp, Building2, FileSpreadsheet, Boxes, Combine, Leaf, LayoutPanelTop } from 'lucide-react';
+// import hamburgerIcon from '../../../src/assets/images/icons/hamburger.svg'
 
 const { Header, Sider, Content } = Layout
 
@@ -46,17 +48,17 @@ interface MainLayoutProps {
 }
 
 export default function MainLayoutCsight({ children }: MainLayoutProps) {
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(true)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [openKeys, setOpenKeys] = useState<string[]>([])
   const isMobile = useMediaQuery({ maxWidth: 768 });
 
-  const {  setFlashCardData } = useAIBotContext();
+  const { setFlashCardData } = useAIBotContext();
 
   const dashboardLayout = useSelector<RootState, DashboardLayout>(
     state => state.dashboardLayout.present,
   );
-  
+
 
   const tabRedirectionDetails = [
     'Cost',
@@ -92,30 +94,30 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
   }
 
   const hidTabBar = () => {
-    if(dashboardLayout){
+    if (dashboardLayout) {
       const tabValues = Object.keys(dashboardLayout)
-      .filter(key => key.startsWith('TABS')) 
-      .map(key => dashboardLayout[key]);  
-      if(tabValues && tabValues.length>0 && tabValues[0]?.id){
+        .filter(key => key.startsWith('TABS'))
+        .map(key => dashboardLayout[key]);
+      if (tabValues && tabValues.length > 0 && tabValues[0]?.id) {
         // Find the div element by its id
         const parentElement = document.getElementById(tabValues[0].id);
         if (parentElement) {
           // Find the first child element with role="tablist"
-          const tabListElement:any = parentElement.querySelector(":scope > [role='tablist']");
+          const tabListElement: any = parentElement.querySelector(":scope > [role='tablist']");
           if (tabListElement) {
             // Hide the tablist element
             tabListElement.style.display = 'none';
-          } 
-        } 
+          }
+        }
       }
     }
   }
 
-  const tabOptionClick = async(itemTab?:any) => {
+  const tabOptionClick = async (itemTab?: any) => {
     hidTabBar();
     const findTab = findTabIdByName(dashboardLayout, itemTab);
-    if(findTab){
-        // Search for the tab element by ID
+    if (findTab) {
+      // Search for the tab element by ID
       const tabElement = document.getElementById(
         `${findTab.parent}-tab-${findTab.id}`
       );
@@ -123,31 +125,31 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
       // Trigger the click event if the element exists
       if (tabElement) {
         tabElement.click();
-      } 
+      }
     }
   }
 
-  const { clickedNavItem,activeNavItem, setActiveNavItem,setClickedNavItem } = useContext(LayoutContext);
+  const { clickedNavItem, activeNavItem, setActiveNavItem, setClickedNavItem } = useContext(LayoutContext);
 
-  const navItems:any = {
-    dashboard: {id:'dashboard',name:'Dashboard'},
-    onprem: {id:'onprem',name:'OnPrem'},
-    cost: {id:'cost',name:'Cost'},
-    utilization: {id:'utilization',name:'Utilization'},
-    billing: {id:'billing', name: 'Billing',replaceName:'Billing Plans'},
-    tags: {id:'tags',name:'Tags'},
-    observability: {id:'observability',name:'Observability'},
-    anomaly: {id:'anomaly',name:'Anomaly',replaceName: 'Tags'},
-    recommendations: {id:'recommendations',name:'Recommendations'},
-    governance: {id:'governance',name:'Governance',replaceName:'Executive Report'},//Executive Report
-    'bud-vs-act': {id:'bud-vs-act',name: 'Bud vs Act' ,replaceName:'Budget vs Actuals'},
-    'budget-unit': {id:'budget-unit',name:'Budget Unit'},
-    'green-ops': {id:'green-ops',name:'GreenOps'}
+  const navItems: any = {
+    dashboard: { id: 'dashboard', name: 'Dashboard' },
+    onprem: { id: 'onprem', name: 'OnPrem' },
+    cost: { id: 'cost', name: 'Cost' },
+    utilization: { id: 'utilization', name: 'Utilization' },
+    billing: { id: 'billing', name: 'Billing', replaceName: 'Billing Plans' },
+    tags: { id: 'tags', name: 'Tags' },
+    observability: { id: 'observability', name: 'Observability' },
+    anomaly: { id: 'anomaly', name: 'Anomaly', replaceName: 'Tags' },
+    recommendations: { id: 'recommendations', name: 'Recommendations' },
+    governance: { id: 'governance', name: 'Governance', replaceName: 'Executive Report' },//Executive Report
+    'bud-vs-act': { id: 'bud-vs-act', name: 'Bud vs Act', replaceName: 'Budget vs Actuals' },
+    'budget-unit': { id: 'budget-unit', name: 'Budget Unit' },
+    'green-ops': { id: 'green-ops', name: 'GreenOps' }
   }
-  
+
 
   useEffect(() => {
-    if(tabRedirectionDetails.includes(activeNavItem)){
+    if (tabRedirectionDetails.includes(activeNavItem)) {
       setTimeout(() => {
         tabOptionClick(activeNavItem);
       }, 1000);
@@ -163,16 +165,16 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
 
   const handleMenuClick = (info: MenuInfo) => {
     setFlashCardData([]);
-    const key:any = info.key.toString();
+    const key: any = info.key.toString();
     setActiveNavItem(navItems[key].replaceName || navItems[key].name);
     setClickedNavItem(navItems[key].name);
     tabOptionClick(navItems[key].replaceName || navItems[key].name);
-    
+
     // Only close budget submenu if clicking outside budget section
     if (!key.startsWith('bud-vs-act') && !key.startsWith('budget-unit') && !key.startsWith('budget')) {
       setOpenKeys([]);
     }
-    
+
     // Close mobile drawer when clicking any menu item
     if (isMobile) {
       setMobileOpen(false);
@@ -197,14 +199,15 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
   // Add helper function to get selected keys
   const getSelectedKeys = () => {
     const currentKey = Object.keys(navItems).find(key => navItems[key].name === clickedNavItem) || 'dashboard';
-    
+
     // In collapsed mode, if a budget sub-item is selected, also select the budget parent
     if (collapsed && !isMobile && (currentKey === 'bud-vs-act' || currentKey === 'budget-unit')) {
       return [currentKey, 'budget'];
     }
-    
+
     return [currentKey];
   };
+
 
   const sidebarContent = (
     <Menu
@@ -216,7 +219,14 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
       onClick={handleMenuClick}
       className="custom-sidebar stable-menu"
     >
-      <Menu.Item key="dashboard" icon={<DashboardOutlined />}>
+      <Menu.Item
+        key="dashboard"
+        icon={
+          <LayoutDashboard size={18} strokeWidth={1.5} color={clickedNavItem == 'Dashboard' ? '#000' : '#fff'} style={{
+            marginLeft: `${collapsed ? '36%' : '5%'}`
+          }} />
+        }
+      >
         Dashboard
       </Menu.Item>
 
@@ -228,21 +238,38 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
       }} /> */}
 
       <Menu.ItemGroup key="observe-group" title="OBSERVE">
-        <Menu.Item key="cost" icon={<ReconciliationOutlined />}>
+        <Menu.Item key="cost" icon={
+          // <ReconciliationOutlined />
+          <CircleDollarSign size={18} strokeWidth={1.5} color={clickedNavItem == 'Cost' ? '#000' : '#fff'} style={{
+            marginLeft: `${collapsed ? '36%' : '5%'}`
+          }} />
+        }>
           Cost
         </Menu.Item>
-        <Menu.Item key="utilization" icon={<DesktopOutlined />}>
+        <Menu.Item key="utilization" icon={
+          <LayoutList size={18} strokeWidth={1.5} color={clickedNavItem == 'Utilization' ? '#000' : '#fff'} style={{
+            marginLeft: `${collapsed ? '36%' : '5%'}`
+          }} />
+        }>
           Utilization
         </Menu.Item>
-        <Menu.Item key="billing" icon={<DollarOutlined />}>
+        <Menu.Item key="billing" icon={
+          <FileText size={18} strokeWidth={1.5} color={clickedNavItem == 'Billing' ? '#000' : '#fff'} style={{
+            marginLeft: `${collapsed ? '36%' : '5%'}`
+          }} />
+        }>
           Billing
         </Menu.Item>
-        <Menu.Item key="tags" icon={<TagsOutlined />}>
+        <Menu.Item key="tags" icon={
+          <Tag size={18} strokeWidth={1.5} color={clickedNavItem == 'Tags' ? '#000' : '#fff'} style={{
+            marginLeft: `${collapsed ? '36%' : '5%'}`
+          }} />
+        }>
           Tags
         </Menu.Item>
       </Menu.ItemGroup>
 
-      <hr style={{ 
+      <hr style={{
         margin: '8px 16px',
         borderColor: 'rgba(255, 255, 255, 0.2)',
         borderStyle: 'solid',
@@ -250,18 +277,30 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
       }} />
 
       <Menu.ItemGroup key="optimize-group" title="OPTIMIZE">
-        <Menu.Item key="observability" icon={<EyeOutlined />}>
+        <Menu.Item key="observability" icon={
+          <Eye size={18} strokeWidth={1.5} color={clickedNavItem == 'Observability' ? '#000' : '#fff'} style={{
+            marginLeft: `${collapsed ? '36%' : '5%'}`
+          }} />
+        }>
           Observability
         </Menu.Item>
-        <Menu.Item key="anomaly" icon={<AlertOutlined />}>
+        <Menu.Item key="anomaly" icon={
+          <ChartNetwork size={18} strokeWidth={1.5} color={clickedNavItem == 'Anomaly' ? '#000' : '#fff'} style={{
+            marginLeft: `${collapsed ? '36%' : '5%'}`
+          }} />
+        }>
           Anomaly
         </Menu.Item>
-        <Menu.Item key="recommendations" icon={<LikeOutlined />}>
+        <Menu.Item key="recommendations" icon={
+          <ThumbsUp size={18} strokeWidth={1.5} color={clickedNavItem == 'Recommendations' ? '#000' : '#fff'} style={{
+            marginLeft: `${collapsed ? '36%' : '5%'}`
+          }} />
+        }>
           Recommendations
         </Menu.Item>
       </Menu.ItemGroup>
 
-      <hr style={{ 
+      <hr style={{
         margin: '8px 16px',
         borderColor: 'rgba(255, 255, 255, 0.2)',
         borderStyle: 'solid',
@@ -269,43 +308,110 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
       }} />
 
       <Menu.ItemGroup key="operate-group" title="OPERATE">
-        <Menu.Item key="governance" icon={<SafetyCertificateOutlined />}>
+        <Menu.Item key="governance" icon={
+          <Building2 size={18} strokeWidth={1.5} color={clickedNavItem == 'Governance' ? '#000' : '#fff'} style={{
+            marginLeft: `${collapsed ? '36%' : '5%'}`
+          }} />
+        }>
           Governance
         </Menu.Item>
-        <Menu.SubMenu 
-          key="budget" 
-          icon={<CalculatorOutlined style={{ color: '#fff' }} />}
-          title={<span style={{ color: '#fff' }}>Budget</span>}
+        <Menu.SubMenu
+          key="budget"
+          icon={
+            <FileSpreadsheet size={18} strokeWidth={1.5} color={'#fff'} style={{
+              marginLeft: `${collapsed ? '-5px' : '5%'}`,
+              marginRight: `${collapsed ? '0%' : '5%'}`,
+            }} />
+          }
+          title={<span style={{ color: '#fff' }}>{collapsed ? '' : 'Budget'}</span>}
           className="budget-submenu"
         >
-          <Menu.Item 
-            key="bud-vs-act" 
+
+          <Menu.Item
+            key="bud-vs-act"
             className="budget-menu-item"
-            icon={<DollarOutlined style={{ color: '#fff' }} />}
+            icon={
+              <Combine
+                size={18}
+                strokeWidth={1.5}
+                color={clickedNavItem == 'Bud vs Act' ? '#000' : '#fff'}
+                style={{
+                  marginLeft: collapsed ? '15px' : '5%',
+                  marginRight: collapsed ? '8px' : '0' // Add space between icon and text in collapsed mode
+                }}
+              />
+            }
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              // justifyContent: collapsed ? 'flex-start' : 'space-between',
+              // padding: collapsed ? '8px 12px' : undefined
+            }}
           >
-            <span style={{ color: '#fff' }}>Bud vs Act</span>
+            <span style={{
+              color: '#fff',
+              paddingBottom: collapsed ? '0' : '15px',
+              marginLeft: collapsed ? '0' : '15px',
+              marginTop: collapsed ? '0' : '12px'
+            }}>
+              Bud vs Act
+            </span>
           </Menu.Item>
-          <Menu.Item 
-            key="budget-unit" 
+
+
+          <Menu.Item
+            key="budget-unit"
             className="budget-menu-item"
-            icon={<DeploymentUnitOutlined style={{ color: '#fff' }} />}
+            icon={
+              <Boxes
+                size={18}
+                strokeWidth={1.5}
+                color={clickedNavItem == 'Budget Unit' ? '#000' : '#fff'}
+                style={{
+                  marginLeft: collapsed ? '15px' : '5%',
+                  marginRight: collapsed ? '8px' : '0' // Add space between icon and text in collapsed mode
+                }}
+              />
+            }
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              // justifyContent: collapsed ? 'flex-start' : 'space-between',
+              // padding: collapsed ? '8px 12px' : undefined
+            }}
           >
-            <span style={{ color: '#fff' }}>Budget Unit</span>
+            <span style={{
+             color: '#fff',
+             paddingBottom: collapsed ? '0' : '15px',
+             marginLeft: collapsed ? '0' : '15px',
+             marginTop: collapsed ? '0' : '12px'
+            }}>
+              Budget Unit
+            </span>
           </Menu.Item>
         </Menu.SubMenu>
-        <Menu.Item key="green-ops" icon={<ExperimentOutlined />}>
+        <Menu.Item key="green-ops" icon={
+          <Leaf size={18} strokeWidth={1.5} color={clickedNavItem == 'GreenOps' ? '#000' : '#fff'} style={{
+            marginLeft: `${collapsed ? '36%' : '5%'}`,
+
+          }} />
+        }>
           Green Ops
         </Menu.Item>
       </Menu.ItemGroup>
 
-      <hr style={{ 
+      <hr style={{
         margin: '8px 16px',
         borderColor: 'rgba(255, 255, 255, 0.2)',
         borderStyle: 'solid',
         borderWidth: '0 0 1px 0'
       }} />
 
-      <Menu.Item key="onprem" icon={<MoneyCollectOutlined />}>
+      <Menu.Item key="onprem" icon={
+        <LayoutPanelTop size={18} strokeWidth={1.5} color={clickedNavItem == 'OnPrem' ? '#000' : '#fff'} style={{
+          marginLeft: `${collapsed ? '36%' : '5%'}`
+        }} />
+      }>
         OnPrem
       </Menu.Item>
     </Menu>
@@ -313,12 +419,12 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
 
   const { logout } = useAuth();
 
-  
+
   return (
     <Layout style={{ minHeight: '100vh' }} className=''>
       <Header className="app-header">
         <div className="header-left">
-          <img 
+          <img
             src="/static/assets/images/layout/images/csight.png"
             alt="Logo"
             className="header-logo"
@@ -336,7 +442,7 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
           )}
           {!isMobile && <AppBreadCrumb />}
         </div>
-        
+
         <Space size={16} className="header-right">
           <BellOutlined />
           <SlidersOutlined />
@@ -356,20 +462,30 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
       </Header>
 
       {!isMobile ? (
-        <Sider 
-          trigger={null} 
-          collapsible 
+        <Sider
+          trigger={null}
+          collapsible
           collapsed={collapsed}
           width={200}
           collapsedWidth={80}
           className="app-sidebar stable-menu"
         >
-          <Button
+          {/* collapsed */}
+          <div className={`${collapsed ? 'sidebar-trigger-center' : 'sidebar-trigger '}`}>
+            {!collapsed && <span className="text-white ml-4 font-semibold">Navigation</span>}
+            <img
+              src={'/static/assets/images/icons/hamburger.svg'}
+              alt="hamburger"
+              onClick={() => setCollapsed(!collapsed)}
+              className="cursor-pointer mr-4"
+            />
+          </div>
+          {/* <Button
             type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            icon={<img src={'/static/assets/images/icons/hamburger.svg'} alt="hamburger" />}
             onClick={() => setCollapsed(!collapsed)}
             className="sidebar-trigger"
-          />
+          /> */}
           {sidebarContent}
         </Sider>
       ) : (

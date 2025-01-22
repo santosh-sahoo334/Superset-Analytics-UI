@@ -65,7 +65,7 @@ const AppBreadcrumb = () => {
   }
 
   return (
-    <nav className="layout-breadcrumb" style={{display: 'flex', marginLeft: '10px'}}>
+    <nav className="layout-breadcrumb" style={{display: 'flex'}}>
       <ol>
         {breadcrumbs.map((item) => {
           if (item.labels === clickedNavItem) {

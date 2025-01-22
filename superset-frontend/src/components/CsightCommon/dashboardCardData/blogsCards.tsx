@@ -1,4 +1,5 @@
 /* eslint-disable */
+// @ts-nocheck
 import { ArrowRightOutlined, EditOutlined } from '@ant-design/icons';
 import { Card } from 'primereact/card';
 import LoadingSpinner from '../LoadingSpinner';
@@ -19,7 +20,7 @@ export const BlogsCard = () => {
         <>
           <div className="flex justify-start title-card gap-2 p-2 title-color">
             <EditOutlined className="text-xl" />
-            <span className="text-3xl font-medium">Blogs</span>
+            <span className="text-2xl font-medium">Blogs</span>
           </div>
           <div>
                 <div className="flex mb-3">

@@ -3,11 +3,12 @@ import React from 'react'
 import { useAIBotContext } from '../../Context'
 
 const AiDialogHeader = () => {
-    const { setOpenChatModal, isResize, setIsResize } = useAIBotContext()
+    const { setOpenChatModal, isResize, setIsResize,setQuestion } = useAIBotContext()
 
     const onClickClose = () => {
         setOpenChatModal(false)
         setIsResize(false)
+        setQuestion("") 
     }
 
     const onClickResize = () => {
