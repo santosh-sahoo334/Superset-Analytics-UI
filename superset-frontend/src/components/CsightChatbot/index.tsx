@@ -17,6 +17,7 @@ const { TextArea } = Input; // Destructure TextArea from Input
 import { OverlayPanel } from 'primereact/overlaypanel';
 import { useRef } from 'react';
 import { LayoutContext } from "../../layout/context/layoutcontext";
+import { questionsList } from "./Component/FlashCard";
 
 
 interface GRAPH_ITEMS {
@@ -77,6 +78,7 @@ const ChatBot = () => {
     getGraphTaskID,
     selectedDropDownGraph,
     setselectedDropDownGraph,
+    flashCardData
   } = useAIBotContext();
 
   const { clickedNavItem } = useContext(LayoutContext);
@@ -86,6 +88,11 @@ const ChatBot = () => {
   const op = useRef<OverlayPanel>(null);
 
   const [containerHeight, setContainerHeight] = useState(120);
+  const [currentNavItem, setCurrentNavItem] = useState('Dashboard');
+
+  useEffect(() => {
+    setCurrentNavItem(clickedNavItem);
+  }, [clickedNavItem]);
 
   const onClickChatIcon = () => {
     setOpenChatModal(!opneChatModal);
@@ -179,6 +186,31 @@ const ChatBot = () => {
     }
   }, [question]);
 
+  useEffect(() => {
+    console.log('call1');
+    
+    if((flashCardData?.length <= 0 || !opneChatModal) && currentNavItem === clickedNavItem){
+      return
+    }
+    console.log('call2');
+    const id = uuidv4();
+    setPrompts((p) => [
+      ...p,
+      {
+        id,
+        answer: "",
+        question: questionsList[clickedNavItem],
+        suggested_questions: [],
+        task_id: null,
+        isLoading: true,
+        questionTime: new Date(),
+        answerTime: null,
+        notShow: true
+      },
+    ]);
+    getTaskID(questionsList[clickedNavItem], id);
+  }, [opneChatModal]);
+
 
   return (
     <div className="relative">
@@ -218,10 +250,11 @@ const ChatBot = () => {
                 className="flex flex-column align-items-end gap-4 w-full"
                 ref={prompts?.length === index + 1 ? messageContainerRef : null}
               >
+                {!p?.notShow && (
                 <QuestionContainer
                   question={p.question}
                   date={p?.questionTime}
-                />
+                />)}
                 <AnswerContainer
                   answer={p.answer}
                   isLoading={p.isLoading}

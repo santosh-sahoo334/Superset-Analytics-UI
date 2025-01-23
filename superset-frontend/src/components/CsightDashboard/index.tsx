@@ -286,7 +286,7 @@ const CsightDashboard = () => {
 
   return (
     <div className="flex flex-column w-full gap-2 pl-2 pr-2 mt-[50px]" >
-      <Card className="card-bg bg-white w-full custom-dashboard-card">
+      <Card className="card-bg bg-white w-full" style={{ minHeight: searchOrder?.length > 0 ? "112px" : "88px" }}>
         <div className="flex flex-column lg:flex-row gap-4 justify-content-between align-items-center">
           {/* Left Side Potential Savings */}
           <div className="w-full lg:w-3 relative percenatge-saved-card ">
@@ -325,24 +325,6 @@ const CsightDashboard = () => {
                 ) : (
                   searchOrder?.map((item, index) => {
                     return (
-                      // <div className="circle-container px-1 py-2" key={index}>
-                      //   <div className="circle-border">
-                      //     <img
-                      //       src={
-                      //         searchIconsData[item.keyword?.toLowerCase()]?.icon
-                      //       }
-                      //       alt="CSIGHT"
-                      //       width={60}
-                      //       height={60}
-                      //       className="circle-image"
-                      //     />
-                      //   </div>
-                      //   <div className="text-center mt-2 font-bold">
-                      //     {item.keyword?.length > 11
-                      //       ? item.keyword?.slice(0, 8) + ".."
-                      //       : item.keyword}
-                      //   </div>
-                      // </div>
                       <div className="search-card px-2 py-2 cursor-pointer" key={index}>
                         
                           {searchIconsData[item.keyword?.toLowerCase()]?.icon}

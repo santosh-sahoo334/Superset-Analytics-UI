@@ -174,7 +174,7 @@ export const RecommendationsTable = () => {
             />
             <span className="text-2xl font-medium">Recommendations</span>
           </div>
-          <div ref={tableRef} style={{ maxHeight: "300px", overflowY: "auto" }}>
+          <div ref={tableRef} style={{ maxHeight: "263px", overflowY: "auto" }}>
             <DataTable
               value={recommenddationsData}
               scrollable

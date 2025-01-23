@@ -40,12 +40,14 @@ import ChatBot from "src/components/CsightChatbot";
 import { useAIBotContext } from "src/components/CsightChatbot/Context";
 import { LayoutDashboard, CircleDollarSign, LayoutList, FileText, Tag, Eye, ChartNetwork, ThumbsUp, Building2, FileSpreadsheet, Boxes, Combine, Leaf, LayoutPanelTop } from 'lucide-react';
 // import hamburgerIcon from '../../../src/assets/images/icons/hamburger.svg'
-
+import { v4 as uuidv4 } from "uuid";
 const { Header, Sider, Content } = Layout
 
 interface MainLayoutProps {
   children: React.ReactNode
 }
+
+import { questionsList } from "src/components/CsightChatbot/Component/FlashCard";
 
 export default function MainLayoutCsight({ children }: MainLayoutProps) {
   const [collapsed, setCollapsed] = useState(true)
@@ -53,7 +55,7 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
   const [openKeys, setOpenKeys] = useState<string[]>([])
   const isMobile = useMediaQuery({ maxWidth: 768 });
 
-  const { setFlashCardData } = useAIBotContext();
+  const { setPrompts } = useAIBotContext();
 
   const dashboardLayout = useSelector<RootState, DashboardLayout>(
     state => state.dashboardLayout.present,
@@ -164,7 +166,7 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
   }, [clickedNavItem]);
 
   const handleMenuClick = (info: MenuInfo) => {
-    setFlashCardData([]);
+    // setFlashCardData([]);
     const key: any = info.key.toString();
     setActiveNavItem(navItems[key].replaceName || navItems[key].name);
     setClickedNavItem(navItems[key].name);

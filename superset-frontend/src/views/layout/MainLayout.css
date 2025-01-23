@@ -36,23 +36,6 @@
   color: #000000 !important;
 }
 
-
-/* .ant-menu-item .anticon:hover {
-  color: #000000 !important;
-}    */
-
-
-/* .ant-menu-item:hover {
-  color: #000000 !important;
-} */
-
-/* .stable-menu .ant-menu-item.ant-menu-item-selected:hover,
-.stable-menu .ant-menu-submenu .ant-menu-item.ant-menu-item-selected:hover,
-.ant-menu-submenu-popup .ant-menu-item.ant-menu-item-selected:hover {
-  background: #F3E7BF !important;
-  color: #000000 !important;
-} */
-
 /* Selected submenu parent styles when child is selected - only in expanded mode */
 .stable-menu:not(.ant-menu-inline-collapsed) .ant-menu-submenu-selected > .ant-menu-submenu-title {
   background: transparent !important;
@@ -98,12 +81,6 @@
   justify-content: center !important;
 }
 
-/* Remove hover transform */
-/* .stable-menu .ant-menu-item:hover .anticon,
-.stable-menu .ant-menu-item.ant-menu-item-selected .anticon {
-  transform: none !important;
-  color: #000000 !important;
-} */
 
 /* Submenu styles */
 .stable-menu .ant-menu-submenu {
@@ -484,19 +461,6 @@
   justify-content: center !important;
   align-items: center !important;
 }
-
-/* Ensure selected menu items maintain black color */
-/* .ant-menu-dark .ant-menu-item-selected:hover,
-.ant-menu-dark .ant-menu-item-selected:active,
-.ant-menu-dark .ant-menu-item-selected:focus {
-  color: #000000 !important;
-} */
-
-/* .ant-menu-dark .ant-menu-item-selected:hover .anticon,
-.ant-menu-dark .ant-menu-item-selected:active .anticon,
-.ant-menu-dark .ant-menu-item-selected:focus .anticon {
-  color: #000000 !important;
-} */
 
 /* Selected submenu items should also be black */
 .ant-menu-dark .ant-menu-submenu-selected > .ant-menu-submenu-title,
@@ -1007,8 +971,10 @@
   background-color: #F3E7BF !important;
   color: #000 !important;
   border-radius: 6px !important;
-  margin: 4px 8px !important;
-  padding: 0 16px !important;
+  padding-right: 20px !important;
+  /* margin-left: -1px !important; */
+  /* margin: 4px 8px !important;
+  padding: 0 16px !important; */
   width: calc(100% - 16px) !important;
 }
 
@@ -1025,12 +991,6 @@
   color: rgba(255,255,255,0.65) !important;
 }
 
-/* Remove hover effects for non-selected items */
-/* .custom-menu-item:not(.ant-menu-item-selected):hover,
-.ant-menu-submenu .ant-menu-item:not(.ant-menu-item-selected):hover {
-  background: transparent !important;
-  color: #fff !important;
-} */
 
 /* Ensure submenu items maintain white text when not selected */
 .ant-menu-submenu .ant-menu-item:not(.ant-menu-item-selected) .anticon,
@@ -1038,18 +998,10 @@
   color: #fff !important;
 }
 
-/* .ant-menu-submenu .ant-menu-item:not(.ant-menu-item-selected) .anticon:hover,
-.ant-menu-submenu .ant-menu-item:not(.ant-menu-item-selected) .custom-menu-text:hover {
-  color: #000 !important;
-} */
 
 /* Submenu items padding */
 .ant-menu-submenu .ant-menu-item {
   padding-left: 40px !important;
-}
-
-.ant-menu-submenu .ant-menu-item.ant-menu-item-selected {
-  padding-left: 32px !important;
 }
 
 /* Budget section styles */
@@ -1070,36 +1022,6 @@
   background: transparent !important;
 } */
 
-.budget-section .budget-parent.ant-menu-item-selected {
-  background: #F3E7BF !important;
-  color: #000 !important;
-  border-radius: 6px !important;
-  margin: 4px 8px !important;
-  width: calc(100% - 16px) !important;
-}
-
-.budget-children {
-  background: #18279A !important;
-}
-
-.budget-children .ant-menu-item {
-  padding-left: 40px !important;
-  color: #fff !important;
-  background: #18279A !important;
-}
-
-.budget-children .ant-menu-item.ant-menu-item-selected {
-  background: #F3E7BF !important;
-  color: #000 !important;
-  border-radius: 6px !important;
-  margin: 4px 8px !important;
-  padding-left: 32px !important;
-  width: calc(100% - 16px) !important;
-}
-
-/* .budget-children .ant-menu-item:hover {
-  background: transparent !important;
-} */
 
 /* Ensure icons have correct color */
 .budget-section .anticon {
@@ -1131,45 +1053,9 @@
   color: #000 !important;
 } */
 
-/* Budget children styles */
-.budget-children {
-  background: #18279A !important;
-}
 
-.budget-children .ant-menu-item {
-  padding-left: 40px !important;
-  color: #fff !important;
-  background: #18279A !important;
-}
 
-/* Hover styles for budget children */
-/* .budget-children .ant-menu-item:hover {
-  background: #F3E7BF !important;
-  color: #000 !important;
-  border-radius: 6px !important;
-  margin: 4px 8px !important;
-  width: calc(100% - 16px) !important;
-} */
 
-/* .budget-children .ant-menu-item:hover .anticon,
-.budget-children .ant-menu-item:hover .ant-menu-title-content {
-  color: #000 !important;
-} */
-
-/* Selected styles for budget children */
-.budget-children .ant-menu-item.ant-menu-item-selected {
-  background: #F3E7BF !important;
-  color: #000 !important;
-  border-radius: 6px !important;
-  margin: 4px 8px !important;
-  padding-left: 32px !important;
-  width: calc(100% - 16px) !important;
-}
-
-.budget-children .ant-menu-item.ant-menu-item-selected .anticon,
-.budget-children .ant-menu-item.ant-menu-item-selected .ant-menu-title-content {
-  color: #000 !important;
-}
 
 /* Ensure submenu arrow is also black on hover */
 /* .ant-menu-submenu.budget-parent .ant-menu-submenu-title:hover .ant-menu-submenu-arrow::before,
