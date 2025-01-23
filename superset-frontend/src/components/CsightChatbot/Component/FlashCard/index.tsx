@@ -6,25 +6,53 @@ import { useAIBotContext } from "../../Context";
 import { useToast } from "../../../CsightCommon/context/ToastContext";
 import axiosInstance from "../../../CsightCommon/config/axiosInstance";
 
+export const questionsList:any = {
+  "Cost": "Ask Cindy about your cloud spend analysis and cost optimization opportunities. I can help identify spending patterns and potential savings.",
+  "Dashboard": "Want to understand your dashboard metrics better? Ask me to explain the trends and insights from your cloud performance data.",
+  "Utilization": "Ask Cindy about your resource utilization patterns and optimization opportunities. I can help analyze usage trends and identify underutilized resources.",
+  "Billing": "Ask Cindy about your billing details and invoice analysis. I can help explain charges, track spending patterns, and identify unusual costs.",
+  "Tags": "Ask Cindy about your tag compliance and cost allocation insights. I can help identify missing tags and improve resource tracking.",
+  "Observability": "Ask Cindy about your cloud resource metrics and monitoring insights. I can help analyze performance patterns and usage trends.",
+  "Anomaly": "Ask Cindy to identify unusual spending patterns and cost spikes in your cloud resources. I can help analyze trends and potential cost impacts.",
+  "Recommendations": "Wondering how to optimize your cloud costs? I'm here to help with personalized recommendations - just ask!",
+  "Governance": "Need insights on your governance metrics? I can help you understand the month-over-month changes and key trends.",
+  "Bud vs Act": "Let me help you monitor your cloud spending against budgets. Ask about current trends and forecasts!",
+  "Budget Unit": "Let me help you monitor your cloud spending against budgets. Ask about current trends and forecasts!",
+  "GreenOps": "Ask Cindy about your sustainability metrics and carbon footprint. I can help analyze environmental impact and suggest eco-friendly optimizations.",
+  "OnPrem": "Ask Cindy about your on-premises infrastructure analysis and metrics. I can help track datacenter utilization, costs, and efficiency.",
+}
+
+export const parseSuggestedQuestions = (jsonString: string) => {
+  try {
+    const pattern = /^```json\s*([\s\S]*?)\s*```$/;
+    const cleanedString = jsonString.replace(pattern, "$1")?.trim();
+    return JSON.parse(cleanedString);
+  } catch (error) {
+    return [];
+  }
+};
+
+export const SuggestionQuestion = ({ question = "N/A", onClickSuggestion = (_question: string) => { } }) => {
+  return <div className='border-1 py-2 px-3 border-round-lg w-fit cursor-pointer' style={{ borderColor: "#4657B8", color: "#4657B8", textOverflow: "ellipsis" }} onClick={() => onClickSuggestion(question)}>
+      {question}
+  </div>
+}
+
 const FalshCard = ({clickedNavItem}:any) => {
   const { showToast } = useToast();
-  const { flashCardData, setFlashCardData }:any = useAIBotContext();
+  const { flashCardData, setFlashCardData,setPrompts,getTaskID: getTaskIDQuestions } = useAIBotContext();
 
-  const questionsList:any = {
-    "Cost": "Ask Cindy about your cloud spend analysis and cost optimization opportunities. I can help identify spending patterns and potential savings.",
-    "Dashboard": "Want to understand your dashboard metrics better? Ask me to explain the trends and insights from your cloud performance data.",
-    "Utilization": "Ask Cindy about your resource utilization patterns and optimization opportunities. I can help analyze usage trends and identify underutilized resources.",
-    "Billing": "Ask Cindy about your billing details and invoice analysis. I can help explain charges, track spending patterns, and identify unusual costs.",
-    "Tags": "Ask Cindy about your tag compliance and cost allocation insights. I can help identify missing tags and improve resource tracking.",
-    "Observability": "Ask Cindy about your cloud resource metrics and monitoring insights. I can help analyze performance patterns and usage trends.",
-    "Anomaly": "Ask Cindy to identify unusual spending patterns and cost spikes in your cloud resources. I can help analyze trends and potential cost impacts.",
-    "Recommendations": "Wondering how to optimize your cloud costs? I'm here to help with personalized recommendations - just ask!",
-    "Governance": "Need insights on your governance metrics? I can help you understand the month-over-month changes and key trends.",
-    "Bud vs Act": "Let me help you monitor your cloud spending against budgets. Ask about current trends and forecasts!",
-    "Budget Unit": "Let me help you monitor your cloud spending against budgets. Ask about current trends and forecasts!",
-    "GreenOps": "Ask Cindy about your sustainability metrics and carbon footprint. I can help analyze environmental impact and suggest eco-friendly optimizations.",
-    "OnPrem": "Ask Cindy about your on-premises infrastructure analysis and metrics. I can help track datacenter utilization, costs, and efficiency.",
-  }
+
+  const onClickSuggestion = (question: string) => {
+    if (!question) {
+        return showToast("Please type valid question", "error", "Invalid Question")
+    }
+    const id = uuidv4();
+    setPrompts((p => ([...p, { id, answer: "", question: question, suggested_questions: [], task_id: null, isLoading: true, questionTime: new Date(), answerTime: null }])))
+    getTaskIDQuestions(question, id)
+}
+
+
 
   const getTextAnswer = async (
     task_id: string,
@@ -56,6 +84,9 @@ const FalshCard = ({clickedNavItem}:any) => {
                 ...item,
                 isLoading: false,
                 answer: data?.result?.answer,
+                suggested_questions: parseSuggestedQuestions(
+                  data?.result?.suggested_questions
+                ),
               };
             }
             return item;
@@ -111,6 +142,7 @@ const FalshCard = ({clickedNavItem}:any) => {
 
   useEffect(() => {
     if (flashCardData?.length <= 0 && clickedNavItem && questionsList[clickedNavItem]) {
+      console.log('call3');
       // const q1 =
       //   "Which specific AWS services contributed most significantly to the cost increase from February to March 2024?";
       const id = uuidv4();
@@ -120,6 +152,8 @@ const FalshCard = ({clickedNavItem}:any) => {
       getTaskID(questionsList[clickedNavItem], id);
     }
   }, []);
+
+
 
   return (
     <>
@@ -153,6 +187,21 @@ const FalshCard = ({clickedNavItem}:any) => {
                 />
               </>
             )}
+
+
+          {!fd?.isLoading && fd?.suggested_questions?.length > 0 && <div className="mt-4">
+                <p style={{ fontWeight: 600, fontSize: "14px", color: "#1D2939" }}>Suggestions:</p>
+                <div className="questions-container">
+                    <div className="flex gap-3 flex-column">
+                        {fd?.suggested_questions?.map((question, index) => (
+                            <div key={index}>
+                                <SuggestionQuestion question={question} onClickSuggestion={onClickSuggestion} />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+              </div>
+              }
           </div>
         );
       })}

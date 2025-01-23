@@ -190,3 +190,11 @@ th:last-child {
   box-shadow: none;
   border-color: none;
 }
+
+
+
+.no-focus-border:focus {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}

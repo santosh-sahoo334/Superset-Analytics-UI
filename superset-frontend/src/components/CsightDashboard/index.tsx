@@ -39,54 +39,82 @@ import { LayoutContext } from "src/layout/context/layoutcontext";
 import DashboardCards from "../CsightCommon/dashboardCardData/dashboardCards";
 import { DollarOutlined, EditOutlined } from "@ant-design/icons";
 import BlogsCard from "../CsightCommon/dashboardCardData/blogsCards";
+import { 
+  LayoutDashboard, 
+  CircleDollarSign, 
+  LayoutList, 
+  FileText, 
+  Tag, 
+  Eye, 
+  ChartNetwork, 
+  ThumbsUp, 
+  Building2, 
+  FileSpreadsheet, 
+  Boxes, 
+  Combine, 
+  Leaf, 
+  LayoutPanelTop 
+} from 'lucide-react';
 
 const iconStyle = {
-  minWidth: '5px',
-  minHeight: '5px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  // marginLeft: '5px', 
-  marginRight: '5px',
+  fontSize: '12px',
+  // minWidth: '5px',
+  // minHeight: '5px',
+  // display: 'flex',
+  // alignItems: 'center',
+  // justifyContent: 'center',
+  // // marginLeft: '5px', 
+  // marginRight: '5px',
 }
 
 const searchIconsData = {
-  cost: { icon: <ReconciliationOutlined style={iconStyle} />, title: "Cost" },
-  utilization: { icon: <DesktopOutlined style={iconStyle} />, title: "Utilization" },
+  cost: { icon: <CircleDollarSign size={12}
+  strokeWidth={1.5} style={{marginRight: '10px'}}/>, title: "Cost" },
+  utilization: { icon: <LayoutList size={12}
+  strokeWidth={1.5} style={{marginRight: '10px'}}/>, title: "Utilization" },
   dashboard: {
-    icon: <DashboardOutlined style={iconStyle} />,
+    icon: <LayoutDashboard size={12}
+    strokeWidth={1.5} style={{marginRight: '10px'}}/>,
     title: "Dashboard",
   },
   recommendations: {
-    icon: <LikeOutlined style={iconStyle}   />,
+    icon: <ThumbsUp size={12}
+    strokeWidth={1.5}  style={{marginRight: '10px'}}/>,
     title: "Recommendation",
   },
   anomaly: {
-    icon: <AlertOutlined style={iconStyle} />,
+    icon: <ChartNetwork size={12}
+    strokeWidth={1.5}  style={{marginRight: '10px'}}/>,
     title: "Anomaly",
   },
   billing: {
-    icon: <DollarOutlined style={iconStyle} />,
+    icon: <FileText size={12}
+    strokeWidth={1.5}  style={{marginRight: '10px'}}/>,
     title: "Billing",
   },
   governance: {
-    icon: <SafetyCertificateOutlined style={iconStyle}  />,
+    icon: <Building2 size={12}
+    strokeWidth={1.5} style={{marginRight: '10px'}}/>,
     title: "Governance",
   },
   'green ops': {
-    icon: <ExperimentOutlined style={iconStyle} />,
+    icon: <Leaf size={12}
+    strokeWidth={1.5} style={{marginRight: '10px'}}/>,
     title: "GreenOps",
   },
   observability: {
-    icon: <EyeOutlined style={iconStyle} />,
+    icon: <Eye size={12}
+    strokeWidth={1.5}  style={{marginRight: '10px'}}/>,
     title: "Observability",
   },
   tags: {
-    icon: <TagsOutlined style={iconStyle}   />,
+    icon: <Tag size={12}
+    strokeWidth={1.5}  style={{marginRight: '10px'}}/>,
     title: "Tags",
   },
   budget: {
-    icon: <DollarOutlined style={iconStyle}/>,
+    icon: <Combine  size={12}
+    strokeWidth={1.5} style={{marginRight: '10px'}}/>,
     title: "Budget",
   }
 };
@@ -257,8 +285,8 @@ const CsightDashboard = () => {
   };
 
   return (
-    <div className="flex flex-column w-full gap-2 pl-2 pr-2 mt-[50px]">
-      <Card className="card-bg bg-white w-full custom-dashboard-card">
+    <div className="flex flex-column w-full gap-2 pl-2 pr-2 mt-[50px]" >
+      <Card className="card-bg bg-white w-full" style={{ minHeight: searchOrder?.length > 0 ? "112px" : "88px" }}>
         <div className="flex flex-column lg:flex-row gap-4 justify-content-between align-items-center">
           {/* Left Side Potential Savings */}
           <div className="w-full lg:w-3 relative percenatge-saved-card ">
@@ -285,9 +313,9 @@ const CsightDashboard = () => {
             <div
               className={``}
             >
-              <span className="text-grey-400 text-start input-w text-xs">Recent Searches :</span>
+              {/* <span className="text-grey-400 text-start input-w text-xs">Recent Searches :</span> */}
               <div
-                className={`flex justify-content-start gap-3 mt-2`}
+                className={`flex justify-content-start gap-3 mt-1`}
               >
                 {recentSearchLoader ? (
                   <div className="circle-container-loader px-1 py-2">
@@ -297,29 +325,11 @@ const CsightDashboard = () => {
                 ) : (
                   searchOrder?.map((item, index) => {
                     return (
-                      // <div className="circle-container px-1 py-2" key={index}>
-                      //   <div className="circle-border">
-                      //     <img
-                      //       src={
-                      //         searchIconsData[item.keyword?.toLowerCase()]?.icon
-                      //       }
-                      //       alt="CSIGHT"
-                      //       width={60}
-                      //       height={60}
-                      //       className="circle-image"
-                      //     />
-                      //   </div>
-                      //   <div className="text-center mt-2 font-bold">
-                      //     {item.keyword?.length > 11
-                      //       ? item.keyword?.slice(0, 8) + ".."
-                      //       : item.keyword}
-                      //   </div>
-                      // </div>
                       <div className="search-card px-2 py-2 cursor-pointer" key={index}>
                         
                           {searchIconsData[item.keyword?.toLowerCase()]?.icon}
                         
-                        <div className="text-center mt-0 font-semibold">
+                        <div className="text-center mt-0">
                           {item.keyword?.length > 11
                             ? item.keyword?.slice(0, 8) + ".."
                             : item.keyword}
@@ -360,30 +370,30 @@ const CsightDashboard = () => {
       <div className="flex flex-column gap-1 lg:flex-row">
         <div
           className="card-bg w-full text-center text-2xl font-bold lg:w-6"
-          style={{ height: "330px" }}
+          style={{ minHeight: "330px" }}
         >
           <AlertsTableUI />
         </div>
 
         <div
           className="card-bg w-full text-center text-2xl font-bold lg:w-6"
-          style={{ height: "330px" }}
+          style={{ minHeight: "330px" }}
         >
           <ResourcesTable />
         </div>
       </div>
 
-      <div className="flex flex-column gap-1 lg:flex-row mb-4">
+      <div className="flex flex-column gap-1 lg:flex-row" style={{paddingBottom: '20px !important'}}>
         <div
           className="card-bg w-full text-center text-2xl font-bold lg:w-6"
-          style={{ height: "330px" }}
+          style={{ minHeight: "330px" }}
         >
           <RecommendationsTable />
         </div>
         
         <div
           className="card-bg w-full text-center text-2xl font-bold lg:w-6"
-          style={{ height: "330px" }}
+          style={{ minHeight: "330px" }}
         >
           <BlogsCard />
         </div>
@@ -423,6 +433,7 @@ const CsightDashboard = () => {
           </div>
         </Card> */}
       </div>
+      <div style={{ minHeight: "50px !important" }}></div>
     </div>
   );
 };

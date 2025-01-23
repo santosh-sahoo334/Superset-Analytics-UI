@@ -123,7 +123,7 @@ a {
 }
 @media (min-width: 1300px) {
   .input-w {
-    width: 70%;
+    width: 80%;
   }
 }
 
@@ -273,8 +273,9 @@ a {
 .equal-card-size {
   min-width: 320px;
   // max-width: 300px;
-  min-height: 9rem;
+  max-height: 100px;
   // background-color: #e6f0ff;
+  margin-top: 15px;
   background-color: #f2f5fa;
   box-shadow: 0px 0px 1px rgba(66, 66, 66, 0.2);
   border-radius: 8px;
@@ -282,7 +283,7 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  padding: 10px;
   box-sizing: border-box;
 }
 
@@ -311,12 +312,14 @@ a {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  padding-bottom: 6px;
 }
 
 .savings-title h4 {
   font-size: 1.2rem;
   color: #666666;
   margin: 0;
+  margin-left: 10px;
 }
 
 .savings-amount {
@@ -348,12 +351,13 @@ a {
   min-width: 100px;
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 1px;
   background-color: #f2f3f6;
   border-radius: 38px;
   color: #667058;
   justify-content: center;
-
+  font-size: 12px;
+  max-height: 25px;
 }
 
 .currency {
@@ -406,7 +410,7 @@ a {
     justify-content: center;
   }
   .equal-card-size {
-    padding: 0 1rem 0 1rem;
+    padding: 1rem;
     margin-top: 1rem;
     margin-bottom: 1rem;
   }
@@ -501,5 +505,5 @@ text-align: start;
 }
 
 .custom-dashboard-card {
-  min-height: 158px;
+  min-height: 88px;
 }

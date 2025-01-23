@@ -47,6 +47,7 @@ export interface PromptAndRespponse {
   graphData?: GraphData;
   questionTime: Date | null;
   answerTime: Date | null;
+  notShow: boolean;
 }
 
 interface SelectedGraph {
@@ -152,7 +153,7 @@ const AIbotState = () => {
     // },
   ]);
 
-  const parseSuggestedQuestions = (jsonString: string) => {
+ const parseSuggestedQuestions = (jsonString: string) => {
     try {
       const pattern = /^```json\s*([\s\S]*?)\s*```$/;
       const cleanedString = jsonString.replace(pattern, "$1")?.trim();

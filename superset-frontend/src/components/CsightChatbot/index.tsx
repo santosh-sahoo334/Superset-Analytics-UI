@@ -1,6 +1,6 @@
 /* eslint-disable */
 // @ts-nocheck
-import React, { useContext } from 'react';
+import React, { useContext,useEffect, useState } from 'react';
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
@@ -17,6 +17,7 @@ const { TextArea } = Input; // Destructure TextArea from Input
 import { OverlayPanel } from 'primereact/overlaypanel';
 import { useRef } from 'react';
 import { LayoutContext } from "../../layout/context/layoutcontext";
+import { questionsList } from "./Component/FlashCard";
 
 
 interface GRAPH_ITEMS {
@@ -77,6 +78,7 @@ const ChatBot = () => {
     getGraphTaskID,
     selectedDropDownGraph,
     setselectedDropDownGraph,
+    flashCardData
   } = useAIBotContext();
 
   const { clickedNavItem } = useContext(LayoutContext);
@@ -84,6 +86,13 @@ const ChatBot = () => {
   const { showToast } = useToast();
 
   const op = useRef<OverlayPanel>(null);
+
+  const [containerHeight, setContainerHeight] = useState(120);
+  const [currentNavItem, setCurrentNavItem] = useState('Dashboard');
+
+  useEffect(() => {
+    setCurrentNavItem(clickedNavItem);
+  }, [clickedNavItem]);
 
   const onClickChatIcon = () => {
     setOpenChatModal(!opneChatModal);
@@ -159,6 +168,50 @@ const ChatBot = () => {
   };
 
 
+  useEffect(() => {
+    const textarea = document.getElementById('questionInput');
+    if (textarea instanceof HTMLTextAreaElement) {
+      textarea.style.height = question ? 'auto' : '66px';
+      if (question) {
+        textarea.style.height = `${textarea.scrollHeight}px`;
+      }
+    }
+  }, [question]);
+
+  useEffect(() => {
+    const textarea = document.getElementById('questionInput');
+    if (textarea instanceof HTMLTextAreaElement) {
+      const newHeight = Math.max(120, textarea.scrollHeight); // 54px for padding/margins
+      setContainerHeight(newHeight);
+    }
+  }, [question]);
+
+  useEffect(() => {
+    console.log('call1');
+    
+    if((flashCardData?.length <= 0 || !opneChatModal) && currentNavItem === clickedNavItem){
+      return
+    }
+    console.log('call2');
+    const id = uuidv4();
+    setPrompts((p) => [
+      ...p,
+      {
+        id,
+        answer: "",
+        question: questionsList[clickedNavItem],
+        suggested_questions: [],
+        task_id: null,
+        isLoading: true,
+        questionTime: new Date(),
+        answerTime: null,
+        notShow: true
+      },
+    ]);
+    getTaskID(questionsList[clickedNavItem], id);
+  }, [opneChatModal]);
+
+
   return (
     <div className="relative">
       <Dialog
@@ -169,11 +222,11 @@ const ChatBot = () => {
         style={
           isResize
             ? {
-                width: "80%",
-                height: "100vh",
-                maxHeight: "100%",
-                margin: "0px",
-              }
+              width: "80%",
+              height: "100vh",
+              maxHeight: "100%",
+              margin: "0px",
+            }
             : { width: "523px", height: "684px" }
         }
         onHide={() => {
@@ -183,24 +236,25 @@ const ChatBot = () => {
       >
         <AiDialogHeader />
 
-        <div style={{ height: "120px" }} />
+        <div style={{ height: `120px` }} />
 
         <div
           className="flex flex-column align-items-end gap-4"
           style={{ padding: "0px 24px 0px 24px" }}
           ref={messageContainerRef}
         >
-          <FalshCard clickedNavItem={clickedNavItem}/>
+          <FalshCard clickedNavItem={clickedNavItem} />
           {prompts?.map((p, index) => {
             return (
               <div
                 className="flex flex-column align-items-end gap-4 w-full"
                 ref={prompts?.length === index + 1 ? messageContainerRef : null}
               >
+                {!p?.notShow && (
                 <QuestionContainer
                   question={p.question}
                   date={p?.questionTime}
-                />
+                />)}
                 <AnswerContainer
                   answer={p.answer}
                   isLoading={p.isLoading}
@@ -219,34 +273,71 @@ const ChatBot = () => {
           </p>
         </div>
 
-        <div style={{ height: "120px" }} />
+        <div style={{ height: `${containerHeight}px`, transition: 'height 0.2s ease' }} />
+
 
         <div
           className="py-1 px-1 flex flex-column align-items-start w-full border-top-1 absolute bottom-0"
           style={{ borderColor: "#D0D5DD", background: "white" }}
         >
-          <div className="flex flex-column w-full">
+          <div className="flex flex-column w-full" style={{ 
+              border: '1px solid #E5E7EB'  // Light gray border
+            }}>
             <TextArea
               id="questionInput"
               value={question}
               onChange={(e) => {
-                setQuestion(e.target.value);
+                if (e.target) {
+                  setQuestion(e.target.value);
+                  // Auto-adjust height based on content
+                  const textarea = e.target as HTMLTextAreaElement;
+                  textarea.style.height = 'auto';
+                  textarea.style.height = `${textarea.scrollHeight}px`;
+                }
               }}
-              onKeyDown={handleKeyDown}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleKeyDown(e);
+                } else if (e.key === 'Enter' && e.shiftKey) {
+                  // Let the newline happen naturally and adjust height
+                  setTimeout(() => {
+                    const textarea = document.getElementById('questionInput');
+                    if (textarea) {
+                      textarea.style.height = 'auto';
+                      textarea.style.height = `${textarea.scrollHeight}px`;
+                    }
+                  }, 0);
+                }
+              }}
+              onPaste={(e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+                // Wait for the paste to complete
+                setTimeout(() => {
+                  const textarea = document.getElementById('questionInput');
+                  if (textarea instanceof HTMLTextAreaElement) {
+                    textarea.style.height = 'auto';
+                    textarea.style.height = `${textarea.scrollHeight}px`;
+                  }
+                }, 10);
+              }}
               placeholder="How can Cindy help you today?"
-              style={{ 
+              className='no-focus-border'
+              style={{
                 width: '100%',
-                resize: 'vertical',
-                minHeight: '44px',
+                resize: 'none',
+                minHeight: '66px',
                 maxHeight: '200px',
                 padding: '8px 12px',
-                lineHeight: '1.5'
+                lineHeight: '1.5',
+                overflowY: 'auto',
+                border: 'none',
+                outline: 'none'
               }}
               rows={3}
               minLength={2}
               disabled={isLoading}
             />
-            
+
             {/* Icons row */}
             <div className="flex justify-content-between align-items-center w-full">
               {/* Left side - Chart controls with reduced size */}
@@ -256,7 +347,7 @@ const ChatBot = () => {
                   className="p-button-rounded p-button-text"
                   onClick={(e) => op.current?.toggle(e)}
                   tooltip="Select Chart Type"
-                  style={{ 
+                  style={{
                     width: '2rem',
                     height: '2rem',
                     padding: '0.25rem'
@@ -265,8 +356,8 @@ const ChatBot = () => {
                 {selectedDropDownGraph && (
                   <span className="text-sm text-500 ml-2 flex align-items-center">
                     {selectedDropDownGraph.name}
-                    <i 
-                      className="pi pi-times text-500 cursor-pointer hover:text-700 ml-2" 
+                    <i
+                      className="pi pi-times text-500 cursor-pointer hover:text-700 ml-2"
                       style={{ fontSize: '0.875rem' }}
                       onClick={() => {
                         setSelectedGraph({
@@ -288,12 +379,19 @@ const ChatBot = () => {
                 disabled={isLoading}
                 icon="pi pi-send"
                 onClick={onClickSend}
-                className="p-button-rounded p-button-text"
+                className="p-button-rounded"
                 style={{
+                  marginRight: '5px',
                   transform: "rotate(40deg)",
-                  width: '2rem',
-                  height: '2rem',
-                  padding: '0.25rem'
+                  width: '1.75rem',
+                  height: '1.75rem',
+                  backgroundColor: '#18279A',
+                  border: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  fontSize: '0.30rem'
                 }}
               />
             </div>
@@ -301,44 +399,44 @@ const ChatBot = () => {
         </div>
 
         <OverlayPanel ref={op} className="w-20rem">
-            <div className="grid grid-nogutter">
-              {GRAPHS.map((graph) => (
-                <div
-                  key={graph.type}
-                  className="col-6 cursor-pointer p-3 hover:surface-100"
-                  onClick={() => {
-                    const value = graph;
-                    if (!value) {
-                      setSelectedGraph({
-                        graph_type: null,
-                        isSelected: false,
-                        type: null,
-                      });
-                      setselectedDropDownGraph(null);
-                    } else {
-                      setSelectedGraph({
-                        graph_type: value.code,
-                        isSelected: true,
-                        type: value.type,
-                      });
-                      setselectedDropDownGraph(value);
-                    }
-                    op.current?.hide();
-                  }}
-                >
-                  <div className="flex align-items-center gap-2">
-                    <img
-                      src={`/static/assets/images/graph/${graph.type}.svg`}
-                      alt=""
-                      height={20}
-                      width={20}
-                    />
-                    <span>{graph.name}</span>
-                  </div>
+          <div className="grid grid-nogutter">
+            {GRAPHS.map((graph) => (
+              <div
+                key={graph.type}
+                className="col-6 cursor-pointer p-3 hover:surface-100"
+                onClick={() => {
+                  const value = graph;
+                  if (!value) {
+                    setSelectedGraph({
+                      graph_type: null,
+                      isSelected: false,
+                      type: null,
+                    });
+                    setselectedDropDownGraph(null);
+                  } else {
+                    setSelectedGraph({
+                      graph_type: value.code,
+                      isSelected: true,
+                      type: value.type,
+                    });
+                    setselectedDropDownGraph(value);
+                  }
+                  op.current?.hide();
+                }}
+              >
+                <div className="flex align-items-center gap-2">
+                  <img
+                    src={`/static/assets/images/graph/${graph.type}.svg`}
+                    alt=""
+                    height={20}
+                    width={20}
+                  />
+                  <span>{graph.name}</span>
                 </div>
-              ))}
               </div>
-          </OverlayPanel>
+            ))}
+          </div>
+        </OverlayPanel>
       </Dialog>
       {!opneChatModal && (
         <div
@@ -348,7 +446,7 @@ const ChatBot = () => {
           <img
             src="/static/assets/images/layout/images/ai-icon.svg"
             className=" cursor-pointer"
-            onClick={()=>{onClickChatIcon()}}
+            onClick={() => { onClickChatIcon() }}
             alt="Ai Icon"
             height={82}
             width={82}

@@ -1,4 +1,5 @@
 /* eslint-disable */
+// @ts-nocheck
 import React, { useEffect, useState, useRef } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -8,6 +9,19 @@ import { HTTP } from "../config/http-common";
 import { useAuth } from "../context/AuthContext";
 import LoadingSpinner from "../LoadingSpinner";
 import { ArrowUpOutlined, DollarOutlined, SettingOutlined } from "@ant-design/icons";
+
+const TruncatedHeader = ({ text }: { text: string }) => {
+  const truncatedText = text.length > 10 ? `${text.slice(0, 10)}...` : text;
+  // Sanitize the ID by removing special characters and spaces
+  const tooltipId = `header-${text.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`;
+  
+  return (
+    <>
+      <span id={tooltipId}>{truncatedText}</span>
+      {text.length > 10 && <Tooltip target={`#${tooltipId}`} content={text} />}
+    </>
+  );
+};
 
 export const RecommendationsTable = () => {
   const [recommenddationsData, setRecommendationsData] = useState<any[]>([]);
@@ -75,47 +89,43 @@ export const RecommendationsTable = () => {
   const customizeLabels = {
     billing_account_name: (
       <div>
-        Account <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} />
+        <TruncatedHeader text="Account" />
       </div>
     ),
     service_name: (
       <div>
-        Resource <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} />
+        <TruncatedHeader text="Resource" />
       </div>
     ),
     service_component: (
       <div>
-        Component 
-        {/* <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} /> */}
+        <TruncatedHeader text="Component" />
       </div>
     ),
     recommendation_message: (
       <div>
-        Recommendation 
-        {/* <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} /> */}
+        <TruncatedHeader text="Recommendation" />
       </div>
     ),
     current_cost: (
       <div>
-       Costing
-        <ArrowUpOutlined className="text-xl" style={{ color: "#667084", fontWeight: "bold" }} />
+        <TruncatedHeader text="Current $" />
       </div>
     ),
     proposed_cost: (
       <div>
-        Costing
-        <ArrowUpOutlined className="text-xl" style={{ color: "#667084", fontWeight: "bold" }} />
+        <TruncatedHeader text="Proposed $" />
       </div>
     ),
     datekey: (
       <div>
-        Month <ArrowUpOutlined className="text-xl" style={{ color: "#667084" }} />
+        <TruncatedHeader text="Month" />
       </div>
     ),
   };
 
   // Function to truncate text and add tooltip
-  const truncatedBodyTemplate = (rowData, columnKey, rowIndex, maxTextLength) => {
+  const truncatedBodyTemplate = (rowData:any, columnKey:any, rowIndex:any, maxTextLength:any) => {
     const value = rowData[columnKey] || "";
     const truncatedText = value.length > maxTextLength ? `${value.slice(0, maxTextLength)}...` : value;
     const tooltipId = `${columnKey}-${rowIndex}`;
@@ -132,6 +142,17 @@ export const RecommendationsTable = () => {
     if (amount == null) return "$0.00"; // Handle null or undefined values
     return `$ ${Number(amount).toLocaleString()}`; // Format with commas
   };
+
+  // Define column order
+  const columnOrder = [
+    'billing_account_name',
+    'service_name',
+    'service_component',
+    'recommendation_message',
+    'current_cost',
+    'proposed_cost',
+    'datekey'
+  ];
 
   return (
     <Card title="" className="w-full h-full relative pr-1">
@@ -151,35 +172,28 @@ export const RecommendationsTable = () => {
               height={30}
               className="text-sm p-1"
             />
-            <span className="text-3xl font-medium">Recommendations</span>
+            <span className="text-2xl font-medium">Recommendations</span>
           </div>
-          <div ref={tableRef} style={{ maxHeight: "260px", overflowY: "auto" }}>
+          <div ref={tableRef} style={{ maxHeight: "263px", overflowY: "auto" }}>
             <DataTable
               value={recommenddationsData}
               scrollable
-              className="w-full dashboard-table-update"
-              // loading={tableLoading}
+              className="w-full dashboard-table-update  h-full"
             >
-              {recommenddationsData.length > 0 &&
-                Object.keys(recommenddationsData[0])
-                .filter((column) => !["id", "datekey"].includes(column))
-                .map((columnKey) => (
-                  <Column
-                    key={columnKey}
-                    field={columnKey}
-                    header={customizeLabels[columnKey] || columnKey}
-                    body={(rowData, { rowIndex }) => {
-                      if (columnKey === "current_cost" || columnKey === "proposed_cost") {
-                        return formatCurrency(rowData[columnKey]);
-                      }
-                      if (columnKey === "datekey") {
-                        return rowData[columnKey];
-                      }
-                      return truncatedBodyTemplate(rowData, columnKey, rowIndex, 10);
-                    }}
-                    headerStyle={{ backgroundColor: "#f2f3f6", color: "#667084", width: columnKey === "recommendation_message" ? '120px' : columnKey === "service_name" ? "95px" : "80px" }}
-                  />
-                ))}
+              {columnOrder.map((columnKey) => (
+                <Column
+                  key={columnKey}
+                  field={columnKey}
+                  header={customizeLabels[columnKey] || columnKey}
+                  body={(rowData, { rowIndex }) => {
+                    if (columnKey === "current_cost" || columnKey === "proposed_cost") {
+                      return formatCurrency(rowData[columnKey]);
+                    }
+                    return truncatedBodyTemplate(rowData, columnKey, rowIndex, 10);
+                  }}
+                  headerStyle={{ backgroundColor: "#f2f3f6", color: "#667084", width: columnKey === "recommendation_message" ? '120px' : columnKey === "service_name" ? "95px" : "80px" }}
+                />
+              ))}
             </DataTable>
             {tableLoading && (
               <div className="flex justify-center items-center mt-4">
