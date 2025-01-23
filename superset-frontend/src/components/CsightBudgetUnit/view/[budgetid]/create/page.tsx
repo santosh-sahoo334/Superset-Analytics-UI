@@ -114,15 +114,33 @@ const CreateViewBudgetPage = () => {
 
   return (
     <div className="mx-2">
-      <div className="flex justify-content-between p-3 mb-3 horizontal-border align-items-center">
-        <div>
+      <div className="flex justify-content-between p-3 pl-0 mb-3 horizontal-border align-items-center">
+        {/* <div>
           <h4 className="mb-0">Budget/Unit Configuration</h4>
-        </div>
+        </div> */}
+        <div className="flex gap-1 align-items-center">
+                      {/* <h4 className="mb-0">Budget List</h4> */}
+                      <Button
+                        tooltip="Back"
+                        tooltipOptions={{ position: 'bottom' }}
+                        icon="pi pi-arrow-left"
+                        onClick={() => {
+                          setCreateNewBudget(false)
+                        }}
+                        className="custom-text-grey"
+                        style={{
+                          backgroundColor: 'transparent',
+                          border: 'none',
+                          padding: '0',
+                        }}
+                      />
+                      <h3 className="text-2xl custom-text-grey m-0">Budget/Unit Configuration</h3>
+                    </div>
         <div>
           <Button
             type="submit"
             label="Save"
-            className="p-button-sm mr-2 custom-bg-blue mr-2"
+            className="p-button-sm mr-2 custom-bg-light-blue mr-0"
             icon="pi pi-save"
             loading={loading}
             onClick={() => {
@@ -130,7 +148,7 @@ const CreateViewBudgetPage = () => {
               handleSaveClick();
             }}
           />
-          <Button
+          {/* <Button
             severity="warning"
             icon="pi pi-arrow-left"
             className="p-button-sm mr-2"
@@ -152,7 +170,7 @@ const CreateViewBudgetPage = () => {
               className="p-button-sm"
               onClick={toggleExpandAll}
             />
-          )}
+          )} */}
         </div>
       </div>
       <div>

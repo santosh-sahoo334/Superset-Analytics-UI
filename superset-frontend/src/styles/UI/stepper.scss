@@ -10,7 +10,7 @@ $text-color-optional: #9fb3c8;
   .step {
     display: table-cell;
     position: relative;
-    padding: 1.5rem;
+    padding: 0rem 1.5rem;
     z-index: 2;
     width: 25%;
     &:last-child .step-bar-left,
@@ -114,21 +114,21 @@ $text-color-optional: #9fb3c8;
     .step-bar-left,
     .step-bar-right {
       position: absolute;
-      top: calc(2rem + 12px);
-      height: 5px;
+      top: calc(1rem + 10px);
+      height: 2px;
       background-color: $border-color;
       border: solid $border-color;
-      border-width: 2px 0;
+      border-width: 1px 0;
     }
     .step-bar-left {
-      width: calc(100% - 2rem);
-      left: 50%;
+      width: calc(100% - 6rem);
+      left: 75%;
       margin-left: 1rem;
       z-index: -1;
     }
     .step-bar-right {
       width: 0;
-      left: 50%;
+      left: 75%;
       margin-left: 1rem;
       z-index: -1;
       transition: width 500ms ease-in-out;
@@ -143,7 +143,7 @@ $text-color-optional: #9fb3c8;
       background-color: $fill-color;
       border-color: $fill-color;
       z-index: 3;
-      width: calc(100% - 2rem);
+      width: calc(100% - 6rem);
     }
   }
 }
@@ -153,6 +153,83 @@ $text-color-optional: #9fb3c8;
     margin: 0 auto;
   }
   .step {
-    width: 20% !important;
+    width: 40% !important;
   }
+}
+
+
+.stepper-horizontal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  text-align: center;
+}
+
+.step-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #d3dce6;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: #d3dce6;
+  cursor: pointer;
+}
+
+.step-circle.step-done {
+  border-color: #4caf50;
+  background-color: #4caf50;
+  color: #fff;
+}
+
+.step-title {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #667084;
+  cursor: pointer;
+}
+
+.step-bar-left,
+.step-bar-right {
+  position: absolute;
+  top: 20px;
+  height: 2px;
+  width: 50%;
+  background-color: #d3dce6;
+  z-index: -1;
+}
+
+.step-bar-left {
+  left: -50%;
+}
+
+.step-bar-right {
+  right: -50%;
+}
+
+.step.done .step-circle {
+  border-color: #4caf50;
+  background-color: #4caf50;
+  color: #fff;
+}
+
+.step.editing .step-circle {
+  border-color: #6366f1;
+  background-color: #6366f1;
+  color: #fff;
+}
+
+.icon-color{
+  color: #0032a5;
 }

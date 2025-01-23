@@ -13,6 +13,7 @@ import { Dialog } from "primereact/dialog";
 import { Paginator, PaginatorPageChangeEvent } from "primereact/paginator";
 import { useAuth,useAuthContext } from "../../CsightCommon/context/AuthContext";
 import { useToast } from "../../CsightCommon/context/ToastContext";
+import CustomPaginator from "./customPagination";
 
 const BudgetUnitPage: React.FunctionComponent = ({}) => {
   const [expandedRows] = useState<any>(null);
@@ -121,7 +122,7 @@ const BudgetUnitPage: React.FunctionComponent = ({}) => {
         <Button
           type="button"
           icon="pi pi-pencil"
-          className="custom-bg-blue-action"
+          className="custom-bg-green"
           rounded
           onClick={() => {
             setEditBudgetUnit(true)
@@ -134,7 +135,7 @@ const BudgetUnitPage: React.FunctionComponent = ({}) => {
           tooltipOptions={{ position: "bottom" }}
           type="button"
           icon="pi pi-eye"
-          className="custom-bg-blue-action"
+          className="custom-bg-new-blue"
           rounded
           onClick={() => {
             setBudgetUnitViewContext(true)
@@ -147,7 +148,7 @@ const BudgetUnitPage: React.FunctionComponent = ({}) => {
           type="button"
           icon="pi pi-trash"
           rounded
-          style={{ backgroundColor: "#FF7F7F", border: "none" }}
+          style={{ backgroundColor: "#f04437", border: "none", color: "#fff" }}
           onClick={() => {
             setSelectedBudget(data);
             setOpenDeleteModal(true);
@@ -175,7 +176,7 @@ const BudgetUnitPage: React.FunctionComponent = ({}) => {
         <div className="flex gap-2 align-items-center mt-4 justify-content-end">
           <Button
             outlined
-            className="custom-outlined-blue"
+            className="custom-outlined-light-blue"
             onClick={() => setOpenDeleteModal(false)}
           >
             No
@@ -186,7 +187,7 @@ const BudgetUnitPage: React.FunctionComponent = ({}) => {
               setSelectedBudget(null);
               deleteBudgetUnit(selectedBudget?.id);
             }}
-            className="custom-bg-blue"
+            className="custom-bg-light-blue"
           >
             Yes
           </Button>
@@ -202,13 +203,15 @@ const BudgetUnitPage: React.FunctionComponent = ({}) => {
           />
         </div>
       ) : (
-        <>
+        <div className="border" style={{border: "1px solid #e9ecef", borderRadius: "4px"}}>
           <DataTable
             value={budgetUnitData.result}
             expandedRows={expandedRows}
             dataKey="id"
+            scrollable
+            scrollHeight="420px" 
             tableStyle={{ minWidth: "60rem" }}
-            className="custom-table"
+            className="dashboard-table-update budget-table"
           >
             {listColumnsFilter &&
               listColumnsFilter?.map((columnKey:any) => (
@@ -225,24 +228,25 @@ const BudgetUnitPage: React.FunctionComponent = ({}) => {
                       ? datesCol(rowData, { field: columnKey })
                       : truncatedBodyTemplate(rowData, columnKey, rowIndex)
                   }
-                  headerStyle={{ backgroundColor: "#0032a5", color: "#ffffff" }}
+                  headerStyle={{ backgroundColor: "#f2f3f6", color: "#667084" }}
                 />
               ))}
             <Column
               exportable={false}
               body={actionBodyTemplate}
               header="Action"
-              headerStyle={{ backgroundColor: "#0032a5", color: "#ffffff" }}
+              headerStyle={{ backgroundColor: "#f2f3f6", color: "#667084" }}
             />
           </DataTable>
-          <Paginator
+          {/* <Paginator
             first={paginationState.currentPage * paginationState.countPerPage}
             rows={paginationState.countPerPage}
             rowsPerPageOptions={[10, 25, 50]}
             onPageChange={handlePageChange}
             totalRecords={budgetUnitData?.count}
-          />
-        </>
+          /> */}
+          <CustomPaginator paginationState={paginationState} budgetUnitData={budgetUnitData} handlePageChange={handlePageChange}/>
+        </div>
       )}
     </div>
   );

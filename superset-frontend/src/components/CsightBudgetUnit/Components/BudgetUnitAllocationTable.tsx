@@ -1,15 +1,15 @@
 /* eslint-disable */
 // @ts-nocheck
-import { useState } from "react";
-import { Column } from "primereact/column";
-import { DataTable } from "primereact/datatable";
-import React from "react";
-import { InputNumber } from "primereact/inputnumber";
-import { Button } from "primereact/button";
-import { InputText } from "primereact/inputtext"; // Fixed import for InputText
-import { Dialog } from "primereact/dialog"; 
-import { Dropdown } from "primereact/dropdown";
-import { useEffect } from "react";
+import { useState } from 'react';
+import { Column } from 'primereact/column';
+import { DataTable } from 'primereact/datatable';
+import React from 'react';
+import { InputNumber } from 'primereact/inputnumber';
+import { Button } from 'primereact/button';
+import { InputText } from 'primereact/inputtext'; // Fixed import for InputText
+import { Dialog } from 'primereact/dialog';
+import { Dropdown } from 'primereact/dropdown';
+import { useEffect } from 'react';
 export interface BudgetUnitAllocationTableData {
   name: string;
   amount: number;
@@ -46,11 +46,11 @@ const BudgetUnitAllocationTable: React.FunctionComponent<
   endDate,
   setBudgetunitInfoType,
 }) => {
-  const [viewByText, setViewByText] = useState("");
+  const [viewByText, setViewByText] = useState('');
   const [tableViewOptions, setTableViewOptions] = useState([]);
 
-  const [selectedTableView, setSelectedTableView] = useState("april");
-  const [selectedMiscList, setSelectedMiscList] = useState<any[]>([]);
+  const [selectedTableView, setSelectedTableView] = useState('april');
+  const [selectedMiscList, setSelectedMiscList] = useState<any[]>([{ name: '', value: null }]);
   const [showMiscDialog, setShowMiscDialog] = useState<boolean>(false);
   const [selectedMiscItemIndex, setSelectedMiscItemIndex] = useState<
     number | null
@@ -58,29 +58,29 @@ const BudgetUnitAllocationTable: React.FunctionComponent<
   const [budgetDetails, setBudgetDetails] = useState<any>({});
 
   let tempColumns = data?.length
-    ? Object.keys(data[0]).filter((key) => !cloumns_to_ignore.includes(key))
+    ? Object.keys(data[0]).filter(key => !cloumns_to_ignore.includes(key))
     : [];
   const selectedIndex = tempColumns.indexOf(selectedTableView);
-  if (selectedIndex && period !== "yearly") {
+  if (selectedIndex && period !== 'yearly') {
     tempColumns = tempColumns.slice(0, 3);
     tempColumns.push(selectedTableView);
   }
-  const columns = tempColumns.map((key) => {
+  const columns = tempColumns.map(key => {
     if (key === selectedTableView) {
       return {
         field: key,
-        header: "Total Budget Amount ($)", // Capitalize the first letter
+        header: 'Total Budget Amount ($)', // Capitalize the first letter
       };
     }
-    if (key == "misc_amount") {
+    if (key == 'misc_amount') {
       return {
         field: key,
-        header: "Misc Amount ($)", // Capitalize the first letter
+        header: 'Misc Amount ($)', // Capitalize the first letter
       };
     }
     return {
       field: key,
-      header: (key.charAt(0).toUpperCase() + key.slice(1)).replaceAll("_", " "), // Capitalize the first letter
+      header: (key.charAt(0).toUpperCase() + key.slice(1)).replaceAll('_', ' '), // Capitalize the first letter
     };
   });
   const formatNumber = (value: number) => {
@@ -91,37 +91,37 @@ const BudgetUnitAllocationTable: React.FunctionComponent<
     const budgetUnitInfoTypeArr = Array.isArray(budgetunitInfoType)
       ? budgetunitInfoType
       : budgetunitInfoType?.type || [];
-    if (period === "monthly") {
+    if (period === 'monthly') {
       return (
-        budgetUnitInfoTypeArr[index]?.["month"]?.[selectedTableView]?.[
-          "misc_amount"
+        budgetUnitInfoTypeArr[index]?.['month']?.[selectedTableView]?.[
+          'misc_amount'
         ] || 0
       );
-    } else if (period === "quarterly") {
+    } else if (period === 'quarterly') {
       return (
-        budgetUnitInfoTypeArr[index]?.["quarterly"]?.[selectedTableView]?.[
-          "misc_amount"
+        budgetUnitInfoTypeArr[index]?.['quarterly']?.[selectedTableView]?.[
+          'misc_amount'
         ] || 0
       );
     } else {
-      return budgetUnitInfoTypeArr[index]?.["misc_amount"] || 0;
+      return budgetUnitInfoTypeArr[index]?.['misc_amount'] || 0;
     }
   };
 
   const renderBoady = (cellValue: any, key, index) => {
-    if (typeof cellValue === "object") {
-      let value = "";
+    if (typeof cellValue === 'object') {
+      let value = '';
       const budgetUnitInfoTypeArr = Array.isArray(budgetunitInfoType)
         ? budgetunitInfoType
         : budgetunitInfoType?.type || [];
-      if (period === "monthly" || period === "quarterly") {
+      if (period === 'monthly' || period === 'quarterly') {
         const percentage = budgetUnitInfoTypeArr[index]?.percentage;
         const dividers = tableViewOptions.length;
         value = ((amount * percentage) / 100 / dividers).toFixed(2);
       }
       return value;
     }
-    if (key === "misc_amount") {
+    if (key === 'misc_amount') {
       return (
         <div>
           <InputNumber
@@ -135,8 +135,14 @@ const BudgetUnitAllocationTable: React.FunctionComponent<
           />
           <Button
             icon="pi pi-plus"
-            className="custom-bg-blue"
-            onClick={(e) => {
+            // className="custom-bg-light-blue"
+            style={{
+              color: '#43A7EC',
+              backgroundColor: '#E5F6FC',
+              borderRadius: '100%',
+              border: 'none',
+            }}
+            onClick={e => {
               e.preventDefault();
               addMiscItems(index);
             }}
@@ -145,7 +151,7 @@ const BudgetUnitAllocationTable: React.FunctionComponent<
       );
     }
 
-    if (typeof cellValue === "number") {
+    if (typeof cellValue === 'number') {
       return formatNumber(cellValue);
     } else {
       return cellValue;
@@ -174,21 +180,21 @@ const BudgetUnitAllocationTable: React.FunctionComponent<
     const budgetUnitInfoTypeArr = Array.isArray(budgetunitInfoType)
       ? budgetunitInfoType
       : budgetunitInfoType?.type || [];
-    if (period === "monthly") {
+    if (period === 'monthly') {
       setSelectedMiscList(
         budgetUnitInfoTypeArr[index]?.month?.[selectedTableView]
-          .misc_amount_breakdown || [{ name: "", value: null }]
+          .misc_amount_breakdown || [{ name: '', value: null }],
       );
-    } else if (period === "quarterly") {
+    } else if (period === 'quarterly') {
       setSelectedMiscList(
         budgetUnitInfoTypeArr[index]?.quarterly?.[selectedTableView]
-          .misc_amount_breakdown || [{ name: "", value: null }]
+          .misc_amount_breakdown || [{ name: '', value: null }],
       );
     } else {
       setSelectedMiscList(
         budgetUnitInfoTypeArr[index]?.misc_amount_breakdown || [
-          { name: "", value: null },
-        ]
+          { name: '', value: null },
+        ],
       );
     }
 
@@ -196,16 +202,16 @@ const BudgetUnitAllocationTable: React.FunctionComponent<
   };
 
   const addNewMiscItem = () => {
-    setSelectedMiscList([...selectedMiscList, { name: "", value: null }]);
+    setSelectedMiscList([...selectedMiscList, { name: '', value: null }]);
   };
 
   const removeMiscItem = (index: number) => {
     // Update selectedMiscList by removing the item at the specified index
-    setSelectedMiscList((prev) => {
+    setSelectedMiscList(prev => {
       const updatedMiscList = prev.filter((_, i) => i !== index);
 
       // Update budgetunitInfoType to reflect the new selectedMiscList data
-      setBudgetunitInfoType((prevBudgetUnitInfoType) => {
+      setBudgetunitInfoType(prevBudgetUnitInfoType => {
         const budgetUnitInfoTypeArr = Array.isArray(prevBudgetUnitInfoType)
           ? prevBudgetUnitInfoType
           : prevBudgetUnitInfoType?.type || [];
@@ -214,12 +220,12 @@ const BudgetUnitAllocationTable: React.FunctionComponent<
         if (selectedMiscItemIndex !== null) {
           const updatedMiscAmount = updatedMiscList.reduce(
             (total, item) => total + (item.value || 0),
-            0
+            0,
           );
 
           // Update the specific item in budgetunitInfoType based on selectedMiscItemIndex
-          if (period === "monthly") {
-            updatedBudgetUnitInfoType[selectedMiscItemIndex]["month"][
+          if (period === 'monthly') {
+            updatedBudgetUnitInfoType[selectedMiscItemIndex]['month'][
               selectedTableView
             ] = {
               ...updatedBudgetUnitInfoType[selectedMiscItemIndex]?.month?.[
@@ -229,8 +235,8 @@ const BudgetUnitAllocationTable: React.FunctionComponent<
               // Optional: if you need to store each individual misc item details
               misc_amount_breakdown: updatedMiscList,
             };
-          } else if (period === "quarterly") {
-            updatedBudgetUnitInfoType[selectedMiscItemIndex]["quarterly"][
+          } else if (period === 'quarterly') {
+            updatedBudgetUnitInfoType[selectedMiscItemIndex]['quarterly'][
               selectedTableView
             ] = {
               ...updatedBudgetUnitInfoType[selectedMiscItemIndex]?.month?.[
@@ -261,52 +267,52 @@ const BudgetUnitAllocationTable: React.FunctionComponent<
     const budgetUnitInfoTypeArr = Array.isArray(budgetunitInfoType)
       ? budgetunitInfoType
       : budgetunitInfoType?.type || [];
-    if (period === "monthly") {
+    if (period === 'monthly') {
       if (selectedMiscItemIndex !== null) {
         const updatedBudgetunitInfo = [...budgetUnitInfoTypeArr];
-        updatedBudgetunitInfo[selectedMiscItemIndex]["month"][
+        updatedBudgetunitInfo[selectedMiscItemIndex]['month'][
           selectedTableView
         ] = {};
-        updatedBudgetunitInfo[selectedMiscItemIndex]["month"][
+        updatedBudgetunitInfo[selectedMiscItemIndex]['month'][
           selectedTableView
-        ]["misc_amount_breakdown"] = [...selectedMiscList];
+        ]['misc_amount_breakdown'] = [...selectedMiscList];
         let total_sum = 0;
-        selectedMiscList.forEach((item) => {
+        selectedMiscList.forEach(item => {
           total_sum = total_sum + item.value;
         });
-        updatedBudgetunitInfo[selectedMiscItemIndex]["month"][
+        updatedBudgetunitInfo[selectedMiscItemIndex]['month'][
           selectedTableView
-        ]["misc_amount"] = total_sum;
+        ]['misc_amount'] = total_sum;
         setBudgetunitInfoType({ type: updatedBudgetunitInfo });
       }
-    } else if (period === "quarterly") {
+    } else if (period === 'quarterly') {
       if (selectedMiscItemIndex !== null) {
         const updatedBudgetunitInfo = [...budgetUnitInfoTypeArr];
-        updatedBudgetunitInfo[selectedMiscItemIndex]["quarterly"][
+        updatedBudgetunitInfo[selectedMiscItemIndex]['quarterly'][
           selectedTableView
         ] = {};
-        updatedBudgetunitInfo[selectedMiscItemIndex]["quarterly"][
+        updatedBudgetunitInfo[selectedMiscItemIndex]['quarterly'][
           selectedTableView
-        ]["misc_amount_breakdown"] = [...selectedMiscList];
+        ]['misc_amount_breakdown'] = [...selectedMiscList];
         let total_sum = 0;
-        selectedMiscList.forEach((item) => {
+        selectedMiscList.forEach(item => {
           total_sum = total_sum + item.value;
         });
-        updatedBudgetunitInfo[selectedMiscItemIndex]["quarterly"][
+        updatedBudgetunitInfo[selectedMiscItemIndex]['quarterly'][
           selectedTableView
-        ]["misc_amount"] = total_sum;
+        ]['misc_amount'] = total_sum;
         setBudgetunitInfoType({ type: updatedBudgetunitInfo });
       }
     } else {
       if (selectedMiscItemIndex !== null) {
         const updatedBudgetunitInfo = [...budgetunitInfoType?.type];
-        updatedBudgetunitInfo[selectedMiscItemIndex]["misc_amount_breakdown"] =
+        updatedBudgetunitInfo[selectedMiscItemIndex]['misc_amount_breakdown'] =
           [...selectedMiscList];
         let total_sum = 0;
-        selectedMiscList.forEach((item) => {
+        selectedMiscList.forEach(item => {
           total_sum = total_sum + item.value;
         });
-        updatedBudgetunitInfo[selectedMiscItemIndex]["misc_amount"] = total_sum;
+        updatedBudgetunitInfo[selectedMiscItemIndex]['misc_amount'] = total_sum;
         setBudgetunitInfoType({ type: updatedBudgetunitInfo });
       }
     }
@@ -345,18 +351,18 @@ const BudgetUnitAllocationTable: React.FunctionComponent<
 
   function generateMonthSequence(startDate: Date, endDate: Date) {
     const monthNames = [
-      "january",
-      "february",
-      "march",
-      "april",
-      "may",
-      "june",
-      "july",
-      "august",
-      "september",
-      "october",
-      "november",
-      "december",
+      'january',
+      'february',
+      'march',
+      'april',
+      'may',
+      'june',
+      'july',
+      'august',
+      'september',
+      'october',
+      'november',
+      'december',
     ];
 
     const start = new Date(startDate);
@@ -391,67 +397,67 @@ const BudgetUnitAllocationTable: React.FunctionComponent<
     const budgetUnitInfoTypeArr = Array.isArray(budgetunitInfoType)
       ? budgetunitInfoType
       : budgetunitInfoType?.type || [];
-    if (period === "monthly") {
-      setViewByText("Month");
+    if (period === 'monthly') {
+      setViewByText('Month');
       // get month list
 
       const monthlistComputed = [
         {
-          name: "april",
+          name: 'april',
           value: 6,
           year: 2023,
         },
         {
-          name: "december",
+          name: 'december',
           value: 7,
           year: 2023,
         },
         {
-          name: "february",
+          name: 'february',
           value: 8,
           year: 2023,
         },
         {
-          name: "january",
+          name: 'january',
           value: 9,
           year: 2023,
         },
         {
-          name: "november",
+          name: 'november',
           value: 10,
           year: 2023,
         },
         {
-          name: "october",
+          name: 'october',
           value: 10,
           year: 2023,
         },
       ];
       const months_temp = generateMonthSequence(startDate, endDate);
       const tempOptions = budgetUnitInfoTypeArr?.[0]?.month
-        ? months_temp.map((val) => ({
+        ? months_temp.map(val => ({
             label: val,
             value: val,
           }))
         : [];
       setTableViewOptions(tempOptions);
       setSelectedTableView(tempOptions?.[0]?.value);
-    } else if (period === "quarterly") {
-      setViewByText("Quarter");
+    } else if (period === 'quarterly') {
+      setViewByText('Quarter');
       const quarterlyListComputed = [
         {
-          name: "Q2",
-          value: "Q2",
+          name: 'Q2',
+          value: 'Q2',
           year: 2023,
         },
         {
-          name: "Q3",
-          value: "Q3",
+          name: 'Q3',
+          value: 'Q3',
           year: 2023,
         },
       ];
       const tempOptions = budgetUnitInfoTypeArr?.[0]?.quarterly
-        ? Object.keys(budgetUnitInfoTypeArr?.[0]?.quarterly)?.map((val) => ({
+        ? Object.keys(budgetUnitInfoTypeArr?.[0]?.quarterly)?.map(val => ({
             label: val,
             value: val,
           }))
@@ -461,7 +467,7 @@ const BudgetUnitAllocationTable: React.FunctionComponent<
 
       setSelectedTableView(tempOptions?.[0]?.value);
     } else {
-      setViewByText("");
+      setViewByText('');
     }
   };
   // useEffect(() => {
@@ -476,18 +482,18 @@ const BudgetUnitAllocationTable: React.FunctionComponent<
 
   return (
     <>
-      {period !== "yearly" && (
-        <div className="flex gap-2 align-items-center">
-          <p className="mb-0 font-bold">View By {viewByText}:</p>
+      {period !== 'yearly' && (
+        <div className="flex gap-2 align-items-center mb-3">
+          <p className="mb-0 font-semibold" style={{color: "#000"}}>View By {viewByText}:</p>
           <Dropdown
             id="orgname"
             value={selectedTableView}
             options={tableViewOptions}
-            onChange={(e) => setSelectedTableView(e.value)}
+            onChange={e => setSelectedTableView(e.value)}
           />
         </div>
       )}
-      <DataTable value={data} className="tabelHeader">
+      <DataTable value={data} className="tabelHeader dashboard-table-update">
         {columns.map((item, index) => (
           <Column
             key={item.field}
@@ -498,7 +504,7 @@ const BudgetUnitAllocationTable: React.FunctionComponent<
               // Check if the value is a number, and format if so
               return renderBoady(cellValue, item.field, rowIndex);
             }}
-            headerStyle={{ backgroundColor: "#0032a5", color: "#ffffff" }}
+            headerStyle={{ backgroundColor: '#f2f3f6', color: '#667084' }}
           />
         ))}
       </DataTable>
@@ -508,41 +514,48 @@ const BudgetUnitAllocationTable: React.FunctionComponent<
         onHide={() => setShowMiscDialog(false)}
         modal
         header="Add Misc Items"
-        style={{ minWidth: "450px" }}
+        style={{ minWidth: '450px' }}
       >
         <div className="misc-items">
-          <div className="misc-item-container flex mb-2 mt-2">
+          {/* <div className="misc-item-container flex mb-2 mt-2">
             <div className="font-bold w-6">Name</div>
             <div className="font-bold w-6 ml-2">Amount</div>
-          </div>
+          </div> */}
           {selectedMiscList.map((item, index) => (
-            <div key={index} className="misc-item-container flex mb-3">
-              <InputText
-                value={item.name}
-                onChange={(e) => {
-                  const newList = [...selectedMiscList];
-                  newList[index].name = e.target.value;
-                  setSelectedMiscList(newList);
-                }}
-                disabled={budgetDetails.freeze}
-                className="w-6"
-              />
-              <InputNumber
-                value={item.value}
-                onValueChange={(e) => {
-                  const newList = [...selectedMiscList];
-                  newList[index].value = e.value;
-                  setSelectedMiscList(newList);
-                }}
-                mode="currency"
-                currency="USD"
-                locale="en-US"
-                disabled={budgetDetails.freeze}
-                className="ml-2 w-6"
-              />
+            <div key={index} className="misc-item-container flex mb-3 gap-2 align-items-end">
+              <div className="flex flex-column">
+                <div className="font-bold">Name</div>
+                <InputText
+                  value={item.name}
+                  onChange={e => {
+                    const newList = [...selectedMiscList];
+                    newList[index].name = e.target.value;
+                    setSelectedMiscList(newList);
+                  }}
+                  disabled={budgetDetails.freeze}
+                  className="w-full"
+                />
+              </div>
+              <div className="flex flex-column">
+                <div className="font-bold">Amount</div>
+                <InputNumber
+                  value={item.value}
+                  onValueChange={e => {
+                    const newList = [...selectedMiscList];
+                    newList[index].value = e.value;
+                    setSelectedMiscList(newList);
+                  }}
+                  mode="currency"
+                  currency="USD"
+                  locale="en-US"
+                  disabled={budgetDetails.freeze}
+                  className="ml-2 w-full"
+                />
+              </div>
               <Button
                 icon="pi pi-trash"
                 className="ml-2 p-button p-component p-button-danger"
+                style={{ color: '#fff', height: "42px" }}
                 onClick={() => removeMiscItem(index)}
               />
             </div>
@@ -550,17 +563,22 @@ const BudgetUnitAllocationTable: React.FunctionComponent<
         </div>
         <div className="flex justify-content-between mt-4">
           <Button
-            label="Add"
+            label="Add More"
             icon="pi pi-plus"
             className="p-button p-component p-button-success"
+            style={{
+              color: '#43A7EC',
+              backgroundColor: '#E5F6FC',
+              border: 'none',
+            }}
             severity="success"
             disabled={budgetDetails?.freeze}
             onClick={addNewMiscItem}
           />
           <Button
             label="Update"
-            icon="pi pi-save"
-            className="center custom-bg-blue"
+            // icon="pi pi-save"
+            className="center custom-bg-light-blue"
             disabled={budgetDetails.freeze}
             onClick={updateMiscItems}
           />

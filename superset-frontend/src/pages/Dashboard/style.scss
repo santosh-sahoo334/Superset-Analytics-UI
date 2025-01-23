@@ -1,8 +1,8 @@
 // Target the dashboard page
 .dashboard-page {
     margin-top: 10px;
-    margin-bottom: 10px;
-    height: 100%;
+    // margin-bottom: 10px;
+    height: calc(100% - 10px);
     width: 100%;
     // background-color: white;
   }

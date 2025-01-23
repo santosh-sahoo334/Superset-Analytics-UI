@@ -96,7 +96,7 @@ const schema: yup.ObjectSchema<AddBudgetFormModel> = yup.object().shape({
     .required("Budget unit info is required"),
 });
 
-interface AddNewBudgetFormProps {
+interface AddNewBudgetFormUpdatedProps {
   addBudget: (values: AddBudgetFormModel) => void;
   expandAll: Boolean;
   budgetUnitsData: any;
@@ -107,9 +107,10 @@ interface AddNewBudgetFormProps {
   isCreatePage?: Boolean;
   isSaveClickedCount?: Number;
   budgetUnitdataCreated?: any;
+    setVisibleRight?: (value: React.SetStateAction<boolean>) => void;
 }
 
-const AddNewBudgetForm: React.FunctionComponent<AddNewBudgetFormProps> = ({
+const AddNewBudgetFormUpdated: React.FunctionComponent<AddNewBudgetFormUpdatedProps> = ({
   addBudget,
   expandAll,
   budgetUnitsData,
@@ -120,6 +121,7 @@ const AddNewBudgetForm: React.FunctionComponent<AddNewBudgetFormProps> = ({
   isCreatePage,
   isSaveClickedCount,
   budgetUnitdataCreated,
+  setVisibleRight
 }) => {
   const {
     register,
@@ -436,199 +438,218 @@ const AddNewBudgetForm: React.FunctionComponent<AddNewBudgetFormProps> = ({
   return (
     <div>
       <form
-        className="flex gap-1 flex-column w-full"
+        className="flex gap-1 flex-column w-full h-full"
         onSubmit={handleSubmit(onSubmit)}
       >
-
-<div className="grid-budget p-3 mb-3 gap-5 w-full">
-            <div className="field budget-budget-custom-field flex flex-column">
-              <label className="budget-label font-semibold" htmlFor="name">
-                Name
-              </label>
-              <InputText
-                id="name"
-                {...register('name')}
-                placeholder="Enter Name"
-                style={{ color: '#000' }}
-              />
-              {errors.name && (
-                <small className="error-message">{errors.name.message}</small>
-              )}
-            </div>
-            <div className="field budget-custom-field  flex flex-column">
-              <label className="budget-label font-semibold" htmlFor="name">
-                Budget Unit
-              </label>
-              <InputText
-                // options={budgetUnits}
-                // optionLabel="name"
-                readOnly
-              value={getBudgetUnitValue()}
-                placeholder="Select budget unit"
-                className="w-full"
-                // onChange={(e) => {
-                //   e.stopPropagation();
-                //   setSelectedOrgName(e.value?.orgname);
-                //   setAllocations(e.value?.allocations);
-                //   setValue("budgetunit", e.value?.id, {
-                //     shouldValidate: true,
-                //     shouldDirty: true,
-                //   });
-                //   setValue("orgname", e.value?.orgname, {
-                //     shouldValidate: true,
-                //     shouldDirty: true,
-                //   });
-                // }}
-              />
-            </div>
-            <div className="field budget-custom-field flex flex-column">
-              <label className="budget-label font-semibold" htmlFor="orgname">
-                Organization Name
-              </label>
-              <InputText
-              value={watch("orgname")}
-              id="orgname"
-                readOnly
-                {...register('orgname')}
-                placeholder="Enter Organization Name"
-              />
-              {/* {errors.orgname && (
-              <small className="error-message">{errors.orgname.message}</small>
-            )} */}
-            </div>
+        <div className="flex flex-column py-4" style={{height: "67vh", overflow: "auto"}}>
+        {/* <FieldWrapper
+          key={0}
+          label="Name"
+          helperText="Please Fill Name"
+          expandAll={expandAll}
+        > */}
+          <div className="field budget-custom-field">
+            {/* <label htmlFor="name">Name</label> */}
+            <label className="budget-label" htmlFor="name">
+              Name
+            </label>
+            <InputText
+              id="name"
+              aria-describedby="name-help"
+              {...register("name")}
+              placeholder="Enter Name"
+            />
+            {errors?.name && (
+              <div id="name-help" className="error-message">
+                {errors?.name?.message}
+              </div>
+            )}
           </div>
-<div className="grid-budget p-3 mb-3 gap-5 w-full">
-            <div className="field budget-budget-custom-field flex flex-column">
-              <label className="budget-label font-semibold" htmlFor="amount">
-                Budget Amount
-              </label>
-              <InputNumber
+        {/* </FieldWrapper> */}
+
+        {/* <FieldWrapper
+          key={1}
+          label="Budget Unit"
+          helperText="Please Fill Budget Unit"
+          expandAll={expandAll}
+          value={getBudgetUnitValue()}
+          isEditMode={true}
+        > */}
+          <div className="field budget-custom-field">
+          <label className="budget-label" htmlFor="budgetunit">
+          Budget Unit
+            </label>
+            <InputText
+              id="budgetunit"
+              readOnly
+              value={getBudgetUnitValue()}
+              aria-describedby="org_name-help"
+              {...register("budgetunit")}
+              placeholder="Enter Budget Unit"
+            />
+            {errors?.orgname && (
+              <div id="name-help" className="error-message">
+                {errors?.budgetunit?.message}
+              </div>
+            )}
+            {/* <Dropdown
+              options={budgetUnits}
+              optionLabel="name"
+              value={budgetUnits?.find((p) => p.id === budgetunit)}
+              placeholder="Select budget unit"
+              className="w-full md:w-14rem"
+              onChange={(e) => {
+                e.stopPropagation();
+                setSelectedBudgetUnitOrg(e.value?.orgname);
+                setSelectedBudgetUnit(e.value?.code);
+                setValue("budgetunit", e.value?.id, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                });
+                setValue("orgname", e.value?.orgname, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                });
+              }}
+            />
+            {errors?.budgetunit && (
+              <div id="name-help" className="error-message">
+                {errors?.budgetunit?.message}
+              </div>
+            )} */}
+          </div>
+        {/* </FieldWrapper> */}
+
+        {/* <FieldWrapper
+          key={2}
+          label="Organization Name"
+          helperText="Please Fill Organization Name"
+          expandAll={expandAll}
+          value={watch("orgname")}
+          isEditMode={true}
+        > */}
+          <div className="field budget-custom-field">
+          <label className="budget-label" htmlFor="orgname">
+          Organization Name
+            </label>
+            <InputText
+              id="orgname"
+              readOnly
+              value={watch("orgname")}
+              aria-describedby="org_name-help"
+              placeholder="Enter Organization Name"
+              {...register("orgname")}
+            />
+            {errors?.orgname && (
+              <div id="name-help" className="error-message">
+                {errors?.orgname?.message}
+              </div>
+            )}
+          </div>
+        {/* </FieldWrapper> */}
+
+        {/* <FieldWrapper
+          key={3}
+          label="Budget Amount"
+          helperText="Please Fill Budget Amount"
+          expandAll={expandAll}
+        > */}
+          <div className="field budget-custom-field flex flex-column">
+          <label className="budget-label" htmlFor="amount">
+          Budget Amount
+            </label>
+            <InputNumber
               value={amount || 0}
               inputId="amount"
-                onValueChange={e => {
-                  setValue('amount', e.value, {
-                    shouldValidate: true,
-                    shouldDirty: true,
-                    shouldTouch: true,
-                  });
-                }}
-                placeholder="Enter Budget Amount"
-                mode="currency"
-                currency="USD"
-                locale="en-US"
-                style={{ color: '#000' }}
-              />
-              {/* {errors?.amount && (
-                  <div id="name-help" className="error-message">
-                    {errors?.amount?.message}
+              onValueChange={(e) =>
+                setValue("amount", e.value, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                  shouldTouch: true,
+                })
+              }
+              mode="currency"
+              currency="USD"
+              locale="en-US"
+              placeholder="0.00"
+              style={{width: "100%"}}
+            />
+            {errors?.amount && (
+              <div id="name-help" className="error-message">
+                {errors?.amount?.message}
+              </div>
+            )}
+          </div>
+        {/* </FieldWrapper> */}
+
+        {budgetunit && numberOfAllocations?.length > 0 && (
+        //   <FieldWrapper
+        //     label="Allocation in %"
+        //     helperText="Please Fill Budget Unit Type"
+        //     expandAll={expandAll}
+        //   >
+            <div className="field budget-custom-field">
+                <label className="budget-label" htmlFor="budget_allocation">
+                Allocation in %
+            </label>
+              {numberOfAllocations?.map((allocatedType, index) => {
+                return (
+                  <div key={index} className="flex gap-2">
+                    <p className="mb-0" style={{border: "1px solid #d0d5dd", width: "50%", padding:"10px", borderRadius: "4px"}}>{allocatedType}</p>
+                    <InputNumber
+                      inputId={`budget_allocation.${index}`}
+                      max={100}
+                      value={
+                        budgetunitInfoType?.[index]?.percentage ||
+                        budgetunitInfoType?.type?.[index]?.percentage ||
+                        0
+                      }
+                      onValueChange={(e) =>
+                        handleAllocationChange(index, allocatedType, e.value)
+                      }
+                    />
                   </div>
-                )} */}
-            </div>
-            <div className="field budget-custom-field flex flex-column">
-              <label className="budget-label font-semibold" htmlFor="period">
-                Period
-              </label>
-              <Dropdown
-                options={periods}
-                value={periods.find(p => p.code === period)}
-                optionLabel="name"
-                placeholder="Select period"
-                className="w-full md:w-14rem"
-                onChange={e => {
-                  setValue('period', e?.value?.code, {
-                    shouldDirty: true,
-                    shouldValidate: true,
-                  });
-                  setIsPeriodManualChange(prev => !prev);
-                }}
-              />
-              {/* {errors.period && (
-              <small className="error-message">{errors.period.message}</small>
-            )} */}
-            </div>
-            <div className="field budget-custom-field flex-column">
-              <label
-                className="budget-label font-semibold"
-                htmlFor="start_date"
-              >
-                Start Date
-              </label>
-              <Calendar
-                // value={data?.start_date}
-                value={startDate}
-                id="start_date"
-                {...register('start_date')}
-                placeholder="Enter Start Date"
-              />
-              {errors.start_date && (
-                <small className="error-message">
-                  {errors.start_date.message}
-                </small>
+                );
+              })}
+              {error && (
+                <div className="error-message" style={{ color: "red" }}>
+                  {error}
+                </div>
               )}
             </div>
-          </div>
-          <div className="grid-budget p-3 mb-3 gap-5 w-full">
-                      <div className="field budget-custom-field flex-column">
-                        <label className="budget-label font-semibold" htmlFor="end_date">
-                          End Date
-                        </label>
-                        <Calendar
-                          value={endDate}
-                          id="end_date"
-                          minDate={startDate || new Date()}
-                          maxDate={
-                            new Date(new Date().setMonth(new Date().getMonth() + 12))
-                          }
-                          placeholder="Enter End Date"
-                          {...register('end_date')}
-                        />
-                        {errors.end_date && (
-                          <small className="error-message">
-                            {errors.end_date.message}
-                          </small>
-                        )}
-                      </div>
-                      {budgetunit && numberOfAllocations?.length > 0 && (
-                        <div className="field budget-custom-field">
-                          <label className="budget-label" htmlFor="budget_allocation">
-                            Allocation in %
-                          </label>
-                          {numberOfAllocations?.map((allocatedType, index) => {
-                            return (
-                              <div key={index} className="flex gap-2">
-                                <p
-                                  className="mb-0"
-                                  style={{
-                                    border: '1px solid #d0d5dd',
-                                    width: '50%',
-                                    padding: '8px',
-                                    borderRadius: '4px',
-                                    color: '#000',
-                                  }}
-                                >
-                                  {allocatedType}
-                                </p>
-                                <InputNumber
-                                  inputId={`budget_allocation..${index}`}
-                                  max={100}
-                                  value={
-                                    budgetunitInfoType?.[index]?.percentage ||
-                                    budgetunitInfoType?.type?.[index]?.percentage ||
-                                    0
-                                  }
-                                  onValueChange={e => {
-                                    handleAllocationChange(index, allocatedType, e.value);
-                                    setIsAllocationChange(true);
-                                  }}
-                                />
-                                {/* <span className="ml-2" style={{color: "#000"}}>{allocatedType}</span> */}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
+        //   </FieldWrapper>
+        )}
 
+        {/* <FieldWrapper
+          label="Period"
+          helperText="Please Fill Period"
+          key={5}
+          expandAll={expandAll}
+        > */}
+          <div className="field budget-custom-field flex flex-column">
+          <label className="budget-label" htmlFor="period">
+          Period
+            </label>
+            <Dropdown
+              options={periods}
+              value={periods?.find((p) => p.code === period)}
+              optionLabel="name"
+              placeholder="Select Period"
+              className="w-full md:w-14rem"
+              onChange={(e) =>
+                setValue("period", e?.value?.code, {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                })
+              }
+            />
+            {errors?.period && (
+              <div id="name-help" className="error-message">
+                {errors?.period?.message}
+              </div>
+            )}
+          </div>
+        {/* </FieldWrapper> */}
         {/* {period === "quarterly" && (
           <FieldWrapper
             key={6}
@@ -636,7 +657,7 @@ const AddNewBudgetForm: React.FunctionComponent<AddNewBudgetFormProps> = ({
             helperText="Choose a month"
             expandAll={expandAll}
           >
-            <div className="field custom-field">
+            <div className="field budget-custom-field">
               <Dropdown
                 options={months}
                 value={selectedMonth}
@@ -649,19 +670,102 @@ const AddNewBudgetForm: React.FunctionComponent<AddNewBudgetFormProps> = ({
           </FieldWrapper>
         )} */}
 
+        {/* <FieldWrapper
+          key={7}
+          label="Start Date"
+          helperText="Please Fill Start Date"
+          expandAll={expandAll}
+        > */}
+          <div className="field budget-custom-field flex flex-column">
+          <label className="budget-label" htmlFor="start">
+          Start Date
+            </label>
+            <Calendar
+              value={startDate} // Add this line
+              view="month"
+              placeholder="Start month"
+              minDate={
+                new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+              }
+              onChange={(e) =>
+                setValue("start_date", e.value, {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                })
+              }
+              dateFormat="MM y"
+            />
+            {errors?.start_date && (
+              <div id="name-help" className="error-message">
+                {errors?.start_date?.message}
+              </div>
+            )}
+          </div>
+        {/* </FieldWrapper> */}
+
+        {/* <FieldWrapper
+          key={8}
+          label="End Date"
+          helperText="Please Fill End Date"
+          expandAll={expandAll}
+        > */}
+          <div className="field budget-custom-field flex flex-column">
+          <label className="budget-label" htmlFor="end">
+          End Date
+            </label>
+            <Calendar
+              value={endDate} // Add this line
+              view="month"
+              placeholder="End month"
+              minDate={startDate || new Date()}
+              maxDate={
+                startDate
+                  ? new Date(
+                      startDate.getFullYear(),
+                      startDate.getMonth() + 12,
+                      0
+                    )
+                  : new Date(new Date().setMonth(new Date().getMonth() + 11))
+              }
+              onChange={(e) =>
+                setValue("end_date", e.value, {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                })
+              }
+              dateFormat="MM y"
+            />
+            {errors?.end_date && (
+              <div id="name-help" className="error-message">
+                {errors?.end_date?.message}
+              </div>
+            )}
+          </div>
+        {/* </FieldWrapper> */}
+        </div>
         {!isCreatePage && (
-          <div className="text-right relative mb-5 pb-5">
+        <div className="text-right relative bg-white w-full budget-border-top flex gap-2 justify-content-end pt-2 mb-2">
+            <Button
+                        label="Cancel"
+                        style={{
+                          backgroundColor: 'transparent',
+                          color: '#43a7ec',
+                          border: 'none',
+                        }}
+                        onClick={() => {
+                          setVisibleRight(false);
+                        }}
+                      />
             <Button
               ref={buttonRef}
               type="submit"
-              label="Create Budget"
-              className="custom-bg-blue"
+              label="Create Budget Unit"
+              className="custom-bg-light-blue"
               severity="success"
-              icon="pi pi-plus"
-              style={{
-                position: "absolute",
-                right: "calc(30% - 60px)",
-              }}
+            //   style={{
+            //     position: "absolute",
+            //     right: "calc(30% - 60px)",
+            //   }}
             />
           </div>
         )}
@@ -670,4 +774,4 @@ const AddNewBudgetForm: React.FunctionComponent<AddNewBudgetFormProps> = ({
   );
 };
 
-export default AddNewBudgetForm;
+export default AddNewBudgetFormUpdated;
