@@ -41,7 +41,7 @@ const AddNewBudgetUnitFormUpdated: React.FunctionComponent<
         className="flex gap-1 flex-column w-full h-full"
         onSubmit={handleSubmit(addBudgetUnit)}
       >
-        <div className="flex flex-column py-4" style={{height: "75%"}}>
+        <div className="flex flex-column py-4" style={{height: "100%"}}>
           <div className="field budget-custom-field flex flex-column">
             <label className="budget-label" htmlFor="name">
               Name
@@ -89,7 +89,13 @@ const AddNewBudgetUnitFormUpdated: React.FunctionComponent<
             )}
           </div>
         </div>
-        <div className="text-right relative bg-white w-full budget-border-top flex gap-2 justify-content-end pt-2">
+        <div className="text-right relative bg-white w-full budget-border-top flex gap-2 justify-content-start pt-2">
+          <Button
+            type="submit"
+            label="Next"
+            className="custom-bg-light-blue"
+            severity="success"
+          />
           <Button
             label="Cancel"
             style={{
@@ -100,12 +106,6 @@ const AddNewBudgetUnitFormUpdated: React.FunctionComponent<
             onClick={() => {
               setVisibleRight(false);
             }}
-          />
-          <Button
-            type="submit"
-            label="Next"
-            className="custom-bg-light-blue"
-            severity="success"
           />
         </div>
       </form>

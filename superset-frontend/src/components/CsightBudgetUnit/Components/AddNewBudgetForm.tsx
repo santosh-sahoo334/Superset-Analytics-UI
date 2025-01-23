@@ -440,8 +440,8 @@ const AddNewBudgetForm: React.FunctionComponent<AddNewBudgetFormProps> = ({
         onSubmit={handleSubmit(onSubmit)}
       >
 
-<div className="grid-budget p-3 mb-3 gap-5 w-full">
-            <div className="field budget-budget-custom-field flex flex-column">
+<div className="grid-budget p-3 pb-1 gap-5 w-full">
+            <div className="field budget-budget-custom-field flex flex-column mb-0">
               <label className="budget-label font-semibold" htmlFor="name">
                 Name
               </label>
@@ -455,7 +455,7 @@ const AddNewBudgetForm: React.FunctionComponent<AddNewBudgetFormProps> = ({
                 <small className="error-message">{errors.name.message}</small>
               )}
             </div>
-            <div className="field budget-custom-field  flex flex-column">
+            <div className="field budget-custom-field  flex flex-column mb-0">
               <label className="budget-label font-semibold" htmlFor="name">
                 Budget Unit
               </label>
@@ -463,6 +463,7 @@ const AddNewBudgetForm: React.FunctionComponent<AddNewBudgetFormProps> = ({
                 // options={budgetUnits}
                 // optionLabel="name"
                 readOnly
+                disabled
               value={getBudgetUnitValue()}
                 placeholder="Select budget unit"
                 className="w-full"
@@ -481,7 +482,7 @@ const AddNewBudgetForm: React.FunctionComponent<AddNewBudgetFormProps> = ({
                 // }}
               />
             </div>
-            <div className="field budget-custom-field flex flex-column">
+            <div className="field budget-custom-field flex flex-column mb-0">
               <label className="budget-label font-semibold" htmlFor="orgname">
                 Organization Name
               </label>
@@ -489,6 +490,7 @@ const AddNewBudgetForm: React.FunctionComponent<AddNewBudgetFormProps> = ({
               value={watch("orgname")}
               id="orgname"
                 readOnly
+                disabled
                 {...register('orgname')}
                 placeholder="Enter Organization Name"
               />
@@ -497,8 +499,8 @@ const AddNewBudgetForm: React.FunctionComponent<AddNewBudgetFormProps> = ({
             )} */}
             </div>
           </div>
-<div className="grid-budget p-3 mb-3 gap-5 w-full">
-            <div className="field budget-budget-custom-field flex flex-column">
+<div className="grid-budget p-3 pb-1 gap-5 w-full">
+            <div className="field budget-budget-custom-field flex flex-column mb-0">
               <label className="budget-label font-semibold" htmlFor="amount">
                 Budget Amount
               </label>
@@ -524,7 +526,7 @@ const AddNewBudgetForm: React.FunctionComponent<AddNewBudgetFormProps> = ({
                   </div>
                 )} */}
             </div>
-            <div className="field budget-custom-field flex flex-column">
+            <div className="field budget-custom-field flex flex-column mb-0">
               <label className="budget-label font-semibold" htmlFor="period">
                 Period
               </label>
@@ -539,7 +541,6 @@ const AddNewBudgetForm: React.FunctionComponent<AddNewBudgetFormProps> = ({
                     shouldDirty: true,
                     shouldValidate: true,
                   });
-                  setIsPeriodManualChange(prev => !prev);
                 }}
               />
               {/* {errors.period && (
@@ -567,7 +568,7 @@ const AddNewBudgetForm: React.FunctionComponent<AddNewBudgetFormProps> = ({
               )}
             </div>
           </div>
-          <div className="grid-budget p-3 mb-3 gap-5 w-full">
+          <div className="grid-budget p-3 pb-1 gap-5 w-full">
                       <div className="field budget-custom-field flex-column">
                         <label className="budget-label font-semibold" htmlFor="end_date">
                           End Date
@@ -608,17 +609,21 @@ const AddNewBudgetForm: React.FunctionComponent<AddNewBudgetFormProps> = ({
                                 >
                                   {allocatedType}
                                 </p>
-                                <InputNumber
+                                <input
+                                  type='number'
                                   inputId={`budget_allocation..${index}`}
+                                  style={{width:'50%'}}
+                                  className='budget-input-number'
                                   max={100}
+                                  placeholder="Enter Allocation in %"
+                                  min={0}
                                   value={
                                     budgetunitInfoType?.[index]?.percentage ||
                                     budgetunitInfoType?.type?.[index]?.percentage ||
-                                    0
+                                    null
                                   }
-                                  onValueChange={e => {
-                                    handleAllocationChange(index, allocatedType, e.value);
-                                    setIsAllocationChange(true);
+                                  onChange={e => {
+                                    handleAllocationChange(index, allocatedType, e.target.value);
                                   }}
                                 />
                                 {/* <span className="ml-2" style={{color: "#000"}}>{allocatedType}</span> */}

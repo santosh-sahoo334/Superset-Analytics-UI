@@ -2000,21 +2000,6 @@
   resolved "https://registry.npmjs.org/@encodable/registry/-/registry-1.0.3.tgz"
   integrity sha512-YH2nSBZJKgbH/9MkQXzAEE9UwTaVcWiKgVFyEU/gvrfmNWqecYaHMTyObo+ADSTGF4kk0cZZkr7VqZgIQbvrUw==
 
-"@esbuild/darwin-arm64@0.18.20":
-  version "0.18.20"
-  resolved "https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.18.20.tgz"
-  integrity sha512-bxRHW5kHU38zS2lPTPOyuyTm+S+eobPUnTNkdJEfAddYgEcll4xkT8DB9d2008DtTbl7uJag2HuE5NZAZgnNEA==
-
-"@esbuild/darwin-arm64@0.20.2":
-  version "0.20.2"
-  resolved "https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.20.2.tgz"
-  integrity sha512-4J6IRT+10J3aJH3l1yzEg9y3wkTDgDk7TSDFX+wKFiWjqWp/iCfLIYzGyasx9l0SAFPT1HwSCR+0w/h1ES/MjA==
-
-"@esbuild/darwin-arm64@0.21.5":
-  version "0.21.5"
-  resolved "https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.21.5.tgz"
-  integrity sha512-DwqXqZyuk5AiWWf3UfLiRDJ5EDd49zg6O9wclZ7kUMv2WRFr4HKjXp/5t8JZ11QbQfUS6/cRCKGwYhtNAY88kQ==
-
 "@eslint-community/eslint-utils@^4.2.0":
   version "4.4.1"
   resolved "https://registry.npmjs.org/@eslint-community/eslint-utils/-/eslint-utils-4.4.1.tgz"
@@ -3457,11 +3442,6 @@
     tmp "~0.2.1"
     tslib "^2.3.0"
 
-"@nrwl/nx-darwin-arm64@15.9.7":
-  version "15.9.7"
-  resolved "https://registry.npmjs.org/@nrwl/nx-darwin-arm64/-/nx-darwin-arm64-15.9.7.tgz"
-  integrity sha512-aBUgnhlkrgC0vu0fK6eb9Vob7eFnkuknrK+YzTjmLrrZwj7FGNAeyGXSlyo1dVokIzjVKjJg2saZZ0WQbfuCJw==
-
 "@nrwl/tao@15.9.7":
   version "15.9.7"
   resolved "https://registry.npmjs.org/@nrwl/tao/-/tao-15.9.7.tgz"
@@ -3685,11 +3665,6 @@
   version "0.1.1"
   resolved "https://registry.npmjs.org/@one-ini/wasm/-/wasm-0.1.1.tgz"
   integrity sha512-XuySG1E38YScSJoMlqovLru4KTUNSjgVTIjyh7qMX6aNN5HY5Ct5LhRJdxO79JtTzKfzV/bnWpz+zquYrISsvw==
-
-"@parcel/watcher-darwin-arm64@2.5.0":
-  version "2.5.0"
-  resolved "https://registry.npmjs.org/@parcel/watcher-darwin-arm64/-/watcher-darwin-arm64-2.5.0.tgz"
-  integrity sha512-hyZ3TANnzGfLpRA2s/4U1kbw2ZI4qGxaRJbBH2DCSREFfubMswheh8TeiC1sGZ3z2jUf3s37P0BBlrD3sjVTUw==
 
 "@parcel/watcher@^2.4.1":
   version "2.5.0"
@@ -5125,7 +5100,7 @@
     "@types/express" "^4.7.0"
     file-system-cache "2.3.0"
 
-"@superset-ui/chart-controls@*", "@superset-ui/chart-controls@0.18.25", "@superset-ui/chart-controls@file:/Users/ca/Desktop/Superset-Analytics-UI/superset-frontend/packages/superset-ui-chart-controls":
+"@superset-ui/chart-controls@*", "@superset-ui/chart-controls@0.18.25", "@superset-ui/chart-controls@file:C:\\Work\\superset-analytics-UI\\Superset-Analytics-UI\\superset-frontend\\packages\\superset-ui-chart-controls":
   version "0.18.25"
   resolved "file:packages/superset-ui-chart-controls"
   dependencies:
@@ -5135,7 +5110,7 @@
     lodash "^4.17.21"
     prop-types "^15.8.1"
 
-"@superset-ui/core@*", "@superset-ui/core@0.18.25", "@superset-ui/core@file:/Users/ca/Desktop/Superset-Analytics-UI/superset-frontend/packages/superset-ui-core":
+"@superset-ui/core@*", "@superset-ui/core@0.18.25", "@superset-ui/core@file:C:\\Work\\superset-analytics-UI\\Superset-Analytics-UI\\superset-frontend\\packages\\superset-ui-core":
   version "0.18.25"
   resolved "file:packages/superset-ui-core"
   dependencies:
@@ -5178,7 +5153,7 @@
     whatwg-fetch "^3.6.20"
     xss "^1.0.14"
 
-"@superset-ui/demo@file:/Users/ca/Desktop/Superset-Analytics-UI/superset-frontend/packages/superset-ui-demo":
+"@superset-ui/demo@file:C:\\Work\\superset-analytics-UI\\Superset-Analytics-UI\\superset-frontend\\packages\\superset-ui-demo":
   version "0.18.25"
   resolved "file:packages/superset-ui-demo"
   dependencies:
@@ -5206,7 +5181,7 @@
     react-resizable "^3.0.5"
     storybook-addon-jsx "^7.3.14"
 
-"@superset-ui/generator-superset@file:/Users/ca/Desktop/Superset-Analytics-UI/superset-frontend/packages/generator-superset":
+"@superset-ui/generator-superset@file:C:\\Work\\superset-analytics-UI\\Superset-Analytics-UI\\superset-frontend\\packages\\generator-superset":
   version "0.18.25"
   resolved "file:packages/generator-superset"
   dependencies:
@@ -5215,7 +5190,7 @@
     yeoman-generator "^5.7.0"
     yosay "^2.0.2"
 
-"@superset-ui/legacy-plugin-chart-calendar@*", "@superset-ui/legacy-plugin-chart-calendar@file:/Users/ca/Desktop/Superset-Analytics-UI/superset-frontend/plugins/legacy-plugin-chart-calendar":
+"@superset-ui/legacy-plugin-chart-calendar@*", "@superset-ui/legacy-plugin-chart-calendar@file:C:\\Work\\superset-analytics-UI\\Superset-Analytics-UI\\superset-frontend\\plugins\\legacy-plugin-chart-calendar":
   version "0.18.25"
   resolved "file:plugins/legacy-plugin-chart-calendar"
   dependencies:
@@ -5224,7 +5199,7 @@
     d3-tip "^0.9.1"
     prop-types "^15.8.1"
 
-"@superset-ui/legacy-plugin-chart-chord@*", "@superset-ui/legacy-plugin-chart-chord@file:/Users/ca/Desktop/Superset-Analytics-UI/superset-frontend/plugins/legacy-plugin-chart-chord":
+"@superset-ui/legacy-plugin-chart-chord@*", "@superset-ui/legacy-plugin-chart-chord@file:C:\\Work\\superset-analytics-UI\\Superset-Analytics-UI\\superset-frontend\\plugins\\legacy-plugin-chart-chord":
   version "0.18.25"
   resolved "file:plugins/legacy-plugin-chart-chord"
   dependencies:
@@ -5232,7 +5207,7 @@
     prop-types "^15.8.1"
     react "^16.13.1"
 
-"@superset-ui/legacy-plugin-chart-country-map@*", "@superset-ui/legacy-plugin-chart-country-map@file:/Users/ca/Desktop/Superset-Analytics-UI/superset-frontend/plugins/legacy-plugin-chart-country-map":
+"@superset-ui/legacy-plugin-chart-country-map@*", "@superset-ui/legacy-plugin-chart-country-map@file:C:\\Work\\superset-analytics-UI\\Superset-Analytics-UI\\superset-frontend\\plugins\\legacy-plugin-chart-country-map":
   version "0.18.25"
   resolved "file:plugins/legacy-plugin-chart-country-map"
   dependencies:
@@ -5240,14 +5215,14 @@
     d3-array "^2.0.3"
     prop-types "^15.8.1"
 
-"@superset-ui/legacy-plugin-chart-event-flow@*", "@superset-ui/legacy-plugin-chart-event-flow@file:/Users/ca/Desktop/Superset-Analytics-UI/superset-frontend/plugins/legacy-plugin-chart-event-flow":
+"@superset-ui/legacy-plugin-chart-event-flow@*", "@superset-ui/legacy-plugin-chart-event-flow@file:C:\\Work\\superset-analytics-UI\\Superset-Analytics-UI\\superset-frontend\\plugins\\legacy-plugin-chart-event-flow":
   version "0.18.25"
   resolved "file:plugins/legacy-plugin-chart-event-flow"
   dependencies:
     "@data-ui/event-flow" "^0.0.84"
     prop-types "^15.8.1"
 
-"@superset-ui/legacy-plugin-chart-heatmap@*", "@superset-ui/legacy-plugin-chart-heatmap@file:/Users/ca/Desktop/Superset-Analytics-UI/superset-frontend/plugins/legacy-plugin-chart-heatmap":
+"@superset-ui/legacy-plugin-chart-heatmap@*", "@superset-ui/legacy-plugin-chart-heatmap@file:C:\\Work\\superset-analytics-UI\\Superset-Analytics-UI\\superset-frontend\\plugins\\legacy-plugin-chart-heatmap":
   version "0.18.25"
   resolved "file:plugins/legacy-plugin-chart-heatmap"
   dependencies:
@@ -5256,7 +5231,7 @@
     d3-tip "^0.9.1"
     prop-types "^15.8.1"
 
-"@superset-ui/legacy-plugin-chart-histogram@*", "@superset-ui/legacy-plugin-chart-histogram@file:/Users/ca/Desktop/Superset-Analytics-UI/superset-frontend/plugins/legacy-plugin-chart-histogram":
+"@superset-ui/legacy-plugin-chart-histogram@*", "@superset-ui/legacy-plugin-chart-histogram@file:C:\\Work\\superset-analytics-UI\\Superset-Analytics-UI\\superset-frontend\\plugins\\legacy-plugin-chart-histogram":
   version "0.18.25"
   resolved "file:plugins/legacy-plugin-chart-histogram"
   dependencies:
@@ -5267,7 +5242,7 @@
     "@vx/scale" "^0.0.199"
     prop-types "^15.8.1"
 
-"@superset-ui/legacy-plugin-chart-horizon@*", "@superset-ui/legacy-plugin-chart-horizon@file:/Users/ca/Desktop/Superset-Analytics-UI/superset-frontend/plugins/legacy-plugin-chart-horizon":
+"@superset-ui/legacy-plugin-chart-horizon@*", "@superset-ui/legacy-plugin-chart-horizon@file:C:\\Work\\superset-analytics-UI\\Superset-Analytics-UI\\superset-frontend\\plugins\\legacy-plugin-chart-horizon":
   version "0.18.25"
   resolved "file:plugins/legacy-plugin-chart-horizon"
   dependencies:
@@ -5275,7 +5250,7 @@
     d3-scale "^3.0.1"
     prop-types "^15.8.1"
 
-"@superset-ui/legacy-plugin-chart-map-box@*", "@superset-ui/legacy-plugin-chart-map-box@file:/Users/ca/Desktop/Superset-Analytics-UI/superset-frontend/plugins/legacy-plugin-chart-map-box":
+"@superset-ui/legacy-plugin-chart-map-box@*", "@superset-ui/legacy-plugin-chart-map-box@file:C:\\Work\\superset-analytics-UI\\Superset-Analytics-UI\\superset-frontend\\plugins\\legacy-plugin-chart-map-box":
   version "0.18.25"
   resolved "file:plugins/legacy-plugin-chart-map-box"
   dependencies:
@@ -5284,7 +5259,7 @@
     supercluster "^4.1.1"
     viewport-mercator-project "^6.1.1"
 
-"@superset-ui/legacy-plugin-chart-paired-t-test@*", "@superset-ui/legacy-plugin-chart-paired-t-test@file:/Users/ca/Desktop/Superset-Analytics-UI/superset-frontend/plugins/legacy-plugin-chart-paired-t-test":
+"@superset-ui/legacy-plugin-chart-paired-t-test@*", "@superset-ui/legacy-plugin-chart-paired-t-test@file:C:\\Work\\superset-analytics-UI\\Superset-Analytics-UI\\superset-frontend\\plugins\\legacy-plugin-chart-paired-t-test":
   version "0.18.25"
   resolved "file:plugins/legacy-plugin-chart-paired-t-test"
   dependencies:
@@ -5292,14 +5267,14 @@
     prop-types "^15.8.1"
     reactable "^1.1.0"
 
-"@superset-ui/legacy-plugin-chart-parallel-coordinates@*", "@superset-ui/legacy-plugin-chart-parallel-coordinates@file:/Users/ca/Desktop/Superset-Analytics-UI/superset-frontend/plugins/legacy-plugin-chart-parallel-coordinates":
+"@superset-ui/legacy-plugin-chart-parallel-coordinates@*", "@superset-ui/legacy-plugin-chart-parallel-coordinates@file:C:\\Work\\superset-analytics-UI\\Superset-Analytics-UI\\superset-frontend\\plugins\\legacy-plugin-chart-parallel-coordinates":
   version "0.18.25"
   resolved "file:plugins/legacy-plugin-chart-parallel-coordinates"
   dependencies:
     d3 "^3.5.17"
     prop-types "^15.8.1"
 
-"@superset-ui/legacy-plugin-chart-partition@*", "@superset-ui/legacy-plugin-chart-partition@file:/Users/ca/Desktop/Superset-Analytics-UI/superset-frontend/plugins/legacy-plugin-chart-partition":
+"@superset-ui/legacy-plugin-chart-partition@*", "@superset-ui/legacy-plugin-chart-partition@file:C:\\Work\\superset-analytics-UI\\Superset-Analytics-UI\\superset-frontend\\plugins\\legacy-plugin-chart-partition":
   version "0.18.25"
   resolved "file:plugins/legacy-plugin-chart-partition"
   dependencies:
@@ -5307,7 +5282,7 @@
     d3-hierarchy "^1.1.8"
     prop-types "^15.8.1"
 
-"@superset-ui/legacy-plugin-chart-rose@*", "@superset-ui/legacy-plugin-chart-rose@file:/Users/ca/Desktop/Superset-Analytics-UI/superset-frontend/plugins/legacy-plugin-chart-rose":
+"@superset-ui/legacy-plugin-chart-rose@*", "@superset-ui/legacy-plugin-chart-rose@file:C:\\Work\\superset-analytics-UI\\Superset-Analytics-UI\\superset-frontend\\plugins\\legacy-plugin-chart-rose":
   version "0.18.25"
   resolved "file:plugins/legacy-plugin-chart-rose"
   dependencies:
@@ -5315,7 +5290,7 @@
     nvd3-fork "^2.0.5"
     prop-types "^15.8.1"
 
-"@superset-ui/legacy-plugin-chart-sankey-loop@*", "@superset-ui/legacy-plugin-chart-sankey-loop@file:/Users/ca/Desktop/Superset-Analytics-UI/superset-frontend/plugins/legacy-plugin-chart-sankey-loop":
+"@superset-ui/legacy-plugin-chart-sankey-loop@*", "@superset-ui/legacy-plugin-chart-sankey-loop@file:C:\\Work\\superset-analytics-UI\\Superset-Analytics-UI\\superset-frontend\\plugins\\legacy-plugin-chart-sankey-loop":
   version "0.18.25"
   resolved "file:plugins/legacy-plugin-chart-sankey-loop"
   dependencies:
@@ -5323,7 +5298,7 @@
     d3-selection "^3.0.0"
     prop-types "^15.8.1"
 
-"@superset-ui/legacy-plugin-chart-sankey@*", "@superset-ui/legacy-plugin-chart-sankey@file:/Users/ca/Desktop/Superset-Analytics-UI/superset-frontend/plugins/legacy-plugin-chart-sankey":
+"@superset-ui/legacy-plugin-chart-sankey@*", "@superset-ui/legacy-plugin-chart-sankey@file:C:\\Work\\superset-analytics-UI\\Superset-Analytics-UI\\superset-frontend\\plugins\\legacy-plugin-chart-sankey":
   version "0.18.25"
   resolved "file:plugins/legacy-plugin-chart-sankey"
   dependencies:
@@ -5346,7 +5321,7 @@
     prop-types "^15.7.2"
     reactable-arc "^0.15.0"
 
-"@superset-ui/legacy-plugin-chart-world-map@*", "@superset-ui/legacy-plugin-chart-world-map@file:/Users/ca/Desktop/Superset-Analytics-UI/superset-frontend/plugins/legacy-plugin-chart-world-map":
+"@superset-ui/legacy-plugin-chart-world-map@*", "@superset-ui/legacy-plugin-chart-world-map@file:C:\\Work\\superset-analytics-UI\\Superset-Analytics-UI\\superset-frontend\\plugins\\legacy-plugin-chart-world-map":
   version "0.18.25"
   resolved "file:plugins/legacy-plugin-chart-world-map"
   dependencies:
@@ -5356,7 +5331,7 @@
     datamaps "^0.5.9"
     prop-types "^15.8.1"
 
-"@superset-ui/legacy-preset-chart-deckgl@*", "@superset-ui/legacy-preset-chart-deckgl@file:/Users/ca/Desktop/Superset-Analytics-UI/superset-frontend/plugins/legacy-preset-chart-deckgl":
+"@superset-ui/legacy-preset-chart-deckgl@*", "@superset-ui/legacy-preset-chart-deckgl@file:C:\\Work\\superset-analytics-UI\\Superset-Analytics-UI\\superset-frontend\\plugins\\legacy-preset-chart-deckgl":
   version "0.4.13"
   resolved "file:plugins/legacy-preset-chart-deckgl"
   dependencies:
@@ -5377,7 +5352,7 @@
     urijs "^1.19.8"
     xss "^1.0.10"
 
-"@superset-ui/legacy-preset-chart-nvd3@*", "@superset-ui/legacy-preset-chart-nvd3@file:/Users/ca/Desktop/Superset-Analytics-UI/superset-frontend/plugins/legacy-preset-chart-nvd3":
+"@superset-ui/legacy-preset-chart-nvd3@*", "@superset-ui/legacy-preset-chart-nvd3@file:C:\\Work\\superset-analytics-UI\\Superset-Analytics-UI\\superset-frontend\\plugins\\legacy-preset-chart-nvd3":
   version "0.18.25"
   resolved "file:plugins/legacy-preset-chart-nvd3"
   dependencies:
@@ -5392,7 +5367,7 @@
     prop-types "^15.8.1"
     urijs "^1.19.11"
 
-"@superset-ui/plugin-chart-echarts@*", "@superset-ui/plugin-chart-echarts@file:/Users/ca/Desktop/Superset-Analytics-UI/superset-frontend/plugins/plugin-chart-echarts":
+"@superset-ui/plugin-chart-echarts@*", "@superset-ui/plugin-chart-echarts@file:C:\\Work\\superset-analytics-UI\\Superset-Analytics-UI\\superset-frontend\\plugins\\plugin-chart-echarts":
   version "0.18.25"
   resolved "file:plugins/plugin-chart-echarts"
   dependencies:
@@ -5401,24 +5376,24 @@
     lodash "^4.17.21"
     moment "^2.30.1"
 
-"@superset-ui/plugin-chart-handlebars@file:/Users/ca/Desktop/Superset-Analytics-UI/superset-frontend/plugins/plugin-chart-handlebars":
+"@superset-ui/plugin-chart-handlebars@file:C:\\Work\\superset-analytics-UI\\Superset-Analytics-UI\\superset-frontend\\plugins\\plugin-chart-handlebars":
   version "0.18.25"
   resolved "file:plugins/plugin-chart-handlebars"
   dependencies:
     handlebars "^4.7.7"
     just-handlebars-helpers "^1.0.19"
 
-"@superset-ui/plugin-chart-period-over-period-kpi@file:/Users/ca/Desktop/Superset-Analytics-UI/superset-frontend/plugins/plugin-chart-period-over-period-kpi":
+"@superset-ui/plugin-chart-period-over-period-kpi@file:C:\\Work\\superset-analytics-UI\\Superset-Analytics-UI\\superset-frontend\\plugins\\plugin-chart-period-over-period-kpi":
   version "0.1.0"
   resolved "file:plugins/plugin-chart-period-over-period-kpi"
   dependencies:
     moment "^2.30.1"
 
-"@superset-ui/plugin-chart-pivot-table@file:/Users/ca/Desktop/Superset-Analytics-UI/superset-frontend/plugins/plugin-chart-pivot-table":
+"@superset-ui/plugin-chart-pivot-table@file:C:\\Work\\superset-analytics-UI\\Superset-Analytics-UI\\superset-frontend\\plugins\\plugin-chart-pivot-table":
   version "0.18.25"
   resolved "file:plugins/plugin-chart-pivot-table"
 
-"@superset-ui/plugin-chart-table@*", "@superset-ui/plugin-chart-table@file:/Users/ca/Desktop/Superset-Analytics-UI/superset-frontend/plugins/plugin-chart-table":
+"@superset-ui/plugin-chart-table@*", "@superset-ui/plugin-chart-table@file:C:\\Work\\superset-analytics-UI\\Superset-Analytics-UI\\superset-frontend\\plugins\\plugin-chart-table":
   version "0.18.25"
   resolved "file:plugins/plugin-chart-table"
   dependencies:
@@ -5434,7 +5409,7 @@
     regenerator-runtime "^0.13.7"
     xss "^1.0.14"
 
-"@superset-ui/plugin-chart-word-cloud@*", "@superset-ui/plugin-chart-word-cloud@file:/Users/ca/Desktop/Superset-Analytics-UI/superset-frontend/plugins/plugin-chart-word-cloud":
+"@superset-ui/plugin-chart-word-cloud@*", "@superset-ui/plugin-chart-word-cloud@file:C:\\Work\\superset-analytics-UI\\Superset-Analytics-UI\\superset-frontend\\plugins\\plugin-chart-word-cloud":
   version "0.18.25"
   resolved "file:plugins/plugin-chart-word-cloud"
   dependencies:
@@ -5444,7 +5419,7 @@
     d3-scale "^3.0.1"
     encodable "^0.7.8"
 
-"@superset-ui/switchboard@file:/Users/ca/Desktop/Superset-Analytics-UI/superset-frontend/packages/superset-ui-switchboard":
+"@superset-ui/switchboard@file:C:\\Work\\superset-analytics-UI\\Superset-Analytics-UI\\superset-frontend\\packages\\superset-ui-switchboard":
   version "0.18.26-1"
   resolved "file:packages/superset-ui-switchboard"
 
@@ -5553,9 +5528,6 @@
     "@svgr/core" "8.1.0"
     "@svgr/plugin-jsx" "8.1.0"
     "@svgr/plugin-svgo" "8.1.0"
-
-"@swc/core-darwin-arm64@1.10.6":
-  version "1.10.6"
 
 "@swc/core@^1.2.147", "@swc/core@^1.2.173", "@swc/core@^1.3.82":
   version "1.10.6"
@@ -14003,19 +13975,6 @@ fs.realpath@^1.0.0:
   resolved "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
   integrity sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==
 
-fsevents@^1.2.7:
-  version "1.2.13"
-  resolved "https://registry.npmjs.org/fsevents/-/fsevents-1.2.13.tgz"
-  integrity sha512-oWb1Z6mkHIskLzEJ/XWX0srkpkTQ7vaopMQkyaEIoq0fmtFVxOthb8cCxeT+p3ynTdkk/RZwbgG4brR5BeWECw==
-  dependencies:
-    bindings "^1.5.0"
-    nan "^2.12.1"
-
-fsevents@^2.1.2, fsevents@^2.3.2, fsevents@~2.3.2:
-  version "2.3.3"
-  resolved "https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz"
-  integrity sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==
-
 function-bind@^1.1.2:
   version "1.1.2"
   resolved "https://registry.npmjs.org/function-bind/-/function-bind-1.1.2.tgz"
@@ -19726,11 +19685,6 @@ mute-stream@~0.0.4, mute-stream@0.0.8:
   version "0.0.8"
   resolved "https://registry.npmjs.org/mute-stream/-/mute-stream-0.0.8.tgz"
   integrity sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==
-
-nan@^2.12.1:
-  version "2.22.0"
-  resolved "https://registry.npmjs.org/nan/-/nan-2.22.0.tgz"
-  integrity sha512-nbajikzWTMwsW+eSsNm3QwlOs7het9gGJU5dDZzRTQGk03vyBOauxgI4VakDzE0PtsGTmXPsXTbbjVhRwR5mpw==
 
 nanoid@^2.1.0:
   version "2.1.11"
