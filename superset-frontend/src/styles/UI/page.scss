@@ -2,10 +2,72 @@
   border-bottom: 2px solid #e9ecef;
 }
 
+.vertical-right-border {
+  border-right: 2px solid #e9ecef;
+}
+
 .custom-bg-blue {
   background-color: #0032a5 !important;
   border-color: #0032a5 !important; /* Ensures border color matches */
   color: #fff !important;
+}
+
+.custom-bg-light-blue {
+  background-color: #43a7ec !important;
+  border-color: #43a7ec !important; /* Ensures border color matches */
+  color: #fff !important;
+}
+
+.custom-bg-new-blue {
+  background-color: #7A8CDB !important;
+  border-color: #7A8CDB !important; /* Ensures border color matches */
+  color: #fff !important;
+}
+
+.custom-bg-green {
+  background-color: #12b669 !important;
+  border-color: #12b669 !important; /* Ensures border color matches */
+  color: #fff !important;
+}
+.custom-budget-paginator {
+  display: flex;
+  align-items: center;
+  // justify-content: space-between;
+  justify-content: center;
+  // margin-top: 1rem;
+  color: #000;
+}
+
+.paginator-info {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+
+.rows-dropdown {
+  margin: 0 5px;
+  width: 82px;
+}
+
+.grid-budget{
+  grid-template-columns: repeat(3, 1fr);
+    display: grid;
+}
+
+
+@media (max-width: 762px) {
+  .grid-budget{
+    grid-template-columns: repeat(1, 1fr);
+      display: grid;
+  }
+  
+}
+.budget-border-top{
+  border-top: 1px solid #cfd4dc;
+}
+.budget-label{
+  font-size: 14px;
+  color: #344054;
 }
 .custom-bg-blue-action {
   background-color: #3d73f1 !important;
@@ -29,7 +91,16 @@
   border-color: #0032a5 !important; /* Ensures border color matches */
   color: #0032a5 !important;
 }
-
+.custom-outlined-light-blue {
+  border-color: #43a7ec !important; /* Ensures border color matches */
+  color: #43a7ec !important;
+}
+.custom-text-grey{
+  color: #475467;
+}
+.custom-text-light-grey{
+  color: #98a1b2;
+}
 th:first-child {
   border-top-left-radius: 10px;
 }

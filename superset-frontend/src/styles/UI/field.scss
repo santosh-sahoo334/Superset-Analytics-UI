@@ -190,6 +190,128 @@
     }
   }
 
+  .budget-custom-field {
+    &:hover {
+      input {
+        border-color: #005cbb;
+        background-color: unset;
+      }
+      .p-dropdown {
+        border-color: #005cbb;
+      }
+      .p-multiselect {
+        border-color: #005cbb;
+      }
+      .p-chips {
+        .p-chips-multiple-container {
+          border-color: #005cbb;
+        }
+      }
+    }
+    input {
+      padding-left: 0;
+      padding-right: 0;
+      width: 100%;
+      font-size: 0.875rem;
+      background-color: unset;
+    }
+    .p-inputtext::placeholder{
+      font-size: 14px;
+    }
+    .p-inputtext {
+      border-left-width: 1;
+      border-top-width: 1;
+      border-right-width: 1;
+      border-radius: 4px;
+      // margin-bottom: 8px;
+      padding-left: 8px;
+      color: #000;
+      &:enabled {
+        &:focus {
+          border-color: #005cbb;
+        }
+      }
+      &:hover {
+        border-color: #005cbb;
+      }
+    }
+    .p-invalid {
+      box-shadow: unset !important;
+      border-bottom-color: #b00020 !important;
+      &:enabled {
+        &:focus {
+          border-color: #b00020 !important;
+        }
+      }
+      &:hover {
+        border-color: #b00020 !important;
+      }
+    }
+    .p-error {
+      color: #b00020;
+    }
+    .p-multiselect {
+      border-left-width: 0;
+      border-top-width: 0;
+      border-right-width: 0;
+      border-radius: 0;
+      margin-bottom: 8px;
+    }
+    .p-chips{
+      width: 100%;
+      .p-chips-multiple-container{
+        width: 100%;
+      }
+      input::placeholder{
+        font-size: 14px;
+      }
+    }
+    .p-calendar{
+        width: 100%;
+    }
+    .p-inputnumber {
+        width: 50%;
+      }
+    .p-dropdown {
+      border-left-width: 1;
+      border-top-width: 1;
+      border-right-width: 1;
+      border-radius: 4px;
+      width: 100% !important;
+      background: unset;
+      box-shadow: unset;
+      margin-bottom: 8px;
+      padding-left: 8px;
+    }
+    .p-dropdown-label {
+      padding-left: 0;
+      padding-right: 0;
+    }
+    .p-multiselect-label {
+      padding-left: 0;
+      padding-right: 0;
+    }
+    .p-multiselect:not(.p-disabled).p-focus {
+      box-shadow: unset;
+      background: unset;
+      border-color: #005cbb;
+    }
+    .p-dropdown:not(.p-disabled).p-focus {
+      box-shadow: unset;
+      background: unset;
+      border-color: #005cbb;
+    }
+    .p-inputtext:enabled:focus {
+      box-shadow: unset;
+      background: unset;
+    }
+    .p-invalid {
+      .p-component {
+        box-shadow: unset;
+      }
+    }
+  }
+
 
 
 

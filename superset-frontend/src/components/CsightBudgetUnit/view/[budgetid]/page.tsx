@@ -93,20 +93,32 @@ const ViewBudgetPage = () => {
   return (
     <div className="mx-2">
       <div className="flex justify-content-between p-3 px-0 mb-3 horizontal-border align-items-center">
-        <div>
-          <h4 className="mb-0">Budget List</h4>
+        <div className="flex gap-1 align-items-center">
+          {/* <h4 className="mb-0">Budget List</h4> */}
+          <Button
+            tooltip="Back"
+            tooltipOptions={{ position: "bottom" }}
+            icon="pi pi-arrow-left"
+            onClick={() => {
+              setBudgetUnitView(false)
+              setBudgetUnitData(null)
+            }}
+            className="custom-text-grey"
+            style={{backgroundColor: "transparent", border: "none" , padding: "0"}}
+          />
+          <h3 className="text-2xl custom-text-grey m-0">View Budget</h3>
         </div>
         <div>
           <Button
             label="Budget"
-            className="custom-bg-blue mr-2 "
+            className="custom-bg-light-blue mr-2 "
             icon="pi pi-plus"
             onClick={() => {
               setCreateNewBudget(true)
               // router.push(`${currentPath}/create`)}
             }}
           />
-          <Button
+          {/* <Button
             tooltip="Back"
             tooltipOptions={{ position: "bottom" }}
             icon="pi pi-arrow-left"
@@ -115,7 +127,7 @@ const ViewBudgetPage = () => {
               setBudgetUnitView(false)
               setBudgetUnitData(null)
             }}
-          />
+          /> */}
         </div>
       </div>
       {loading ? (
@@ -129,7 +141,7 @@ const ViewBudgetPage = () => {
         </div>
       ) : (
         <BudgetPage
-          budgets={result}
+          budgets={budgetData}
           deleteBudget={deleteBudget}
           updateBudget={updateBudget}
           listColumnsFilter={listColumnsFilter}

@@ -11,9 +11,10 @@ import { Tooltip } from "primereact/tooltip";
 import moment from "moment";
 import { useHistory } from "react-router-dom";
 import { useAuthContext } from "../../CsightCommon/context/AuthContext";
+import CustomPaginator from "./customPagination";
 
 interface BudgetPageProps {
-  budgets: any[];
+  budgets: any;
   deleteBudget: (id: string) => void;
   updateBudget: (values: EditBudgetFormModel) => void;
   listColumnsFilter: any;
@@ -21,7 +22,7 @@ interface BudgetPageProps {
 }
 
 const BudgetPage: React.FunctionComponent<BudgetPageProps> = ({
-  budgets = [],
+  budgets = {},
   deleteBudget,
   updateBudget,
   listColumnsFilter,
@@ -30,6 +31,10 @@ const BudgetPage: React.FunctionComponent<BudgetPageProps> = ({
   const [expandedRows, setExpandedRows] = useState(null);
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
   const [selectedBudget, setSelectedBudget] = useState<any>(null);
+  const [paginationState, setPaginationState] = useState({
+    currentPage: 0,
+    countPerPage: 10,
+  });
   const history = useHistory();
   const maxTextLength = 15;
   const customHeaders = {
@@ -66,7 +71,7 @@ const BudgetPage: React.FunctionComponent<BudgetPageProps> = ({
         <Button
           type="button"
           icon="pi pi-pencil"
-          className="custom-bg-blue-action"
+          className="custom-bg-green"
           rounded
           onClick={() => {
             setBudgetData(data)
@@ -78,7 +83,7 @@ const BudgetPage: React.FunctionComponent<BudgetPageProps> = ({
           type="button"
           icon="pi pi-trash"
           rounded
-          style={{ backgroundColor: "#FF7F7F", border: "none" }}
+          style={{ backgroundColor: "#f04437", border: "none", color: "#fff" }}
           onClick={() => {
             setSelectedBudget(data);
             setOpenDeleteModal(true);
@@ -109,6 +114,15 @@ const BudgetPage: React.FunctionComponent<BudgetPageProps> = ({
       </>
     );
   };
+
+    const handlePageChange = (event: PaginatorPageChangeEvent) => {
+      setPaginationState({
+        currentPage: event.page,
+        countPerPage: event.rows,
+      });
+    };
+    console.log(budgets);
+    
   return (
     <div className="custom-table">
       <Dialog
@@ -127,7 +141,7 @@ const BudgetPage: React.FunctionComponent<BudgetPageProps> = ({
         <div className="flex gap-2 align-items-center mt-4 justify-content-end">
           <Button
             outlined
-            className="custom-outlined-blue"
+            className="custom-outlined-light-blue"
             onClick={() => setOpenDeleteModal(false)}
           >
             No
@@ -137,16 +151,19 @@ const BudgetPage: React.FunctionComponent<BudgetPageProps> = ({
               setOpenDeleteModal(false);
               deleteBudget(selectedBudget?.id);
             }}
-            className="custom-bg-blue"
+            className="custom-bg-light-blue"
           >
             Yes
           </Button>
         </div>
       </Dialog>
+      <div className="border" style={{border: "1px solid #e9ecef", borderRadius: "4px"}}>
       <DataTable
-        className="custom-table dashboard-table"
-        value={budgets}
+        className="custom-table dashboard-table-update budget-table"
+        value={budgets.result}
         expandedRows={expandedRows}
+        scrollable
+            scrollHeight="420px" 
         // rowExpansionTemplate={rowExpansionTemplate}
         dataKey="id"
         tableStyle={{ minWidth: "60rem" }}
@@ -169,16 +186,18 @@ const BudgetPage: React.FunctionComponent<BudgetPageProps> = ({
                   ? datesCol(rowData, { field: columnKey })
                   : truncatedBodyTemplate(rowData, columnKey, rowIndex)
               }
-              headerStyle={{ backgroundColor: "#0032a5", color: "#ffffff" }}
+              headerStyle={{ backgroundColor: "#f2f3f6", color: "#667084" }}
             />
           ))}
         <Column
           exportable={false}
           body={actionBodyTemplate}
           header="Action"
-          headerStyle={{ backgroundColor: "#0032a5", color: "#ffffff" }}
+          headerStyle={{ backgroundColor: "#f2f3f6", color: "#667084" }}
         />
       </DataTable>
+          {/* <CustomPaginator paginationState={paginationState} budgetUnitData={budgets} handlePageChange={handlePageChange}/> */}
+        </div>
     </div>
   );
 };
