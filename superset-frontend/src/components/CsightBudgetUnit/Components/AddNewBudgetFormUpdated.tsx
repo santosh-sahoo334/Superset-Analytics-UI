@@ -143,6 +143,7 @@ const AddNewBudgetFormUpdated: React.FunctionComponent<AddNewBudgetFormUpdatedPr
 
   const buttonRef = useRef(null);
   const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState<string>(false);
   const budgetunit = watch("budgetunit");
   const period = watch("period");
   const amount = watch("amount");
@@ -363,7 +364,7 @@ const AddNewBudgetFormUpdated: React.FunctionComponent<AddNewBudgetFormUpdatedPr
     }
   }, [period, startDate, endDate]);
 
-  const onSubmit = (data: AddBudgetFormModel, event: React.FormEvent) => {
+  const onSubmit = async(data: AddBudgetFormModel, event: React.FormEvent) => {
     event?.preventDefault();
     const newBudgetunitInfoType = Array.isArray(budgetunitInfoType)
       ? budgetunitInfoType
@@ -380,7 +381,7 @@ const AddNewBudgetFormUpdated: React.FunctionComponent<AddNewBudgetFormUpdatedPr
       setError("");
     }
     const selectedBudgetunit = budgetUnits?.find((p) => p.id == budgetid);
-
+    setLoading(true);
     const budgetData = {
       ...data,
       budgetunit: selectedBudgetunit?.id || budgetunit,
@@ -390,7 +391,8 @@ const AddNewBudgetFormUpdated: React.FunctionComponent<AddNewBudgetFormUpdatedPr
       },
     };
 
-    addBudget(budgetData);
+    await addBudget(budgetData);
+    setLoading(false);
   };
   const handleBudgetSave = () => {
     handleSubmit(onSubmit)();
@@ -482,6 +484,7 @@ const AddNewBudgetFormUpdated: React.FunctionComponent<AddNewBudgetFormUpdatedPr
             <InputText
               id="budgetunit"
               readOnly
+              disabled
               value={getBudgetUnitValue()}
               aria-describedby="org_name-help"
               {...register("budgetunit")}
@@ -535,6 +538,7 @@ const AddNewBudgetFormUpdated: React.FunctionComponent<AddNewBudgetFormUpdatedPr
             <InputText
               id="orgname"
               readOnly
+              disabled
               value={watch("orgname")}
               aria-describedby="org_name-help"
               placeholder="Enter Organization Name"
@@ -596,16 +600,20 @@ const AddNewBudgetFormUpdated: React.FunctionComponent<AddNewBudgetFormUpdatedPr
                 return (
                   <div key={index} className="flex gap-2">
                     <p className="mb-0" style={{border: "1px solid #d0d5dd", width: "50%", padding:"10px", borderRadius: "4px"}}>{allocatedType}</p>
-                    <InputNumber
-                      inputId={`budget_allocation.${index}`}
+                    <input
+                      type='number'
+                      inputId={`budget_allocation..${index}`}
+                      style={{width:'50%'}}
+                      className='budget-input-number'
                       max={100}
+                      placeholder="Enter Allocation in %"
                       value={
                         budgetunitInfoType?.[index]?.percentage ||
                         budgetunitInfoType?.type?.[index]?.percentage ||
-                        0
+                        null
                       }
-                      onValueChange={(e) =>
-                        handleAllocationChange(index, allocatedType, e.value)
+                      onChange={(e) =>
+                        handleAllocationChange(index, allocatedType, e.target.value)
                       }
                     />
                   </div>
@@ -684,6 +692,7 @@ const AddNewBudgetFormUpdated: React.FunctionComponent<AddNewBudgetFormUpdatedPr
               value={startDate} // Add this line
               view="month"
               placeholder="Start month"
+              className="budget-calendar"
               minDate={
                 new Date(new Date().getFullYear(), new Date().getMonth(), 1)
               }
@@ -744,29 +753,30 @@ const AddNewBudgetFormUpdated: React.FunctionComponent<AddNewBudgetFormUpdatedPr
         {/* </FieldWrapper> */}
         </div>
         {!isCreatePage && (
-        <div className="text-right relative bg-white w-full budget-border-top flex gap-2 justify-content-end pt-2 mb-2">
-            <Button
-                        label="Cancel"
-                        style={{
-                          backgroundColor: 'transparent',
-                          color: '#43a7ec',
-                          border: 'none',
-                        }}
-                        onClick={() => {
-                          setVisibleRight(false);
-                        }}
-                      />
+        <div className="text-right relative bg-white w-full budget-border-top flex gap-2 justify-content-start pt-2 mb-2">
             <Button
               ref={buttonRef}
               type="submit"
               label="Create Budget Unit"
               className="custom-bg-light-blue"
               severity="success"
+              loading={loading}
             //   style={{
             //     position: "absolute",
             //     right: "calc(30% - 60px)",
             //   }}
             />
+              <Button
+                          label="Cancel"
+                          style={{
+                            backgroundColor: 'transparent',
+                            color: '#43a7ec',
+                            border: 'none',
+                          }}
+                          onClick={() => {
+                            setVisibleRight(false);
+                          }}
+                        />
           </div>
         )}
       </form>

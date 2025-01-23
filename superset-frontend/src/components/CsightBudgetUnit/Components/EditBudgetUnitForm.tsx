@@ -38,6 +38,7 @@ const EditBudgetUnitFormUpdatePage = ({ visibleRight, setVisibleRight }) => {
   const [budgetUnitData, setBudgetUnitData] = useState<any>({});
   const [budgetListData, setBudgetListData] = useState<any>({});
   const [loading, setLoading] = useState<Boolean>(true);
+  const [loadingButton,setLoadingButton] = useState(false);
   const router = useHistory();
 
   const {
@@ -134,6 +135,7 @@ const EditBudgetUnitFormUpdatePage = ({ visibleRight, setVisibleRight }) => {
 
   const updateBudgetUnit = async values => {
     try {
+      setLoadingButton(true);
       const resp = await HTTP.put(
         `budgetunit/${budgetUnitDataContext?.id}`,
         {
@@ -202,7 +204,9 @@ const EditBudgetUnitFormUpdatePage = ({ visibleRight, setVisibleRight }) => {
       // router.push("/budget-unit");
       setEditBudgetUnit(false);
       setBudgetUnitDataContext(null);
+      setLoadingButton(false);
     } catch (error) {
+      setLoadingButton(false);
       console.log('error while updating budget unit', error);
       showToast(
         error?.message || 'Error while updating budget unit',
@@ -336,7 +340,7 @@ const EditBudgetUnitFormUpdatePage = ({ visibleRight, setVisibleRight }) => {
                 )}
               </div>
             </FieldWrapper> */}
-            <div className="flex flex-column py-4" style={{ height: '70%' }}>
+            <div className="flex flex-column py-4" style={{ height: '100%' }}>
               <div className="field budget-custom-field flex flex-column">
                 <label className="budget-label" htmlFor="name">
                   Name
@@ -384,7 +388,14 @@ const EditBudgetUnitFormUpdatePage = ({ visibleRight, setVisibleRight }) => {
                 )}
               </div>
             </div>
-            <div className="text-right relative bg-white w-full budget-border-top flex gap-2 justify-content-end pt-2">
+            <div className="text-right relative bg-white w-full budget-border-top flex gap-2 justify-content-start pt-2">
+              <Button
+                type="submit"
+                label="Update"
+                className="custom-bg-light-blue"
+                severity="success"
+                loading={loadingButton}
+              />
               <Button
                 label="Cancel"
                 style={{
@@ -395,12 +406,6 @@ const EditBudgetUnitFormUpdatePage = ({ visibleRight, setVisibleRight }) => {
                 onClick={() => {
                   setVisibleRight(false);
                 }}
-              />
-              <Button
-                type="submit"
-                label="Update"
-                className="custom-bg-light-blue"
-                severity="success"
               />
             </div>
           </form>

@@ -504,7 +504,7 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
               </Button>
             </div>
           </Dialog>
-          <div className="flex justify-content-between p-3 pl-0 mb-3 horizontal-border align-items-center">
+          <div className="flex justify-content-between p-3 pl-0 pb-1 horizontal-border align-items-center">
             {/* <div>
               <h4 className="mb-0">Edit Budget</h4>
             </div> */}
@@ -600,8 +600,8 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
             />
           </div>
         </div> */}
-          <div className="grid-budget p-3 mb-3 gap-5 w-full">
-            <div className="field budget-budget-custom-field flex flex-column">
+          <div className="grid-budget p-3 pb-1 gap-5 w-full">
+            <div className="field budget-custom-field mb-0 flex flex-column">
               <label className="budget-label font-semibold" htmlFor="name">
                 Name
               </label>
@@ -615,7 +615,7 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
                 <small className="error-message">{errors.name.message}</small>
               )}
             </div>
-            <div className="field budget-custom-field  flex flex-column">
+            <div className="field budget-custom-field mb-0  flex flex-column">
               <label className="budget-label font-semibold" htmlFor="name">
                 Budget Unit
               </label>
@@ -623,6 +623,7 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
                 // options={budgetUnits}
                 // optionLabel="name"
                 readOnly
+                disabled
                 value={selectedBudgetUnit?.name}
                 placeholder="Select budget unit"
                 className="w-full"
@@ -641,7 +642,7 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
                 // }}
               />
             </div>
-            <div className="field budget-custom-field flex flex-column">
+            <div className="field budget-custom-field mb-0 flex flex-column">
               <label className="budget-label font-semibold" htmlFor="orgname">
                 Organization Name
               </label>
@@ -649,6 +650,7 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
                 value={selectedBudgetUnit?.orgname}
                 id="orgname"
                 readOnly
+                disabled
                 {...register('orgname')}
                 placeholder="Enter Organization Name"
               />
@@ -657,14 +659,15 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
             )} */}
             </div>
           </div>
-          <div className="grid-budget p-3 mb-3 gap-5 w-full">
-            <div className="field budget-budget-custom-field flex flex-column">
+          <div className="grid-budget p-3 pb-1 gap-5 w-full">
+            <div className="field budget-custom-field mb-0 flex flex-column">
               <label className="budget-label font-semibold" htmlFor="amount">
                 Budget Amount
               </label>
               <InputNumber
                 value={data?.amount || 0}
                 inputId="amount"
+                className='w-full'
                 onValueChange={e => {
                   setValue('amount', e.value, {
                     shouldValidate: true,
@@ -684,7 +687,7 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
                   </div>
                 )} */}
             </div>
-            <div className="field budget-custom-field flex flex-column">
+            <div className="field budget-custom-field mb-0 flex flex-column">
               <label className="budget-label font-semibold" htmlFor="period">
                 Period
               </label>
@@ -706,7 +709,7 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
               <small className="error-message">{errors.period.message}</small>
             )} */}
             </div>
-            <div className="field budget-custom-field flex-column">
+            <div className="field budget-custom-field mb-0 flex-column">
               <label
                 className="budget-label font-semibold"
                 htmlFor="start_date"
@@ -727,8 +730,8 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
               )}
             </div>
           </div>
-          <div className="grid-budget p-3 mb-3 gap-5 w-full">
-            <div className="field budget-custom-field flex-column">
+          <div className="grid-budget p-3 pb-1 gap-5 w-full">
+            <div className="field budget-custom-field mb-0 flex-column">
               <label className="budget-label font-semibold" htmlFor="end_date">
                 End Date
               </label>
@@ -749,7 +752,7 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
               )}
             </div>
             {budgetUnit && allocations?.length > 0 && (
-              <div className="field budget-custom-field">
+              <div className="field budget-custom-field mb-0">
                 <label className="budget-label" htmlFor="budget_allocation">
                   Allocation in %
                 </label>
@@ -768,18 +771,26 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
                       >
                         {allocatedType}
                       </p>
-                      <InputNumber
+                      <input
+                        type='number'
                         inputId={`budget_allocation..${index}`}
+                        style={{width:'50%'}}
+                        className='budget-input-number'
+                        placeholder="Enter Allocation in %"
                         max={100}
                         value={
                           budgetunitInfoType?.[index]?.percentage ||
                           budgetunitInfoType?.type?.[index]?.percentage ||
-                          0
+                          null
                         }
-                        onValueChange={e => {
-                          handleAllocationChange(index, allocatedType, e.value);
+                        onChange={(e)=>{
+                          handleAllocationChange(index, allocatedType, e.target.value);
                           setIsAllocationChange(true);
                         }}
+                        // onValueChange={e => {
+                        //   // handleAllocationChange(index, allocatedType, e.value);
+                        //   // setIsAllocationChange(true);
+                        // }}
                       />
                       {/* <span className="ml-2" style={{color: "#000"}}>{allocatedType}</span> */}
                     </div>
@@ -788,7 +799,7 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
               </div>
             )}
           </div>
-          <div className="flex justify-content-between p-3 mb-3 gap-5 w-full  horizontal-border">
+          <div className="flex justify-content-between p-3 pb-1 gap-5 w-full  horizontal-border">
             <h4 className="mb-0 flex align-items-center">
               Budget Unit Type Allocation
             </h4>
@@ -828,8 +839,8 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
               setBudgetunitInfoType={setBudgetunitInfoType}
             />
           </div> */}
-          <div className="grid-budget p-3 mb-3 gap-5">
-            <div className="field budget-custom-field flex align-items-center gap-2 vertical-right-border">
+          <div className="grid-budget p-3 pb-1 gap-5">
+            <div className="field budget-custom-field mb-0 flex align-items-center gap-2 vertical-right-border">
               <label
                 className="budget-label font-semibold mb-0"
                 htmlFor="end_date"
@@ -848,7 +859,7 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
                 checked={watch('freeze')}
               />
             </div>
-            <div className="field budget-custom-field flex align-items-center gap-2 vertical-right-border">
+            <div className="field budget-custom-field mb-0 flex align-items-center gap-2 vertical-right-border">
               <label
                 className="budget-label font-semibold mb-0"
                 htmlFor="end_date"
@@ -867,7 +878,7 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
                 onClick={e => setValue('budget_alert_flag', e.checked)}
               />
             </div>
-            <div className="field budget-custom-field flex align-items-center gap-2">
+            <div className="field budget-custom-field mb-0 flex align-items-center gap-2">
               <label
                 className="budget-label font-semibold mb-0"
                 htmlFor="end_date"
@@ -887,7 +898,7 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
               />
             </div>
           </div>
-          <div className='pb-6'>
+          <div className='pb-6 p-3 pb-1'>
             <BudgetUnitAllocationTable
               data={tableData}
               period={period}
@@ -908,7 +919,7 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
             isEditMode={true}
             value={String(watch('freeze'))}
           >
-            <div className="field budget-custom-field">
+            <div className="field budget-custom-field mb-0">
               <Checkbox
                 id="freeze"
                 onChange={e => setValue('freeze', e.checked)}
@@ -924,7 +935,7 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
             isEditMode={true}
             value={String(watch('budget_alert_flag'))}
           >
-            <div className="field budget-custom-field">
+            <div className="field budget-custom-field mb-0">
               <Checkbox
                 id="budget_alert_flag"
                 checked={watch('budget_alert_flag')}
@@ -940,7 +951,7 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
             isEditMode={true}
             value={String(watch('archive'))}
           >
-            <div className="field budget-custom-field">
+            <div className="field budget-custom-field mb-0">
               <Checkbox
                 id="archive"
                 checked={watch('archive')}

@@ -507,3 +507,15 @@ text-align: start;
 .custom-dashboard-card {
   min-height: 88px;
 }
+.p-datepicker .p-monthpicker .p-monthpicker-month:focus{
+  box-shadow: none;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
