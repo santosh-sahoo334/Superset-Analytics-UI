@@ -318,7 +318,7 @@ const CsightDashboard = () => {
                 className={`flex justify-content-start gap-3 mt-1`}
               >
                 {recentSearchLoader ? (
-                  <div className="circle-container-loader px-1 py-2">
+                  <div className="circle-container-loader circle-container-loader-height px-1 py-2">
                     {" "}
                     <LoadingSpinner size="20px" />
                   </div>
