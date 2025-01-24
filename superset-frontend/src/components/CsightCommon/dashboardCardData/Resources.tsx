@@ -154,7 +154,7 @@ export const ResourcesTable = () => {
           <SettingOutlined className="text-xl"/>
             <span className="text-2xl font-medium">New Assets</span>
           </div>
-          <div ref={tableRef} style={{ maxHeight: "270px", overflowY: "auto" }}>
+          <div ref={tableRef} style={{ maxHeight: "275px", overflowY: "auto" }}>
             <DataTable
               value={resourcesData}
               scrollable

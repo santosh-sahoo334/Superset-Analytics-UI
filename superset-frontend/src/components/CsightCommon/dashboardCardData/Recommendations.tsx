@@ -11,14 +11,15 @@ import LoadingSpinner from "../LoadingSpinner";
 import { ArrowUpOutlined, DollarOutlined, SettingOutlined } from "@ant-design/icons";
 
 const TruncatedHeader = ({ text }: { text: string }) => {
-  const truncatedText = text.length > 10 ? `${text.slice(0, 10)}...` : text;
+  const truncateSize = 7;
+  const truncatedText = text.length > truncateSize ? `${text.slice(0, truncateSize)}..` : text;
   // Sanitize the ID by removing special characters and spaces
   const tooltipId = `header-${text.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`;
   
   return (
     <>
-      <span id={tooltipId}>{truncatedText}</span>
-      {text.length > 10 && <Tooltip target={`#${tooltipId}`} content={text} />}
+      <span id={tooltipId} className={`${text.length > truncateSize ? 'cursor-pointer' : ''}`}>{truncatedText}</span>
+      {text.length > truncateSize && <Tooltip target={`#${tooltipId}`} content={text} />}
     </>
   );
 };
@@ -174,7 +175,7 @@ export const RecommendationsTable = () => {
             />
             <span className="text-2xl font-medium">Recommendations</span>
           </div>
-          <div ref={tableRef} style={{ maxHeight: "263px", overflowY: "auto" }}>
+          <div ref={tableRef} style={{ maxHeight: "280px", overflowY: "auto" }}>
             <DataTable
               value={recommenddationsData}
               scrollable

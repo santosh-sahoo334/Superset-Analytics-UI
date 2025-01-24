@@ -147,9 +147,9 @@ const FalshCard = ({clickedNavItem}:any) => {
       //   "Which specific AWS services contributed most significantly to the cost increase from February to March 2024?";
       const id = uuidv4();
       setFlashCardData([
-        { answer: null, id: id, isLoading: true, question: questionsList[clickedNavItem], task_id: null },
+        { answer: questionsList[clickedNavItem], id: id, isLoading: false, question: questionsList[clickedNavItem], task_id: null },
       ]);
-      getTaskID(questionsList[clickedNavItem], id);
+      // getTaskID(questionsList[clickedNavItem], id);
     }
   }, []);
 
@@ -179,7 +179,7 @@ const FalshCard = ({clickedNavItem}:any) => {
                 <div
                   style={{ whiteSpace: "pre-line" }}
                   dangerouslySetInnerHTML={{
-                    __html: (fd?.answer).replaceAll(
+                    __html: (fd?.answer)?.replaceAll(
                       /\*\*(.*?)\*\*/g,
                       "<b>$1</b>"
                     ),

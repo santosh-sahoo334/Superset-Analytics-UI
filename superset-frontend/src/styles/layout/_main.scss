@@ -391,16 +391,19 @@ a {
     position: absolute;
     top: -50px;
     left: 0px;
+    margin-left: 5px;
   }
   .percenatge-saved-left-card-after-loading {
     position: absolute;
     top: -65px;
     left: 40px;
+    margin-left: 5px;
   }
   .percenatge-saved-right-card {
     position: absolute;
     right: 0px;
     top: -50px;
+    margin-right: 5px;
   }
 }
 
@@ -411,8 +414,8 @@ a {
   }
   .equal-card-size {
     padding: 1rem;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    // margin-top: 1rem;
+    // margin-bottom: 1rem;
   }
 }
 

@@ -25,10 +25,10 @@ export const BlogsCard = () => {
           <div>
                 <div className="flex mb-3">
                   <img
-                    src={'/static/assets/images/blog.png'}
+                    src={'/static/assets/images/focus.png'}
                     alt="blog"
                     width={175}
-                    height={100}
+                    height={150}
                     className="p-1 w-1/4"
                   />
                   <div className="blog-details pl-2">
@@ -47,10 +47,10 @@ export const BlogsCard = () => {
                 </div>
                 <div className="flex mb-3">
                   <img
-                    src={'/static/assets/images/blog2.png'}
+                    src={'/static/assets/images/uniteco.png'}
                     alt="blog"
                     width={175}
-                    height={100}
+                    height={120}
                     className="p-1 w-1/4"
                   />
                   <div className="blog-details pl-2">

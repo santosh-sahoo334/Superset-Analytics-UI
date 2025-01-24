@@ -187,28 +187,49 @@ const ChatBot = () => {
   }, [question]);
 
   useEffect(() => {
-    console.log('call1');
-    
     if((flashCardData?.length <= 0 || !opneChatModal) && currentNavItem === clickedNavItem){
       return
     }
-    console.log('call2');
     const id = uuidv4();
     setPrompts((p) => [
       ...p,
       {
         id,
-        answer: "",
-        question: questionsList[clickedNavItem],
+        answer: questionsList[clickedNavItem],
+        question: '',
         suggested_questions: [],
         task_id: null,
-        isLoading: true,
+        isLoading: false,
         questionTime: new Date(),
-        answerTime: null,
+        answerTime: new Date(),
         notShow: true
       },
     ]);
-    getTaskID(questionsList[clickedNavItem], id);
+
+
+    // setPrompts((prompts:any) =>
+    //   prompts?.map((p:any) => {
+    //     if (p.task_id === task_id) {
+    //       const graphData = isGraphType
+    //         ? parseGraphData(data?.result?.answer)
+    //         : null;
+    //       return {
+    //         ...p,
+    //         answer: isGraphType
+    //           ? extractTextBeforeJson(data?.result?.answer)
+    //           : data?.result?.answer,
+    //         suggested_questions: parseSuggestedQuestions(
+    //           data?.result?.suggested_questions
+    //         ),
+    //         isLoading: false,
+    //         graphData: graphData?.isValid ? graphData?.data : null,
+    //         answerTime: new Date(),
+    //       };
+    //     }
+    //     return p;
+    //   })
+    // );
+    // getTaskID(questionsList[clickedNavItem], id);
   }, [opneChatModal]);
 
 

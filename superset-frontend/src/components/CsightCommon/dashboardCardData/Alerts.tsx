@@ -152,13 +152,13 @@ export const AlertsTableUI = () => {
     cost_diff: (
       <div>
          <span className="font-bold">$</span> 
-        <ArrowUpOutlined className="text-lg  text-red-500" style={{  marginLeft: "3px"  }} />
+        <ArrowUpOutlined className="text-xl  text-red-500" style={{  marginLeft: "3px"  }} />
       </div>
     ),
     dod_percentage_change: (
       <div>
         <span className="font-bold">%</span> 
-        <ArrowUpOutlined className="text-lg  text-red-500" style={{  marginLeft: "3px"  }} />
+        <ArrowUpOutlined className="text-xl  text-red-500" style={{  marginLeft: "3px"  }} />
       </div>
     ),
   };
@@ -177,7 +177,7 @@ export const AlertsTableUI = () => {
           </div>
           <div
             ref={tableRef}
-            style={{ maxHeight: "270px", overflowY: "auto" }} // Scrollable container
+            style={{ maxHeight: "280px", overflowY: "auto" }} // Scrollable container
           >
             <DataTable
               value={alertsData}
@@ -192,6 +192,7 @@ export const AlertsTableUI = () => {
                   body={(rowData, { rowIndex }) => {
                     if (
                       columnKey === "cost_on_datekey" ||
+                      columnKey === "cost_diff" ||
                       columnKey === "prev_day_cost"
                     ) {
                       return formatCurrency(rowData[columnKey]);
