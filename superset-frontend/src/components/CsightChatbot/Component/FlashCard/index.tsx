@@ -142,7 +142,6 @@ const FalshCard = ({clickedNavItem}:any) => {
 
   useEffect(() => {
     if (flashCardData?.length <= 0 && clickedNavItem && questionsList[clickedNavItem]) {
-      console.log('call3');
       // const q1 =
       //   "Which specific AWS services contributed most significantly to the cost increase from February to March 2024?";
       const id = uuidv4();

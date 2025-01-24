@@ -81,18 +81,18 @@ const ChatBot = () => {
     flashCardData
   } = useAIBotContext();
 
-  const { clickedNavItem } = useContext(LayoutContext);
+  const { clickedNavItem,previousNavItem,setPreviousNavItem } = useContext(LayoutContext);
 
   const { showToast } = useToast();
 
   const op = useRef<OverlayPanel>(null);
 
   const [containerHeight, setContainerHeight] = useState(120);
-  const [currentNavItem, setCurrentNavItem] = useState('Dashboard');
+  // const [currentNavItem, setCurrentNavItem] = useState('Dashboard');
 
-  useEffect(() => {
-    setCurrentNavItem(clickedNavItem);
-  }, [clickedNavItem]);
+  // useEffect(() => {
+  //   setCurrentNavItem(clickedNavItem);
+  // }, []);
 
   const onClickChatIcon = () => {
     setOpenChatModal(!opneChatModal);
@@ -187,9 +187,18 @@ const ChatBot = () => {
   }, [question]);
 
   useEffect(() => {
-    if((flashCardData?.length <= 0 || !opneChatModal) && currentNavItem === clickedNavItem){
+    if(flashCardData?.length <= 0){
+      setPreviousNavItem(clickedNavItem);
       return
     }
+    if(!opneChatModal){
+      return
+    }
+    if(previousNavItem === clickedNavItem){
+      return
+    }
+    setPreviousNavItem(clickedNavItem);
+    
     const id = uuidv4();
     setPrompts((p) => [
       ...p,

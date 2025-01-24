@@ -131,7 +131,7 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
     }
   }
 
-  const { clickedNavItem, activeNavItem, setActiveNavItem, setClickedNavItem } = useContext(LayoutContext);
+  const { clickedNavItem, activeNavItem, setActiveNavItem, setClickedNavItem,setPreviousNavItem } = useContext(LayoutContext);
 
   const navItems: any = {
     dashboard: { id: 'dashboard', name: 'Dashboard' },
@@ -167,6 +167,7 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
 
   const handleMenuClick = (info: MenuInfo) => {
     // setFlashCardData([]);
+    setPreviousNavItem(clickedNavItem);
     const key: any = info.key.toString();
     setActiveNavItem(navItems[key].replaceName || navItems[key].name);
     setClickedNavItem(navItems[key].name);

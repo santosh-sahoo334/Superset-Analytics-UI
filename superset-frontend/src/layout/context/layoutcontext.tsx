@@ -67,6 +67,8 @@ export interface LayoutContextProps {
   setActiveNavItem: Dispatch<SetStateAction<string>>;
   clickedNavItem: string;
   setClickedNavItem: Dispatch<SetStateAction<string>>;
+  previousNavItem: string;
+  setPreviousNavItem: Dispatch<SetStateAction<string>>;
 }
 
 export const LayoutContext = React.createContext({} as LayoutContextProps);
@@ -86,6 +88,8 @@ export const LayoutProvider = (props: ChildContainerProps) => {
 
   const [activeNavItem, setActiveNavItem] = useState<string>('Dashboard');
   const [clickedNavItem, setClickedNavItem] = useState<string>('Dashboard');
+  const [previousNavItem, setPreviousNavItem] = useState<string>(null);
+
   const [layoutState, setLayoutState] = useState({
     staticMenuDesktopInactive: false,
     overlayMenuActive: false,
@@ -190,7 +194,9 @@ export const LayoutProvider = (props: ChildContainerProps) => {
     activeNavItem,
     setActiveNavItem,
     clickedNavItem,
-    setClickedNavItem
+    setClickedNavItem,
+    previousNavItem,
+    setPreviousNavItem
   };
 
   return (

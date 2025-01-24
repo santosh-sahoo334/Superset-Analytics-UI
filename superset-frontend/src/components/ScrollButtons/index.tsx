@@ -6,28 +6,30 @@ import styled from '@emotion/styled';
 
 const ButtonContainer = styled.div`
   position: fixed;
-  right: 2px;
+  right: 5px;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 9999;
+  z-index: 99999;
   display: flex;
   flex-direction: column;
   pointer-events: none;
 `;
 
 const ScrollBox = styled.div`
-  width: 20px;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  width: 35px;
+  height: 35px;
+  background-color: #18279A;
+  border-radius: 50%;
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
   overflow: hidden;
   pointer-events: auto;
+  display: flex;
+  flex-direction: column;
 `;
 
 const ScrollButton = styled.button`
   width: 100%;
-  height: 20px;
+  height: 50%;
   background-color: transparent;
   border: none;
   cursor: pointer;
@@ -35,25 +37,31 @@ const ScrollButton = styled.button`
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  font-size: 10px;
   padding: 0;
   outline: none;
+  position: relative;
 
-  &:first-of-type {
-    border-bottom: 1px solid #ddd;
+  &:first-of-type::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 25%;
+    width: 50%;
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.3);
   }
 
   &:hover {
-    background-color: #f0f0f0;
+    background-color: rgba(255, 255, 255, 0.1);
   }
 
   &:active {
-    background-color: #e8e8e8;
+    background-color: rgba(255, 255, 255, 0.2);
   }
 
   .anticon {
-    color: #666;
-    font-size: 10px;
+    color: #ffffff;
+    font-size: 12px;
   }
 `;
 

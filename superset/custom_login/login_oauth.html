@@ -274,6 +274,10 @@
                     console.error('Authentication error:', error);
                     hideLoader();
                 }
+            }else {
+                Cookies.remove("session", {
+                    path: "/"
+                });
             }
             hideLoader();
         });
