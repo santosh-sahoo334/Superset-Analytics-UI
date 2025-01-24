@@ -372,9 +372,6 @@ const AddNewBudgetForm: React.FunctionComponent<AddNewBudgetFormProps> = ({
       Array.isArray(newBudgetunitInfoType) ? newBudgetunitInfoType : []
     ).reduce((sum, allocation) => sum + (allocation.percentage || 0), 0);
 
-    console.log('totalPercentage---', totalPercentage);
-    
-
     // Check if the total percentage is 100
     if (totalPercentage !== 100) {
       setError("The total percentage must equal 100%");
@@ -393,9 +390,6 @@ const AddNewBudgetForm: React.FunctionComponent<AddNewBudgetFormProps> = ({
       },
     };
 
-    console.log('budgetData---', budgetData);
-    return
-    
     addBudget(budgetData);
   };
   const handleBudgetSave = () => {
