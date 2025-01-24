@@ -310,7 +310,7 @@ const AddNewBudgetFormUpdated: React.FunctionComponent<AddNewBudgetFormUpdatedPr
   const handleAllocationChange = (
     index: number,
     allocatedType: string,
-    value: number
+    value: number | string
   ) => {
     setError("");
     setBudgetunitInfoType((prev) => {
@@ -323,9 +323,10 @@ const AddNewBudgetFormUpdated: React.FunctionComponent<AddNewBudgetFormUpdatedPr
           amount: 0,
         };
       }
+      const numericValue = typeof value === 'string' ? parseFloat(value) : value;
       updatedAllocations[index].name = allocatedType;
-      updatedAllocations[index].percentage = value;
-      updatedAllocations[index].amount = ((amount || 0) * value) / 100;
+      updatedAllocations[index].percentage = numericValue;
+      updatedAllocations[index].amount = ((amount || 0) * numericValue) / 100;
 
       return updatedAllocations;
     }); // Update state
@@ -372,7 +373,6 @@ const AddNewBudgetFormUpdated: React.FunctionComponent<AddNewBudgetFormUpdatedPr
     const totalPercentage = (
       Array.isArray(newBudgetunitInfoType) ? newBudgetunitInfoType : []
     ).reduce((sum, allocation) => sum + (allocation.percentage || 0), 0);
-
     // Check if the total percentage is 100
     if (totalPercentage !== 100) {
       setError("The total percentage must equal 100%");
@@ -598,7 +598,7 @@ const AddNewBudgetFormUpdated: React.FunctionComponent<AddNewBudgetFormUpdatedPr
             </label>
               {numberOfAllocations?.map((allocatedType, index) => {
                 return (
-                  <div key={index} className="flex gap-2">
+                  <div key={index} className="flex gap-2 mt-1">
                     <p className="mb-0" style={{border: "1px solid #d0d5dd", width: "50%", padding:"10px", borderRadius: "4px"}}>{allocatedType}</p>
                     <input
                       type='number'

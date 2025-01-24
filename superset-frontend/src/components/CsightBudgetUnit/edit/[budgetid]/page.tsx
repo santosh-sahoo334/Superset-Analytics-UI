@@ -238,7 +238,7 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
         if (index === index1) {
           return {
             ...item,
-            percentage: value,
+            percentage: typeof value === 'string' ? parseFloat(value) : value,
           };
         }
         return item;
@@ -758,7 +758,7 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
                 </label>
                 {allocations?.map((allocatedType, index) => {
                   return (
-                    <div key={index} className="flex gap-2">
+                    <div key={index} className={`flex gap-2 ${index !== 0 ? 'mt-1' : ''}`}>
                       <p
                         className="mb-0"
                         style={{

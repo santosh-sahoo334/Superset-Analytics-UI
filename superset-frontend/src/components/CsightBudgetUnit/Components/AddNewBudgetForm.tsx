@@ -307,7 +307,7 @@ const AddNewBudgetForm: React.FunctionComponent<AddNewBudgetFormProps> = ({
   const handleAllocationChange = (
     index: number,
     allocatedType: string,
-    value: number
+    value: number | string
   ) => {
     setError("");
     setBudgetunitInfoType((prev) => {
@@ -320,9 +320,11 @@ const AddNewBudgetForm: React.FunctionComponent<AddNewBudgetFormProps> = ({
           amount: 0,
         };
       }
+      const numericValue = typeof value === 'string' ? parseFloat(value) : value;
+
       updatedAllocations[index].name = allocatedType;
-      updatedAllocations[index].percentage = value;
-      updatedAllocations[index].amount = ((amount || 0) * value) / 100;
+      updatedAllocations[index].percentage = numericValue;
+      updatedAllocations[index].amount = ((amount || 0) * numericValue) / 100;
 
       return updatedAllocations;
     }); // Update state
@@ -370,6 +372,9 @@ const AddNewBudgetForm: React.FunctionComponent<AddNewBudgetFormProps> = ({
       Array.isArray(newBudgetunitInfoType) ? newBudgetunitInfoType : []
     ).reduce((sum, allocation) => sum + (allocation.percentage || 0), 0);
 
+    console.log('totalPercentage---', totalPercentage);
+    
+
     // Check if the total percentage is 100
     if (totalPercentage !== 100) {
       setError("The total percentage must equal 100%");
@@ -388,6 +393,9 @@ const AddNewBudgetForm: React.FunctionComponent<AddNewBudgetFormProps> = ({
       },
     };
 
+    console.log('budgetData---', budgetData);
+    return
+    
     addBudget(budgetData);
   };
   const handleBudgetSave = () => {
@@ -596,7 +604,7 @@ const AddNewBudgetForm: React.FunctionComponent<AddNewBudgetFormProps> = ({
                           </label>
                           {numberOfAllocations?.map((allocatedType, index) => {
                             return (
-                              <div key={index} className="flex gap-2">
+                              <div key={index} className= {`flex gap-2 ${index !== 0 ? 'mt-1' : ''}`}>
                                 <p
                                   className="mb-0"
                                   style={{
