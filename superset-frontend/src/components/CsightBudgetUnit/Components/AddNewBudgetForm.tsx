@@ -522,11 +522,11 @@ const AddNewBudgetForm: React.FunctionComponent<AddNewBudgetFormProps> = ({
                 locale="en-US"
                 style={{ color: '#000' }}
               />
-              {/* {errors?.amount && (
+              {errors?.amount && (
                   <div id="name-help" className="error-message">
                     {errors?.amount?.message}
                   </div>
-                )} */}
+                )}
             </div>
             <div className="field budget-custom-field flex flex-column mb-0">
               <label className="budget-label font-semibold" htmlFor="period">
@@ -545,9 +545,9 @@ const AddNewBudgetForm: React.FunctionComponent<AddNewBudgetFormProps> = ({
                   });
                 }}
               />
-              {/* {errors.period && (
-              <small className="error-message">{errors.period.message}</small>
-            )} */}
+              {errors.period && (
+                <small className="error-message">{errors.period.message}</small>
+              )}
             </div>
             <div className="field budget-custom-field flex-column">
               <label
@@ -632,6 +632,11 @@ const AddNewBudgetForm: React.FunctionComponent<AddNewBudgetFormProps> = ({
                               </div>
                             );
                           })}
+                          {error && (
+                            <div className="error-message" style={{ color: "red" }}>
+                              {error}
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>

@@ -854,8 +854,7 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
               /> */}
               <Switch
                 id="freeze"
-                onChange={e => setValue('freeze', e.checked)}
-                onClick={e => setValue('freeze', e.checked)}
+                onChange={e => setValue('freeze', e)}
                 checked={watch('freeze')}
               />
             </div>
@@ -874,8 +873,7 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
               <Switch
                 id="budget_alert_flag"
                 checked={watch('budget_alert_flag')}
-                onChange={e => setValue('budget_alert_flag', e.checked)}
-                onClick={e => setValue('budget_alert_flag', e.checked)}
+                onChange={e => setValue('budget_alert_flag', e)}
               />
             </div>
             <div className="field budget-custom-field mb-0 flex align-items-center gap-2">
@@ -893,8 +891,7 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
               <Switch
                 id="archive"
                 checked={watch('archive')}
-                onChange={e => setValue('archive', e.checked)}
-                onClick={e => setValue('archive', e.checked)}
+                onChange={e => setValue('archive', e)}
               />
             </div>
           </div>
