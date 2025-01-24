@@ -91,7 +91,9 @@ a {
   height: 6rem;
   overflow: hidden;
 }
-
+.circle-container-loader-height{
+  height: 2rem !important;
+}
 .circle-container:hover {
   background-color: rgb(217, 216, 216);
   cursor: pointer;
