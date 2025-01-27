@@ -30,12 +30,12 @@ const CsightBudgetUnit = () => {
 
   return (
     <div>
-      <div className="flex align-items-center mb-2 horizontal-border pb-2 bg-white px-4 py-3 gap-2" style={{margin: "10px 15px", width: "98%", borderRadius: "4px" }}>
+      {/* <div className="flex align-items-center mb-2 horizontal-border pb-2 bg-white px-4 py-3 gap-2" style={{margin: "10px 15px", width: "98%", borderRadius: "4px" }}>
         <HomeOutlined className={"text-xl custom-text-light-grey"}/>
         <RightOutlined className={"text-sm custom-text-light-grey"}/>
         <span className="custom-text-light-grey">Budget / </span> 
         <span className="custom-text-grey font-semibold">Budget Unit</span>
-      </div>
+      </div> */}
     <div className="h-full  bg-white" style={{margin: "10px 15px", width: "98%", borderRadius: "4px" }}>
       {!budgetUnitView && !budgetEditView && !createNewBudget && <div className="px-2 pb-4 pt-2 w-full  custom-table no-data dashboard-table">
         <div className="flex align-items-center justify-content-between w-full mb-2 horizontal-border pb-2">

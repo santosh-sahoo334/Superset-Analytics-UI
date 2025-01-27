@@ -33,51 +33,130 @@ export const DashboardCards: React.FC<PotentialType> = ({
   function getTextSizeClass(value: string | number) {
     const stringValue = value?.toString() || '';
     const length = stringValue.length;
-    
+
     if (length <= 4) return 'text-4xl'; // Larger text for smaller numbers
     if (length <= 6) return 'text-3xl'; // Medium text for medium numbers
     if (length <= 8) return 'text-2xl'; // Smaller text for larger numbers
     return 'text-xl'; // Smallest text for very large numbers
   }
 
+  let savingsValue = null;
+
   const getValue = () => {
+    if (!result || result.length < 2) return null;
+
+    // Sort dates in descending order and get the two most recent months
+    const sortedData = [...result].sort((a, b) => new Date(b.datekey).getTime() - new Date(a.datekey).getTime());
+    const currentMonth = sortedData[0];
+    const previousMonth = sortedData[1];
+
+    if (!currentMonth) return null;
+
     if (title === 'Monthly Cost') {
-      return result && formatCurrency(result[0]?.total_cost);
+      return formatCurrency(parseFloat(currentMonth.total_cost));
     }
-    return result && `${result[0]?.potential_savings_percentage ?? ''} %`;
+
+    // For Potential Savings, show both absolute value and percentage
+    savingsValue = `${formatCurrency(currentMonth.potential_savings)} `;
+    //(${savingsValue})
+    return `${currentMonth.potential_savings_percentage} %`;
   };
 
   const value = getValue();
   const textSizeClass = getTextSizeClass(value);
 
+  const calculatePercentageChange = () => {
+    if (!result || result.length < 2) return null;
+
+    // Sort dates in descending order and get the two most recent months
+    const sortedData = [...result].sort((a, b) => new Date(b.datekey).getTime() - new Date(a.datekey).getTime());
+    const currentMonth = sortedData[0];
+    const previousMonth = sortedData[1];
+
+    if (!currentMonth || !previousMonth) return null;
+
+    if (title === 'Monthly Cost') {
+      const currentCost = parseFloat(currentMonth.total_cost);
+      const previousCost = parseFloat(previousMonth.total_cost);
+
+      // Avoid division by zero
+      if (previousCost === 0) return null;
+
+      return ((currentCost - previousCost) / previousCost * 100).toFixed(1);
+    } else {
+      // For Potential Savings
+      const currentSavings = parseFloat(currentMonth.potential_savings);
+      const previousSavings = parseFloat(previousMonth.potential_savings);
+
+      // Avoid division by zero
+      if (previousSavings === 0) return null;
+
+      return ((currentSavings - previousSavings) / previousSavings * 100).toFixed(1);
+    }
+  };
+
+  const percentageChange = calculatePercentageChange();
+  const isPositiveChange = percentageChange && parseFloat(percentageChange) >= 0;
+
   return (
     <div
-      className={` flex items-center w-full ${
-        showLeft ? 'cost-content-left' : 'cost-content-right'
-      } `}
+      className={` flex items-center w-full ${showLeft ? 'cost-content-left' : 'cost-content-right'
+        } `}
     >
-      <div className="savings-title flex flex-row align-items-center">
-        {icon}
-        <h4 className="text-end">{title}</h4>
-      </div>
-      <div className="cost-amount justify-between w-full">
-        {/* <span className="currency">{title === "Monthly Cost" ? "$" : ""} </span> */}
-        {showLeft && <p className="m-0 text-sm">
-          <span className='font-medium text-sm error-message'>
-          <ArrowDownOutlined />{" + 6.5 % "}
-          </span>
-          since last month</p>}
+      <div className={`savings-title flex flex-row items-center justify-between w-full`} style={{ justifyContent: showLeft ? 'space-between' : null }}>
+        <div className='flex flex-row items-center gap-2'>
+          {icon}
+          <h4 className="text-start m-0">{title}</h4>
+        </div>
         <p className={`saving-value font-medium m-0 ${textSizeClass}`}>
-          {loading ? (
-            <LoadingSpinner size="20px" />
+          {loading && showLeft ? (
+            <LoadingSpinner size="10px" />
           ) : (
-            value
+            showLeft ? value : null
           )}
         </p>
-        {showRight && <p className="m-0 text-sm">
-          <span className='font-medium text-sm success-message'>
-          <ArrowUpOutlined />{" + 6.5 % "}</span>
-          since last month</p>}
+      </div>
+      {
+        showLeft ?
+          <div className="cost-amount w-full flex flex-row">
+              <div className="cost-amount m-0 text-sm w-full" style={{justifyContent: 'flex-start', alignItems: 'center'}}>
+                <p className={`saving-value font-medium m-0 ${textSizeClass}`}>
+                  {loading ? (
+                    <LoadingSpinner size="10px" />
+                  ) : (
+                    savingsValue ? savingsValue : null
+                  )}
+                </p>
+                {
+                  percentageChange ? 
+                  <div>
+                  <span className={`font-medium text-sm ${isPositiveChange ? 'success-message' : 'error-message'} ml-2`}>
+                    {isPositiveChange ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
+                    {` ${isPositiveChange ? '+' : ''} ${percentageChange} % `}
+                  </span>
+                  since last month
+                
+                    </div>
+                    :null
+                }
+
+            </div>
+          </div> : null
+      }
+      <div className="cost-amount w-full flex flex-row justify-between">
+        <p className={`saving-value font-medium m-0 ${textSizeClass}`}>
+          {loading && showRight? (
+            <LoadingSpinner size="20px" />
+          ) : (
+            !showLeft ? value : null
+          )}
+        </p>
+        {showRight && !showLeft && percentageChange &&  <div style={{marginBottom: '5px'}}><p className="m-0 text-sm">
+          <span className={`font-medium text-sm ${!isPositiveChange ? 'success-message' : 'error-message'}`}>
+            {!isPositiveChange ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
+            {` ${!isPositiveChange ? '+' : ''} ${percentageChange} % `}
+          </span>
+          since last month</p></div>}
       </div>
     </div>
   );

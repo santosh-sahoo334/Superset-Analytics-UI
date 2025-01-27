@@ -19,14 +19,25 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: url('/static/assets/images/login-background-dfact.svg') center/cover no-repeat;
             position: relative;
             overflow: hidden;
         }
 
+        /* Add new background element */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('/static/assets/images/login-background-dfact.svg') center/cover no-repeat;
+            z-index: -2;
+        }
+
         body::before {
             content: '';
-            position: absolute;
+            position: fixed;  /* Change from absolute to fixed */
             top: 0;
             left: 0;
             right: 0;
@@ -34,7 +45,7 @@
             background: rgba(231, 229, 229, 0.1);
             backdrop-filter: blur(1px);
             -webkit-backdrop-filter: blur(1px);
-            z-index: 1;
+            z-index: -1;  /* Change from 1 to -1 */
         }
 
         .card {
@@ -160,6 +171,10 @@
             }
         }
 
+        #content {
+            display: none;
+        }
+
         .hidden {
             display: none;
         }
@@ -214,7 +229,6 @@
 
         // Check for tokens and handle authentication on page load
         document.addEventListener('DOMContentLoaded', async function () {
-            showLoader();
             // Get URL parameters
             const urlParams = new URLSearchParams(window.location.search);
             const slug = urlParams.get('slug');
@@ -278,8 +292,8 @@
                 Cookies.remove("session", {
                     path: "/"
                 });
+                hideLoader();
             }
-            hideLoader();
         });
 
         // Handle form submission

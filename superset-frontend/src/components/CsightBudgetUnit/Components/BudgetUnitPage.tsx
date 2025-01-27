@@ -211,7 +211,7 @@ const BudgetUnitPage: React.FunctionComponent = ({}) => {
             expandedRows={expandedRows}
             dataKey="id"
             scrollable
-            scrollHeight="calc(100vh - 295px)" 
+            scrollHeight="calc(100vh - 225px)" 
             tableStyle={{ minWidth: "60rem" }}
             className="dashboard-table-update budget-table"
           >
