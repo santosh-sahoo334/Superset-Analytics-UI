@@ -71,7 +71,7 @@ const SearchDashboard = ({ onClickItem = (route) => {} }) => {
       {searchTerm && (
         <Card className="search-result search-card-list">
           {filteredItems.length > 0 ? (
-            <ul className="list-none p-0">
+            <ul className="list-none p-3">
               {filteredItems.map((item, index) => (
                 <li
                   key={index}

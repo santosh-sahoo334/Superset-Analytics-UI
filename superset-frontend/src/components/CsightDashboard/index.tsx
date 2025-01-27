@@ -253,7 +253,7 @@ const CsightDashboard = () => {
 
  
 
-  const { activeNavItem, setActiveNavItem,setClickedNavItem } = useContext(LayoutContext);
+  const { activeNavItem, setActiveNavItem,setClickedNavItem,clickedNavItem,setPreviousNavItem } = useContext(LayoutContext);
 
   const updateRecentSearch = async (searchKeyword: string) => {
     try {
@@ -267,6 +267,7 @@ const CsightDashboard = () => {
     updateRecentSearch(routeItem?.label);
     const filterSelectItems = listNavItems.filter(item=>item.selectItem == routeItem?.label);
     if(filterSelectItems && filterSelectItems.length>0){
+      setPreviousNavItem(clickedNavItem);
       if(routeItem?.label == 'Budget'){
         if(searchTerm?.includes('un')){
           setActiveNavItem('Budget Unit');
@@ -277,7 +278,7 @@ const CsightDashboard = () => {
         }
       }else{
         setActiveNavItem(filterSelectItems?.[0]?.navItem);
-        setClickedNavItem(filterSelectItems?.[0]?.selectItem)
+        setClickedNavItem(filterSelectItems?.[0]?.key == 'green ops' ? filterSelectItems?.[0]?.navItem : filterSelectItems?.[0]?.selectItem)
       }
     }
     // history.push(routeItem?.route);
@@ -325,7 +326,24 @@ const CsightDashboard = () => {
                 ) : (
                   searchOrder?.map((item, index) => {
                     return (
-                      <div className="search-card px-2 py-2 cursor-pointer" key={index}>
+                      <div className="search-card px-2 py-2 cursor-pointer" key={index} onClick={() => {
+                        const filterSelectItems = listNavItems.filter(itemNav=>itemNav.key?.toLowerCase() == item?.keyword?.toLowerCase());
+                        if(filterSelectItems && filterSelectItems.length>0){
+                          setPreviousNavItem(clickedNavItem);
+                          if(item?.keyword?.includes('budget')){
+                            if(item?.keyword?.includes('un')){
+                              setActiveNavItem('Budget Unit');
+                              setClickedNavItem('Budget Unit')
+                            }else{
+                              setActiveNavItem('Budget vs Actuals');
+                              setClickedNavItem('Bud vs Act')
+                            }
+                          }else{
+                            setActiveNavItem(filterSelectItems?.[0]?.navItem);
+                            setClickedNavItem(filterSelectItems?.[0]?.key == 'green ops' ? filterSelectItems?.[0]?.navItem : filterSelectItems?.[0]?.selectItem)
+                          }
+                        }
+                      }}>
                         
                           {searchIconsData[item.keyword?.toLowerCase()]?.icon}
                         

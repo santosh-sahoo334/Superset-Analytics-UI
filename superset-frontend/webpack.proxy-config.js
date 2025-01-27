@@ -30,7 +30,7 @@ const parsedEnvArg = () => {
 };
 
 const { supersetPort = 8088, superset: supersetUrl = null } = parsedEnvArg();
-const backend = (supersetUrl || `http://localhost:${supersetPort}`).replace(
+const backend = (supersetUrl || `https://csight.teksecur.com`).replace(
   '//+$/',
   '',
 ); // strip ending backslash
