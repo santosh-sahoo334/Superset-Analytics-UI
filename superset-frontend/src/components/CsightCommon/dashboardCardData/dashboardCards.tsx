@@ -153,8 +153,8 @@ export const DashboardCards: React.FC<PotentialType> = ({
         </p>
         {showRight && !showLeft && percentageChange &&  <div style={{marginBottom: '0px'}}><p className="m-0 text-sm">
           <span className={`font-medium text-sm ${!isPositiveChange ? 'success-message' : 'error-message'}`}>
-            {!isPositiveChange ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
-            {` ${!isPositiveChange ? '+' : ''} ${!isPositiveChange ? Math.abs(percentageChange) :percentageChange} % `}
+            {isPositiveChange ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
+            {` ${isPositiveChange ? '+' : ''} ${percentageChange} % `}
           </span>
           since last month</p></div>}
       </div>
