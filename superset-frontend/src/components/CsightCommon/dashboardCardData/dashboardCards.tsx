@@ -106,9 +106,9 @@ export const DashboardCards: React.FC<PotentialType> = ({
       <div className={`savings-title flex flex-row items-center justify-between w-full`} style={{ justifyContent: showLeft ? 'space-between' : null }}>
         <div className='flex flex-row items-center gap-2'>
           {icon}
-          <h4 className="text-start m-0">{title}</h4>
+          <h4 className="text-start m-0 flex align-items-center">{title}</h4>
         </div>
-        <p className={`saving-value font-medium m-0 ${textSizeClass}`}>
+        <p className={`saving-value font-medium m-0 flex align-items-center ${textSizeClass}`}>
           {loading && showLeft ? (
             <LoadingSpinner size="10px" />
           ) : (
@@ -151,7 +151,7 @@ export const DashboardCards: React.FC<PotentialType> = ({
             !showLeft ? value : null
           )}
         </p>
-        {showRight && !showLeft && percentageChange &&  <div style={{marginBottom: '5px'}}><p className="m-0 text-sm">
+        {showRight && !showLeft && percentageChange &&  <div style={{marginBottom: '0px'}}><p className="m-0 text-sm">
           <span className={`font-medium text-sm ${!isPositiveChange ? 'success-message' : 'error-message'}`}>
             {!isPositiveChange ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
             {` ${!isPositiveChange ? '+' : ''} ${percentageChange} % `}
