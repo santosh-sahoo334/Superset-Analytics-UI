@@ -72,6 +72,7 @@ const BudgetPage: React.FunctionComponent<BudgetPageProps> = ({
           type="button"
           icon="pi pi-pencil"
           className="custom-bg-green"
+          style={{padding: "0", width: "30px", height: "30px", fontSize: "10px"}}
           rounded
           onClick={() => {
             setBudgetData(data)
@@ -83,7 +84,7 @@ const BudgetPage: React.FunctionComponent<BudgetPageProps> = ({
           type="button"
           icon="pi pi-trash"
           rounded
-          style={{ backgroundColor: "#f04437", border: "none", color: "#fff" }}
+          style={{ backgroundColor: "#f04437", border: "none", color: "#fff", padding: "0", width: "30px", height: "30px", fontSize: "10px" }}
           onClick={() => {
             setSelectedBudget(data);
             setOpenDeleteModal(true);

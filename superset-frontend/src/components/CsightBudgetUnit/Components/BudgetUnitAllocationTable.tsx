@@ -123,7 +123,7 @@ const BudgetUnitAllocationTable: React.FunctionComponent<
     }
     if (key === 'misc_amount') {
       return (
-        <div>
+        <div className='flex align-items-center'>
           <InputNumber
             value={getTotalSum(index)}
             inputId="amount"
@@ -132,6 +132,7 @@ const BudgetUnitAllocationTable: React.FunctionComponent<
             locale="en-US"
             disabled={true}
             className="mr-2"
+            style={{height: "30px"}}
           />
           <Button
             icon="pi pi-plus"
@@ -140,7 +141,7 @@ const BudgetUnitAllocationTable: React.FunctionComponent<
               color: '#43A7EC',
               backgroundColor: '#E5F6FC',
               borderRadius: '100%',
-              border: 'none',
+              border: 'none',padding: "0", width: "30px", height: "30px", fontSize: "10px"
             }}
             onClick={e => {
               e.preventDefault();

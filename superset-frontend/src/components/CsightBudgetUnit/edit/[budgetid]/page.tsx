@@ -504,7 +504,7 @@ const EditBudgetFormPage: React.FunctionComponent = () => {
               </Button>
             </div>
           </Dialog>
-          <div className="flex justify-content-between p-3 pl-0 pb-1 horizontal-border align-items-center">
+          <div className="flex justify-content-between py-2 pl-0 horizontal-border align-items-center">
             {/* <div>
               <h4 className="mb-0">Edit Budget</h4>
             </div> */}

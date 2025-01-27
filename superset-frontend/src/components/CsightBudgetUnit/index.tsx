@@ -37,7 +37,7 @@ const CsightBudgetUnit = () => {
         <span className="custom-text-grey font-semibold">Budget Unit</span>
       </div>
     <div className="h-full  bg-white" style={{margin: "10px 15px", width: "98%", borderRadius: "4px" }}>
-      {!budgetUnitView && !budgetEditView && !createNewBudget && <div className="px-2 py-4 w-full  custom-table no-data dashboard-table">
+      {!budgetUnitView && !budgetEditView && !createNewBudget && <div className="px-2 pb-4 pt-2 w-full  custom-table no-data dashboard-table">
         <div className="flex align-items-center justify-content-between w-full mb-2 horizontal-border pb-2">
           <h3 className="text-2xl custom-text-grey">Budget Unit</h3>
           <Button
