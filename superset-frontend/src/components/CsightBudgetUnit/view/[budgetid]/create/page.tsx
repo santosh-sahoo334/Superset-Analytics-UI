@@ -114,7 +114,7 @@ const CreateViewBudgetPage = () => {
 
   return (
     <div className="mx-2" style={{height: "calc(100vh - 150px)"}}>
-      <div className="flex justify-content-between p-3 pl-0 mb-3 horizontal-border align-items-center">
+      <div className="flex justify-content-between py-2 pl-0 mb-3 horizontal-border align-items-center">
         {/* <div>
           <h4 className="mb-0">Budget/Unit Configuration</h4>
         </div> */}

@@ -118,11 +118,12 @@ const BudgetUnitPage: React.FunctionComponent = ({}) => {
 
   const actionBodyTemplate = (data:any) => {
     return (
-      <div className="flex gap-3">
+      <div className="flex gap-3 align-items-center">
         <Button
           type="button"
           icon="pi pi-pencil"
           className="custom-bg-green"
+          style={{padding: "0", width: "30px", height: "30px", fontSize: "10px"}}
           rounded
           onClick={() => {
             setEditBudgetUnit(true)
@@ -136,6 +137,7 @@ const BudgetUnitPage: React.FunctionComponent = ({}) => {
           type="button"
           icon="pi pi-eye"
           className="custom-bg-new-blue"
+          style={{padding: "0", width: "30px", height: "30px", fontSize: "10px"}}
           rounded
           onClick={() => {
             setBudgetUnitViewContext(true)
@@ -148,7 +150,7 @@ const BudgetUnitPage: React.FunctionComponent = ({}) => {
           type="button"
           icon="pi pi-trash"
           rounded
-          style={{ backgroundColor: "#f04437", border: "none", color: "#fff" }}
+          style={{ backgroundColor: "#f04437", border: "none", color: "#fff",padding: "0", width: "30px", height: "30px", fontSize: "10px" }}
           onClick={() => {
             setSelectedBudget(data);
             setOpenDeleteModal(true);
