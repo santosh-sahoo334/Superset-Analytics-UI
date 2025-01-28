@@ -300,7 +300,7 @@ class BaseSupersetView(BaseView):
             **(extra_bootstrap_data or {}),
         }
         return self.render_template(
-            "superset/spa.html",
+            "dworks/spa.html",
             entry="spa",
             bootstrap_data=json.dumps(
                 payload, default=utils.pessimistic_json_iso_dttm_ser
@@ -344,7 +344,7 @@ def menu_data(user: User) -> dict[str, Any]:
     return {
         "menu": appbuilder.menu.get_data(),
         "brand": {
-            "path": appbuilder.app.config["LOGO_TARGET_PATH"] or "/superset/welcome/",
+            "path": appbuilder.app.config["LOGO_TARGET_PATH"] or "/dworks/welcome/",
             "icon": appbuilder.app_icon,
             "alt": appbuilder.app_name,
             "tooltip": appbuilder.app.config["LOGO_TOOLTIP"],
@@ -546,7 +546,7 @@ def get_common_bootstrap_data() -> dict[str, Any]:
 
 
 class SupersetListWidget(ListWidget):  # pylint: disable=too-few-public-methods
-    template = "superset/fab_overrides/list.html"
+    template = "dworks/fab_overrides/list.html"
 
 
 class SupersetModelView(ModelView):
@@ -559,7 +559,7 @@ class SupersetModelView(ModelView):
             "common": common_bootstrap_payload(),
         }
         return self.render_template(
-            "superset/spa.html",
+            "dworks/spa.html",
             entry="spa",
             bootstrap_data=json.dumps(
                 payload, default=utils.pessimistic_json_iso_dttm_ser
@@ -572,7 +572,7 @@ class ListWidgetWithCheckboxes(ListWidget):  # pylint: disable=too-few-public-me
 
     Works in conjunction with the `checkbox` view."""
 
-    template = "superset/fab_overrides/list_with_checkboxes.html"
+    template = "dworks/fab_overrides/list_with_checkboxes.html"
 
 
 def validate_json(form: Form, field: Field) -> None:  # pylint: disable=unused-argument

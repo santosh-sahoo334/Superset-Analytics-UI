@@ -57,7 +57,7 @@ module.exports = {
     ['@babel/plugin-transform-runtime', { corejs: 3 }],
     // only used in packages/superset-ui-core/src/chart/components/reactify.tsx
     ['babel-plugin-typescript-to-proptypes', { loose: true }],
-    'react-hot-loader/babel',
+    // 'react-hot-loader/babel',
   ],
   env: {
     // Setup a different config for tests as they run in node instead of a browser

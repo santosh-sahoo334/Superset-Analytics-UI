@@ -85,7 +85,7 @@ class DashboardModelView(
                 mimetype="application/text",
             )
         return self.render_template(
-            "superset/export_dashboards.html", dashboards_url="/dashboard/list"
+            "dworks/export_dashboards.html", dashboards_url="/dashboard/list"
         )
 
     def pre_add(self, item: "DashboardModelView") -> None:
@@ -122,7 +122,7 @@ class Dashboard(BaseSupersetView):
         )
         db.session.add(new_dashboard)
         db.session.commit()
-        return redirect(f"/superset/dashboard/{new_dashboard.id}/?edit=true")
+        return redirect(f"/dworks/dashboard/{new_dashboard.id}/?edit=true")
 
     @expose("/<dashboard_id_or_slug>/embedded")
     @event_logger.log_this_with_extra_payload
@@ -156,7 +156,7 @@ class Dashboard(BaseSupersetView):
         }
 
         return self.render_template(
-            "superset/spa.html",
+            "dworks/spa.html",
             entry="embedded",
             bootstrap_data=json.dumps(
                 bootstrap_data, default=utils.pessimistic_json_iso_dttm_ser

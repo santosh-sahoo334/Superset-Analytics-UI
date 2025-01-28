@@ -231,7 +231,7 @@ class SupersetAppInitializer:  # pylint: disable=too-many-public-methods
         appbuilder.add_link(
             "Home",
             label=__("Home"),
-            href="/superset/welcome/",
+            href="/dworks/welcome/",
             cond=lambda: bool(appbuilder.app.config["LOGO_TARGET_PATH"]),
         )
 
@@ -534,7 +534,7 @@ class SupersetAppInitializer:  # pylint: disable=too-many-public-methods
             )
 
         appbuilder.indexview = SupersetIndexView
-        appbuilder.base_template = "superset/base.html"
+        appbuilder.base_template = "dworks/base.html"
         appbuilder.security_manager_class = custom_sm
         appbuilder.init_app(self.superset_app, db.session)
 
@@ -671,4 +671,4 @@ class SupersetAppInitializer:  # pylint: disable=too-many-public-methods
 class SupersetIndexView(IndexView):
     @expose("/")
     def index(self) -> FlaskResponse:
-        return redirect("/superset/welcome/")
+        return redirect("/dworks/welcome/")

@@ -83,7 +83,7 @@ export function getURIDirectory(endpointType = 'base') {
       endpointType,
     )
   ) {
-    return '/superset/explore_json/';
+    return '/dworks/explore_json/';
   }
   return '/explore/';
 }

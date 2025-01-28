@@ -487,7 +487,7 @@ class Database(
 
         if DB_CONNECTION_MUTATOR:
             if not source and request and request.referrer:
-                if "/superset/dashboard/" in request.referrer:
+                if "/dworks/dashboard/" in request.referrer:
                     source = utils.QuerySource.DASHBOARD
                 elif "/explore/" in request.referrer:
                     source = utils.QuerySource.CHART
@@ -905,7 +905,7 @@ class Database(
 
     @property
     def sql_url(self) -> str:
-        return f"/superset/sql/{self.id}/"
+        return f"/dworks/sql/{self.id}/"
 
     @hybrid_property
     def perm(self) -> str:
