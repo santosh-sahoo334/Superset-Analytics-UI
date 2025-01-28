@@ -73,8 +73,14 @@ class SlackNotification(BaseNotification):  # pylint: disable=too-few-public-met
         return ",".join(get_email_address_list(recipient_str))
 
     def _message_template(self, table: str = "") -> str:
+        logger.info(f"Title + Chart Name Passed to Get the Slack Title -- > {self._content.name}")
+        prefix=app.config["ALERT_TITLE_PREFIX"] if "alert" in self._content.name.lower() else app.config["EMAIL_REPORT_SUBJECT_PREFIX"]
+        title=self._content.name
+        second_colon_index=title.find(":", title.find(":") + 1)
+        title=title[:second_colon_index]
+
         return __(
-            """*%(name)s*
+            """*%(prefix)s %(name)s*
 
 %(description)s
 
@@ -82,9 +88,12 @@ class SlackNotification(BaseNotification):  # pylint: disable=too-few-public-met
 
 %(table)s
 """,
-            name=self._content.name,
+            # name=self._content.name,
+            prefix=prefix,
+            name=title,
             description=self._content.description or "",
-            url=self._content.url,
+            # url=self._content.url,
+            url=app.config["EMAIL_REPORTS_CTA_URL"],
             table=table,
         )
 
