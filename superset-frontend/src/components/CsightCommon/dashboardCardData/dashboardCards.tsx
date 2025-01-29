@@ -1,12 +1,14 @@
 /* eslint-disable */
 // @ts-nocheck
-import React, { useState } from 'react';
+import React, { useState , useEffect, useContext} from 'react';
 import LoadingSpinner from '../LoadingSpinner';
-import { ArrowDownOutlined, ArrowUpOutlined, InfoCircleOutlined } from '@ant-design/icons';
-import { Modal, Table, message } from 'antd';
+import { ArrowDownOutlined, ArrowUpOutlined, InfoCircleOutlined, AreaChartOutlined } from '@ant-design/icons';
+import { Modal, Table, message, Popover } from 'antd';
 import { HTTP } from '../config/http-common';
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
+import React from 'react';
+import { LayoutContext } from 'src/layout/context/layoutcontext';
 interface PotentialType {
   title: string;
   result: any;
@@ -23,9 +25,11 @@ export const DashboardCards: React.FC<PotentialType> = ({
   showLeft,
   showRight,
 }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [resourceData, setResourceData] = useState([]);
   const [loadingResources, setLoadingResources] = useState(false);
+
+  const { activeNavItem, setActiveNavItem,setClickedNavItem,clickedNavItem,setPreviousNavItem } = useContext(LayoutContext);
+
 
   function formatCurrency(value) {
     if (value >= 1_000_000) {
@@ -106,26 +110,26 @@ export const DashboardCards: React.FC<PotentialType> = ({
   const isPositiveChange = percentageChange && parseFloat(percentageChange) >= 0;
     const { accessToken } = useAuth();
 
-  const handleInfoClick = async (e) => {
-    e.stopPropagation();
-    console.log('Modal opened:', isModalOpen);
+  const handleInfoClick = async () => {
+    // e.stopPropagation();
     
-    try {
-      setLoadingResources(true);
-      const response = await HTTP.get("/resource_views/", {
-        headers: { Authorization: accessToken },
-      });
+    if (!resourceData.length) {  // Only fetch if we haven't already
+      try {
+        setLoadingResources(true);
+        const response = await HTTP.get("/resource_views/", {
+          headers: { Authorization: accessToken },
+        });
 
-      if (response?.data) {
-        setResourceData(response.data);
-        setIsModalOpen(true);
-      } else {
-        message.info('No resource data available');
+        if (response?.data) {
+          setResourceData(response.data);
+        } else {
+          message.info('No resource data available');
+        }
+      } catch (error) {
+        console.error('Error fetching resource data:', error);
+      } finally {
+        setLoadingResources(false);
       }
-    } catch (error) {
-      console.error('Error fetching resource data:', error);
-    } finally {
-      setLoadingResources(false);
     }
   };
 
@@ -159,38 +163,103 @@ export const DashboardCards: React.FC<PotentialType> = ({
     }
   ];
 
+  const tableContent = (
+    <Table
+      style={{ maxWidth: '400px' }}
+      bordered
+      columns={columns}
+      dataSource={resourceData?.result}
+      loading={loadingResources}
+      rowKey="resource_name"
+      pagination={false}
+      size="small"
+      className="resource-table"
+      components={{
+        header: {
+          cell: (props) => (
+            <th
+            {...props}
+            style={{
+              ...props.style,
+              backgroundColor: '#F2F3F6',
+              color: '#666666',
+              borderColor: '#E1E2E6'  // slightly darker than the background
+            }}
+          />
+          )
+        }
+      }}
+    />
+  );
+
+
+  useEffect(() => {
+    if(title === 'Monthly Cost'){
+      handleInfoClick();
+    }
+  }, []);
+
   return (
     <>
       <div
         className={` flex items-center w-full ${showLeft ? 'cost-content-left' : 'cost-content-right'
           } `}
       >
-        <div className={`savings-title flex flex-row items-center justify-between w-full`} style={{ justifyContent: showLeft ? 'space-between' : null }}>
-          <div className='flex flex-row items-center gap-2' style={{alignItems: 'center'}}>
+        <div className={`savings-title flex flex-row items-center w-full`}>
+          <div className='flex flex-row items-center gap-2' style={{alignItems: 'center', minWidth: '50%'}} >
             {icon}
             <h4 className="text-start m-0 flex align-items-center gap-2 items-center">
               {title}
-              {title === 'Monthly Cost' && (
-                <InfoCircleOutlined 
-                  className="cursor-pointer text-gray-500 hover:text-gray-700"
-                  onClick={(e)=> handleInfoClick(e)}
-                  style={{ fontSize: '12px',marginTop: '2px' }} // Make icon more visible
-                />
-              )}
             </h4>
           </div>
-          {/* <p className={`saving-value font-medium m-0 flex align-items-center ${textSizeClass}`}>
-            {loading && showLeft ? (
-              <LoadingSpinner size="10px" />
-            ) : (
-              showLeft ? value : null
-            )}
-          </p> */}
+          {title === 'Monthly Cost' && resourceData?.result?.length > 0 && (
+            <div className='flex flex-row items-center w-full' style={{alignItems: 'center', minWidth: '50%', justifyContent: 'center'}} >
+              <Popover 
+                placement="right"
+                content={tableContent}
+                title={
+                  <div style={{ 
+                    fontSize: '16px',
+                    backgroundColor: '#18279A', 
+                    margin: '-5px -17px -12px -17px', 
+                    padding: '8px 16px',
+                    color: 'white',
+                    borderTopLeftRadius: '8px',
+                    borderTopRightRadius: '8px',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    display: 'flex'
+                  }}>
+                    Top 5 Resources
+                  </div>
+                }
+                trigger="hover"
+                onOpenChange={(visible) => {
+                  if (visible) handleInfoClick();
+                }}
+                overlayInnerStyle={{
+                  padding: 0
+                }}
+                overlayStyle={{
+                  '--antd-arrow-background-color': '#18279A'
+                } as React.CSSProperties}
+              >
+                <AreaChartOutlined 
+                  className="cursor-pointer text-gray-500 hover:text-gray-700"
+                  style={{ fontSize: '16px' }}
+                />
+              </Popover>
+            </div>
+          )}
         </div>
         {
           showLeft ?
             <div className="cost-amount w-full flex flex-row justify-between">
-                <p className={`saving-value font-medium m-0 ${textSizeClass}`}>
+                <p className={`cursor-pointer saving-value font-medium m-0 ${textSizeClass}`} onClick={()=>{
+                  setPreviousNavItem(clickedNavItem);
+                  setActiveNavItem('Recommendations');
+                  setClickedNavItem('Recommendations');
+                }}>
                     {loading ? (
                       <LoadingSpinner size="20px" />
                     ) : (
@@ -221,7 +290,11 @@ export const DashboardCards: React.FC<PotentialType> = ({
             </div> : null
         }
         <div className="cost-amount w-full flex flex-row justify-between">
-          <p className={`saving-value font-medium m-0 ${textSizeClass}`}>
+          <p className={`cursor-pointer saving-value font-medium m-0 ${textSizeClass}`} onClick={()=>{
+            setPreviousNavItem(clickedNavItem);
+            setActiveNavItem('Cost');
+            setClickedNavItem('Cost');
+          }}>
             {loading && showRight? (
               <LoadingSpinner size="20px" />
             ) : (
@@ -236,29 +309,6 @@ export const DashboardCards: React.FC<PotentialType> = ({
             since last month</p></div>}
         </div>
       </div>
-
-      <Modal
-        title="Top 5 Resources"
-        open={isModalOpen}
-        onCancel={() => {
-          setIsModalOpen(false);
-        }}
-        footer={null}
-        width={420}
-        destroyOnClose={true}
-        visible={isModalOpen}
-      >
-        <Table
-          style={{marginTop: '-20px', marginBottom: '-20px'}}
-          bordered
-          columns={columns}
-          dataSource={resourceData?.result}
-          loading={loadingResources}
-          rowKey="resource_name"
-          pagination={false}
-          size="small"
-        />
-      </Modal>
     </>
   );
 };

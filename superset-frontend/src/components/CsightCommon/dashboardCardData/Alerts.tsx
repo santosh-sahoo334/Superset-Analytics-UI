@@ -189,6 +189,12 @@ export const AlertsTableUI = () => {
                   key={columnKey}
                   field={columnKey}
                   header={customizeLabels[columnKey] || columnKey}
+                  style={{
+                    width: columnKey === 'billing_account_name' ? '30%' : 
+                           columnKey === 'resource_name' ? '20%' :
+                           columnKey === 'datekey' ? '15%' :
+                           '11.67%' // Remaining columns (cost_on_datekey, cost_diff, dod_percentage_change) split equally
+                  }}
                   body={(rowData, { rowIndex }) => {
                     if (
                       columnKey === "cost_on_datekey" ||
@@ -204,7 +210,7 @@ export const AlertsTableUI = () => {
                       rowData,
                       columnKey,
                       rowIndex,
-                      10
+                      20
                     );
                   }}
                   headerStyle={{

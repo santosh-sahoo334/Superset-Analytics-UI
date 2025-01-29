@@ -35,7 +35,9 @@ export const ResourcesTable = () => {
         headers: { Authorization: accessToken },
       });
       if (response.data) {
-        const newResources = response.data.result;
+        const newResources = response.data.result.sort((a, b) => 
+          (b.cost_new_resources || 0) - (a.cost_new_resources || 0)
+        );
         setResourcesData((prevData) => [...prevData, ...newResources]);
         setHasMore(newResources.length === pageSize); // Check if more data is available
       }
@@ -131,7 +133,7 @@ export const ResourcesTable = () => {
   const truncatedBodyTemplate = (rowData, columnKey, rowIndex) => {
     const value = rowData[columnKey] || "";
     const truncatedText =
-      value.length > 10 ? `${value.slice(0, 10)}...` : value;
+      value.length > 20 ? `${value.slice(0, 20)}...` : value;
     const tooltipId = `${columnKey}-${rowIndex}`;
 
     return (
@@ -165,7 +167,13 @@ export const ResourcesTable = () => {
                   key={col.field}
                   field={col.field}
                   header={col.header}
-                  style={{ width: "25%", whiteSpace: "nowrap" }}
+                  style={{ 
+                    width: col.field === 'resource_name' ? "40%" : 
+                           col.field === 'count_new_resources_added' ? "20%" :
+                           col.field === 'new_resources_added_datekey' ? "25%" :
+                           "15%", // for cost_new_resources
+                    whiteSpace: "nowrap" 
+                  }}
                   body={(rowData, { rowIndex }) => {
                     if (col.field === "cost_new_resources") {
                       return formatCurrency(rowData[col.field]);

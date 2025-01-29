@@ -125,9 +125,22 @@ export const RecommendationsTable = () => {
     ),
   };
 
+  // Function to format date from YYYY-MM-DD to MMM YYYY
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+  };
+
   // Function to truncate text and add tooltip
   const truncatedBodyTemplate = (rowData:any, columnKey:any, rowIndex:any, maxTextLength:any) => {
     const value = rowData[columnKey] || "";
+    
+    // Special handling for datekey column
+    if (columnKey === 'datekey') {
+      const formattedDate = formatDate(value);
+      return <span>{formattedDate}</span>;
+    }
+
     const truncatedText = value.length > maxTextLength ? `${value.slice(0, maxTextLength)}...` : value;
     const tooltipId = `${columnKey}-${rowIndex}`;
 
@@ -190,9 +203,19 @@ export const RecommendationsTable = () => {
                     if (columnKey === "current_cost" || columnKey === "proposed_cost") {
                       return formatCurrency(rowData[columnKey]);
                     }
-                    return truncatedBodyTemplate(rowData, columnKey, rowIndex, 10);
+                    return truncatedBodyTemplate(rowData, columnKey, rowIndex, columnKey === "billing_account_name"?20:15);
                   }}
-                  headerStyle={{ backgroundColor: "#f2f3f6", color: "#667084", width: columnKey === "recommendation_message" ? '120px' : columnKey === "service_name" ? "95px" : "80px" }}
+                  headerStyle={{ 
+                    backgroundColor: "#f2f3f6", 
+                    color: "#667084", 
+                    width: columnKey === "billing_account_name" ? "20%" : 
+                           columnKey === "recommendation_message" ? "15%" :
+                           columnKey === "service_name" ? "15%" :
+                           columnKey === "service_component" ? "17%" :
+                           columnKey === "current_cost" ? "10%" :
+                           columnKey === "proposed_cost" ? "10%" :
+                           "8%" // for datekey
+                  }}
                 />
               ))}
             </DataTable>

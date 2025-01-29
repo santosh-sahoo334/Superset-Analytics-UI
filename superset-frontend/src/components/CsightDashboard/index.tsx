@@ -397,7 +397,7 @@ const CsightDashboard = () => {
           className="card-bg w-full text-center text-2xl font-bold lg:w-6"
           style={{ minHeight: "330px" }}
         >
-          <ResourcesTable />
+         <RecommendationsTable />
         </div>
       </div>
 
@@ -406,7 +406,8 @@ const CsightDashboard = () => {
           className="card-bg w-full text-center text-2xl font-bold lg:w-6"
           style={{ minHeight: "330px" }}
         >
-          <RecommendationsTable />
+           <ResourcesTable />
+          
         </div>
         
         <div

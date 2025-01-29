@@ -321,13 +321,13 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
         <Menu.SubMenu
           key="budget"
           icon={
-            <FileSpreadsheet size={18} strokeWidth={1.5} color={'#fff'} style={{
+            <FileSpreadsheet size={18} strokeWidth={1.5} color={(clickedNavItem == 'Bud vs Act' || clickedNavItem == 'Budget Unit') && collapsed ? "#000" :'#fff'} style={{
               marginLeft: `${collapsed ? '-5px' : '5%'}`,
               marginRight: `${collapsed ? '0%' : '5%'}`,
             }} />
           }
           title={<span style={{ color: '#fff' }}>{collapsed ? '' : 'Budget'}</span>}
-          className="budget-submenu"
+          className={`budget-submenu ${(clickedNavItem == 'Bud vs Act' || clickedNavItem == 'Budget Unit') && collapsed ? 'budget-submenu-selected' : ''}`}
         >
 
           <Menu.Item

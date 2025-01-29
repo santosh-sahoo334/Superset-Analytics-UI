@@ -27,8 +27,8 @@ export const BlogsCard = () => {
                   <img
                     src={'/static/assets/images/focus.png'}
                     alt="blog"
-                    width={175}
-                    height={150}
+                    width={130}
+                    height={120}
                     className="p-1 w-1/4"
                   />
                   <div className="blog-details pl-2">
@@ -49,8 +49,8 @@ export const BlogsCard = () => {
                   <img
                     src={'/static/assets/images/uniteco.png'}
                     alt="blog"
-                    width={175}
-                    height={120}
+                    width={130}
+                    height={80}
                     className="p-1 w-1/4"
                   />
                   <div className="blog-details pl-2">
