@@ -85,7 +85,7 @@ class DashboardModelView(
                 mimetype="application/text",
             )
         return self.render_template(
-            "dworks/export_dashboards.html", dashboards_url="/dashboard/list"
+            "superset/export_dashboards.html", dashboards_url="/dashboard/list"
         )
 
     def pre_add(self, item: "DashboardModelView") -> None:
@@ -156,7 +156,7 @@ class Dashboard(BaseSupersetView):
         }
 
         return self.render_template(
-            "dworks/spa.html",
+            "superset/spa.html",
             entry="embedded",
             bootstrap_data=json.dumps(
                 bootstrap_data, default=utils.pessimistic_json_iso_dttm_ser

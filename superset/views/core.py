@@ -575,7 +575,7 @@ class Superset(BaseSupersetView):
             title = _("Explore")
 
         return self.render_template(
-            "dworks/basic.html",
+            "superset/basic.html",
             bootstrap_data=json.dumps(
                 bootstrap_data, default=utils.pessimistic_json_iso_dttm_ser
             ),
@@ -811,7 +811,7 @@ class Superset(BaseSupersetView):
         )
 
         return self.render_template(
-            "dworks/spa.html",
+            "superset/spa.html",
             entry="spa",
             title=dashboard.dashboard_title,  # dashboard title is always visible
             bootstrap_data=json.dumps(
@@ -860,7 +860,7 @@ class Superset(BaseSupersetView):
 
     @expose("/theme/")
     def theme(self) -> FlaskResponse:
-        return self.render_template("dworks/theme.html")
+        return self.render_template("superset/theme.html")
 
     @api
     @handle_api_exception
@@ -891,7 +891,7 @@ class Superset(BaseSupersetView):
     @app.errorhandler(500)
     def show_traceback(self) -> FlaskResponse:
         return (
-            render_template("dworks/traceback.html", error_msg=get_error_msg()),
+            render_template("superset/traceback.html", error_msg=get_error_msg()),
             500,
         )
 
@@ -901,7 +901,7 @@ class Superset(BaseSupersetView):
         """Personalized welcome page"""
         if not g.user or not get_user_id():
             if conf["PUBLIC_ROLE_LIKE"]:
-                return self.render_template("dworks/public_welcome.html")
+                return self.render_template("superset/public_welcome.html")
             return redirect(appbuilder.get_url_for_login)
 
         if welcome_dashboard_id := (
@@ -917,7 +917,7 @@ class Superset(BaseSupersetView):
         }
 
         return self.render_template(
-            "dworks/spa.html",
+            "superset/spa.html",
             entry="spa",
             bootstrap_data=json.dumps(
                 payload, default=utils.pessimistic_json_iso_dttm_ser
