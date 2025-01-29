@@ -121,7 +121,7 @@ const searchIconsData = {
 
 const listNavItems = [{
   key: 'anomaly',
-  navItem: 'Tags',
+  navItem: 'Anomaly',
   selectItem: 'Anomaly'
 },{
   key: 'billing',

@@ -44,7 +44,7 @@ const AppMenu = () => {
         {
           label: "Anomaly",
           image: "/static/assets/images/layout/images/glitch.png",
-          to: "/anomaly", tabName: "Tags"
+          to: "/anomaly", tabName: "Anomaly"
         },
         {
           label: "Recommendations",

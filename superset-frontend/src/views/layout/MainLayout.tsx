@@ -141,7 +141,7 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
     billing: { id: 'billing', name: 'Billing', replaceName: 'Billing Plans' },
     tags: { id: 'tags', name: 'Tags' },
     observability: { id: 'observability', name: 'Observability' },
-    anomaly: { id: 'anomaly', name: 'Anomaly', replaceName: 'Tags' },
+    anomaly: { id: 'anomaly', name: 'Anomaly', replaceName: 'Anomaly' },
     recommendations: { id: 'recommendations', name: 'Recommendations' },
     governance: { id: 'governance', name: 'Governance', replaceName: 'Executive Report' },//Executive Report
     'bud-vs-act': { id: 'bud-vs-act', name: 'Bud vs Act', replaceName: 'Budget vs Actuals' },
