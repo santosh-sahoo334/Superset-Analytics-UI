@@ -44,6 +44,7 @@ get_time_range_schema = {"type": "string"}
 
 
 class Api(BaseSupersetView):
+    route_base = "/dworks" # Hari
     query_context_factory = None
 
     @event_logger.log_this
