@@ -33,7 +33,16 @@ const adminList:any =process.env.ADMIN_EMAIL || [];
 
 const DashboardRoute: FC = () => {
   const { idOrSlug } = useParams<{ idOrSlug: string }>();
-  return <DashboardPage idOrSlug={idOrSlug} className={`${userEmail && !adminList?.includes(userEmail) ? 'hideTabList custom-table no-data p-datatable-tbody p-datatable-wrapper' : 'custom-table no-data p-datatable-tbody p-datatable-wrapper '}`}/>;
+  return (
+    <DashboardPage 
+      idOrSlug={idOrSlug} 
+      className={`${
+        userEmail && !adminList?.includes(userEmail)
+          ? 'hideTabList custom-table no-data p-datatable-tbody p-datatable-wrapper'
+          : 'custom-table no-data p-datatable-tbody p-datatable-wrapper dashboard-scrollable'
+      }`}
+    />
+  );
 };
 
 export default DashboardRoute;
