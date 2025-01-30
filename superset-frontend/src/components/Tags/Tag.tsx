@@ -65,7 +65,7 @@ const Tag = ({
           <StyledTag data-test="tag" role="link" key={id} onClick={onClick}>
             {id ? (
               <a
-                href={`/superset/all_entities/?id=${id}`}
+                href={`/dworks/all_entities/?id=${id}`}
                 target="_blank"
                 rel="noreferrer"
               >

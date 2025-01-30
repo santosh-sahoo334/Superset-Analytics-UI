@@ -136,7 +136,7 @@ type Routes = {
 
 export const routes: Routes = [
   {
-    path: '/superset/welcome/',
+    path: '/dworks/welcome/',
     Component: Home,
   },
   {
@@ -144,7 +144,7 @@ export const routes: Routes = [
     Component: DashboardList,
   },
     {
-    path: '/superset/dashboard/:idOrSlug/',
+    path: '/dworks/dashboard/:idOrSlug/',
     Component: Dashboard,
     layout: MainLayoutCsight
   },
@@ -211,7 +211,7 @@ export const routes: Routes = [
     Component: Chart,
   },
   {
-    path: '/superset/explore/p',
+    path: '/dworks/explore/p',
     Component: Chart,
   },
   {
@@ -234,11 +234,11 @@ export const routes: Routes = [
 
 if (isFeatureEnabled(FeatureFlag.TaggingSystem)) {
   routes.push({
-    path: '/superset/all_entities/',
+    path: '/dworks/all_entities/',
     Component: AllEntities,
   });
   routes.push({
-    path: '/superset/tags/',
+    path: '/dworks/tags/',
     Component: Tags,
   });
 }
