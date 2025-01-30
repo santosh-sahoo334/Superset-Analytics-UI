@@ -232,7 +232,7 @@ function Welcome({ user, addDangerToast }: WelcomeProps) {
   
     if(userEmail && !adminList?.includes(userEmail)){
       const slug = Cookies.get('slug') || 'teksecur';
-      history.replace( `/superset/dashboard/${slug}`);
+      history.replace( `/dworks/dashboard/${slug}`);
       return
     }
     if(!userEmail){

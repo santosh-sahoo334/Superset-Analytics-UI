@@ -124,7 +124,7 @@ SqlResults = dict[str, Any]
 
 class Superset(BaseSupersetView):
     """The base views for Superset!"""
-
+    route_base = "/dworks"
     logger = logging.getLogger(__name__)
 
     @has_access
@@ -351,7 +351,7 @@ class Superset(BaseSupersetView):
         the form_data param with a form_data_key by saving the original content
         to the cache layer.
         """
-        redirect_url = request.url.replace("/superset/explore", "/explore")
+        redirect_url = request.url.replace("/dworks/explore", "/explore")
         form_data_key = None
         if request_form_data := request.args.get("form_data"):
             parsed_form_data = loads_request_json(request_form_data)
@@ -841,7 +841,7 @@ class Superset(BaseSupersetView):
         if not value:
             return json_error_response(_("permalink state not found"), status=404)
         dashboard_id, state = value["dashboardId"], value.get("state", {})
-        url = f"/superset/dashboard/{dashboard_id}?permalink_key={key}"
+        url = f"/dworks/dashboard/{dashboard_id}?permalink_key={key}"
         if url_params := state.get("urlParams"):
             params = parse.urlencode(url_params)
             url = f"{url}&{params}"

@@ -199,7 +199,9 @@
     <script>
         const REFRESH_TOKEN = 'refresh_token';
         const SLUG_KEY = 'slug';
+        // For Ushur Frontend & Backend URL will change. Below ones for TekSecur Demo Instance
         const SUPERSET_DOMAIN = 'https://csight.teksecur.com';
+        const backendAPIURL = 'https://csight-api.teksecur.com'
 
         function showLoader() {
             document.getElementById('loader').classList.remove('hidden');
@@ -266,7 +268,7 @@
 
                     // Handle successful authentication
                     if (response.ok) {
-                        window.location.replace(`/superset/dashboard/${storedSlug}`);
+                        window.location.replace(`/dworks/dashboard/${storedSlug}`);
                     }else {
                         hideLoader();
                     }
@@ -288,7 +290,7 @@
 
             let email = btoa(document.getElementById('email').value);
             // Construct the authentication URL with the user's email
-            const authUrl = `https://csight-api.teksecur.com/api/v1/oidc/login/?email=${email}`;
+            const authUrl = `${backendAPIURL}/api/v1/oidc/login/?email=${email}`;
 
             // Redirect to the authentication URL
             window.location.href = authUrl;
