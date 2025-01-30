@@ -41,13 +41,30 @@ import { useAIBotContext } from "src/components/CsightChatbot/Context";
 import { LayoutDashboard, CircleDollarSign, LayoutList, FileText, Tag, Eye, ChartNetwork, ThumbsUp, Building2, FileSpreadsheet, Boxes, Combine, Leaf, LayoutPanelTop } from 'lucide-react';
 // import hamburgerIcon from '../../../src/assets/images/icons/hamburger.svg'
 import { v4 as uuidv4 } from "uuid";
-const { Header, Sider, Content } = Layout
+import * as LucideIcons from 'lucide-react';
+import { Header, Content, Sider } from 'antd'
 
 interface MainLayoutProps {
   children: React.ReactNode
 }
 
 import { questionsList } from "src/components/CsightChatbot/Component/FlashCard";
+
+// Add interface for menu config
+interface MenuItemConfig {
+  id: string;
+  name: string;
+  group?: string | null;
+  icon: string;
+  redirectTab: boolean;
+  replaceName?: string;
+  parent?: string;
+  order: number;
+  showLine?: boolean;
+}
+
+// Replace the separate imports with Layout components accessed through Layout
+const { Header: AntHeader, Content: AntContent, Sider: AntSider } = Layout;
 
 export default function MainLayoutCsight({ children }: MainLayoutProps) {
   const [collapsed, setCollapsed] = useState(true)
@@ -61,21 +78,23 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
     state => state.dashboardLayout.present,
   );
 
+  const menuConfig: Record<string, MenuItemConfig> = (() => {
+    try {
+      const config = typeof process.env.REACT_APP_MENU_CONFIG === 'string' 
+        ? JSON.parse(process.env.REACT_APP_MENU_CONFIG)
+        : process.env.REACT_APP_MENU_CONFIG || {};
+        
+      console.log("Menu Config:", config);
+      return config;
+    } catch (error) {
+      console.error('Error parsing REACT_APP_MENU_CONFIG:', error);
+      return {};
+    }
+  })();
 
-  const tabRedirectionDetails = [
-    'Cost',
-    'Utilization',
-    'Tags',
-    'Billing Plans',
-    'Observability',
-    'Anomaly',
-    'Recommendations',
-    'Governance',
-    'Executive Report',
-    'Budget vs Actuals',
-    'OnPrem',
-    'GreenOps'
-  ];
+  const tabRedirectionDetails = Object.values(menuConfig)
+    .filter(item => item.redirectTab)
+    .map(item => item.replaceName || item.name);
 
   function findTabIdByName(data: Record<string, any>, tabName: string): { id: string; parent: string } | null {
     for (const key in data) {
@@ -133,23 +152,6 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
 
   const { clickedNavItem, activeNavItem, setActiveNavItem, setClickedNavItem,setPreviousNavItem } = useContext(LayoutContext);
 
-  const navItems: any = {
-    dashboard: { id: 'dashboard', name: 'Dashboard' },
-    onprem: { id: 'onprem', name: 'OnPrem' },
-    cost: { id: 'cost', name: 'Cost' },
-    utilization: { id: 'utilization', name: 'Utilization' },
-    billing: { id: 'billing', name: 'Billing', replaceName: 'Billing Plans' },
-    tags: { id: 'tags', name: 'Tags' },
-    observability: { id: 'observability', name: 'Observability' },
-    anomaly: { id: 'anomaly', name: 'Anomaly', replaceName: 'Anomaly' },
-    recommendations: { id: 'recommendations', name: 'Recommendations' },
-    governance: { id: 'governance', name: 'Governance', replaceName: 'Executive Report' },//Executive Report
-    'bud-vs-act': { id: 'bud-vs-act', name: 'Bud vs Act', replaceName: 'Budget vs Actuals' },
-    'budget-unit': { id: 'budget-unit', name: 'Budget Unit' },
-    'green-ops': { id: 'green-ops', name: 'GreenOps' }
-  }
-
-
   useEffect(() => {
     if (tabRedirectionDetails.includes(activeNavItem)) {
       setTimeout(() => {
@@ -166,24 +168,21 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
   }, [clickedNavItem]);
 
   const handleMenuClick = (info: MenuInfo) => {
-    // setFlashCardData([]);
     setPreviousNavItem(clickedNavItem);
-    const key: any = info.key.toString();
-    setActiveNavItem(navItems[key].replaceName || navItems[key].name);
-    setClickedNavItem(navItems[key].name);
-    tabOptionClick(navItems[key].replaceName || navItems[key].name);
+    const key: string = info.key.toString();
+    setActiveNavItem(menuConfig[key].replaceName || menuConfig[key].name);
+    setClickedNavItem(menuConfig[key].name);
+    tabOptionClick(menuConfig[key].replaceName || menuConfig[key].name);
 
     // Only close budget submenu if clicking outside budget section
     if (!key.startsWith('bud-vs-act') && !key.startsWith('budget-unit') && !key.startsWith('budget')) {
       setOpenKeys([]);
     }
 
-    // Close mobile drawer when clicking any menu item
     if (isMobile) {
       setMobileOpen(false);
     }
 
-    // Scroll to top on menu item click
     const contentElement = document.querySelector('.site-content');
     if (contentElement) {
       contentElement.scrollTo({
@@ -199,11 +198,11 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
     setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
   };
 
-  // Add helper function to get selected keys
   const getSelectedKeys = () => {
-    const currentKey = Object.keys(navItems).find(key => navItems[key].name === clickedNavItem) || 'dashboard';
+    const currentKey = Object.keys(menuConfig).find(
+      key => menuConfig[key].name === clickedNavItem
+    ) || 'dashboard';
 
-    // In collapsed mode, if a budget sub-item is selected, also select the budget parent
     if (collapsed && !isMobile && (currentKey === 'bud-vs-act' || currentKey === 'budget-unit')) {
       return [currentKey, 'budget'];
     }
@@ -211,6 +210,76 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
     return [currentKey];
   };
 
+  // Helper function to get icon component
+  const getIcon = (iconName: string, isSelected: boolean) => {
+    const IconComponent = (LucideIcons as any)[iconName];
+    return IconComponent ? (
+      <IconComponent
+        size={18}
+        strokeWidth={1.5}
+        color={isSelected ? '#000' : '#fff'}
+        style={{
+          marginLeft: `${collapsed ? '36%' : '5%'}`
+        }}
+      />
+    ) : null;
+  };
+
+  // Modify the groupedMenuItems logic to handle ordering correctly
+  const groupedMenuItems = Object.entries(menuConfig).reduce((acc, [key, item]) => {
+    // First, sort all items by order number
+    const groupKey = item.group || 'ungrouped';
+    if (!acc[groupKey]) {
+      acc[groupKey] = [];
+    }
+    acc[groupKey].push({ key, ...item });
+    return acc;
+  }, {} as Record<string, (MenuItemConfig & { key: string })[]>);
+
+  // Get all menu items in a flat array, sorted by order
+  const getAllMenuItemsSorted = () => {
+    const allItems = Object.entries(menuConfig).map(([key, item]) => ({
+      key,
+      ...item,
+    }));
+    return allItems.sort((a, b) => a.order - b.order);
+  };
+
+  const renderMenuItem = (key: string, item: MenuItemConfig) => {
+    const isSelected = clickedNavItem === item.name;
+    
+    if (item.parent === 'budget') {
+      return (
+        <Menu.Item
+          key={key}
+          className="budget-menu-item"
+          icon={getIcon(item.icon, isSelected)}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <span style={{
+            color: '#fff',
+            paddingBottom: collapsed ? '0' : '15px',
+            marginLeft: collapsed ? '0' : '15px',
+            marginTop: collapsed ? '0' : '12px'
+          }}>
+            {item.name}
+          </span>
+        </Menu.Item>
+      );
+    }
+
+    return (
+      <Menu.Item
+        key={key}
+        icon={getIcon(item.icon, isSelected)}
+      >
+        {item.name}
+      </Menu.Item>
+    );
+  };
 
   const sidebarContent = (
     <Menu
@@ -222,201 +291,60 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
       onClick={handleMenuClick}
       className="custom-sidebar stable-menu"
     >
-      <Menu.Item
-        key="dashboard"
-        icon={
-          <LayoutDashboard size={18} strokeWidth={1.5} color={clickedNavItem == 'Dashboard' ? '#000' : '#fff'} style={{
-            marginLeft: `${collapsed ? '36%' : '5%'}`
-          }} />
+      {getAllMenuItemsSorted().map(item => {
+        // Skip budget items as they'll be handled in their group
+        if (item.parent === 'budget') {
+          return null;
         }
-      >
-        Dashboard
-      </Menu.Item>
 
-      {/* <hr style={{ 
-        margin: '8px 16px',
-        borderColor: 'rgba(255, 255, 255, 0.2)',
-        borderStyle: 'solid',
-        borderWidth: '0 0 1px 0'
-      }} /> */}
+        // If this is the first item of a group, add the group header
+        const prevItem = menuConfig[Object.keys(menuConfig).find(k => 
+          menuConfig[k].order === item.order - 1
+        ) || ''];
+        
+        const isFirstInGroup = item.group && (!prevItem || prevItem.group !== item.group);
 
-      <Menu.ItemGroup key="observe-group" title="OBSERVE">
-        <Menu.Item key="cost" icon={
-          // <ReconciliationOutlined />
-          <CircleDollarSign size={18} strokeWidth={1.5} color={clickedNavItem == 'Cost' ? '#000' : '#fff'} style={{
-            marginLeft: `${collapsed ? '36%' : '5%'}`
-          }} />
-        }>
-          Cost
-        </Menu.Item>
-        <Menu.Item key="utilization" icon={
-          <LayoutList size={18} strokeWidth={1.5} color={clickedNavItem == 'Utilization' ? '#000' : '#fff'} style={{
-            marginLeft: `${collapsed ? '36%' : '5%'}`
-          }} />
-        }>
-          Utilization
-        </Menu.Item>
-        <Menu.Item key="billing" icon={
-          <FileText size={18} strokeWidth={1.5} color={clickedNavItem == 'Billing' ? '#000' : '#fff'} style={{
-            marginLeft: `${collapsed ? '36%' : '5%'}`
-          }} />
-        }>
-          Billing
-        </Menu.Item>
-        <Menu.Item key="tags" icon={
-          <Tag size={18} strokeWidth={1.5} color={clickedNavItem == 'Tags' ? '#000' : '#fff'} style={{
-            marginLeft: `${collapsed ? '36%' : '5%'}`
-          }} />
-        }>
-          Tags
-        </Menu.Item>
-      </Menu.ItemGroup>
-
-      <hr style={{
-        margin: '8px 16px',
-        borderColor: 'rgba(255, 255, 255, 0.2)',
-        borderStyle: 'solid',
-        borderWidth: '0 0 1px 0'
-      }} />
-
-      <Menu.ItemGroup key="optimize-group" title="OPTIMIZE">
-        <Menu.Item key="observability" icon={
-          <Eye size={18} strokeWidth={1.5} color={clickedNavItem == 'Observability' ? '#000' : '#fff'} style={{
-            marginLeft: `${collapsed ? '36%' : '5%'}`
-          }} />
-        }>
-          Observability
-        </Menu.Item>
-        <Menu.Item key="anomaly" icon={
-          <ChartNetwork size={18} strokeWidth={1.5} color={clickedNavItem == 'Anomaly' ? '#000' : '#fff'} style={{
-            marginLeft: `${collapsed ? '36%' : '5%'}`
-          }} />
-        }>
-          Anomaly
-        </Menu.Item>
-        <Menu.Item key="recommendations" icon={
-          <ThumbsUp size={18} strokeWidth={1.5} color={clickedNavItem == 'Recommendations' ? '#000' : '#fff'} style={{
-            marginLeft: `${collapsed ? '36%' : '5%'}`
-          }} />
-        }>
-          Recommendations
-        </Menu.Item>
-      </Menu.ItemGroup>
-
-      <hr style={{
-        margin: '8px 16px',
-        borderColor: 'rgba(255, 255, 255, 0.2)',
-        borderStyle: 'solid',
-        borderWidth: '0 0 1px 0'
-      }} />
-
-      <Menu.ItemGroup key="operate-group" title="OPERATE">
-        <Menu.Item key="governance" icon={
-          <Building2 size={18} strokeWidth={1.5} color={clickedNavItem == 'Governance' ? '#000' : '#fff'} style={{
-            marginLeft: `${collapsed ? '36%' : '5%'}`
-          }} />
-        }>
-          Governance
-        </Menu.Item>
-        <Menu.SubMenu
-          key="budget"
-          icon={
-            <FileSpreadsheet size={18} strokeWidth={1.5} color={(clickedNavItem == 'Bud vs Act' || clickedNavItem == 'Budget Unit') && collapsed ? "#000" :'#fff'} style={{
-              marginLeft: `${collapsed ? '-5px' : '5%'}`,
-              marginRight: `${collapsed ? '0%' : '5%'}`,
-            }} />
-          }
-          title={<span style={{ color: '#fff' }}>{collapsed ? '' : 'Budget'}</span>}
-          className={`budget-submenu ${(clickedNavItem == 'Bud vs Act' || clickedNavItem == 'Budget Unit') && collapsed ? 'budget-submenu-selected' : ''}`}
-        >
-
-          <Menu.Item
-            key="bud-vs-act"
-            className="budget-menu-item"
-            icon={
-              <Combine
-                size={18}
-                strokeWidth={1.5}
-                color={clickedNavItem == 'Bud vs Act' ? '#000' : '#fff'}
-                style={{
-                  marginLeft: collapsed ? '15px' : '5%',
-                  marginRight: collapsed ? '8px' : '0' // Add space between icon and text in collapsed mode
-                }}
-              />
-            }
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              // justifyContent: collapsed ? 'flex-start' : 'space-between',
-              // padding: collapsed ? '8px 12px' : undefined
-            }}
-          >
-            <span style={{
-              color: '#fff',
-              paddingBottom: collapsed ? '0' : '15px',
-              marginLeft: collapsed ? '0' : '15px',
-              marginTop: collapsed ? '0' : '12px'
-            }}>
-              Bud vs Act
-            </span>
-          </Menu.Item>
-
-
-          <Menu.Item
-            key="budget-unit"
-            className="budget-menu-item"
-            icon={
-              <Boxes
-                size={18}
-                strokeWidth={1.5}
-                color={clickedNavItem == 'Budget Unit' ? '#000' : '#fff'}
-                style={{
-                  marginLeft: collapsed ? '15px' : '5%',
-                  marginRight: collapsed ? '8px' : '0' // Add space between icon and text in collapsed mode
-                }}
-              />
-            }
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              // justifyContent: collapsed ? 'flex-start' : 'space-between',
-              // padding: collapsed ? '8px 12px' : undefined
-            }}
-          >
-            <span style={{
-             color: '#fff',
-             paddingBottom: collapsed ? '0' : '15px',
-             marginLeft: collapsed ? '0' : '15px',
-             marginTop: collapsed ? '0' : '12px'
-            }}>
-              Budget Unit
-            </span>
-          </Menu.Item>
-        </Menu.SubMenu>
-        <Menu.Item key="green-ops" icon={
-          <Leaf size={18} strokeWidth={1.5} color={clickedNavItem == 'GreenOps' ? '#000' : '#fff'} style={{
-            marginLeft: `${collapsed ? '36%' : '5%'}`,
-
-          }} />
-        }>
-          Green Ops
-        </Menu.Item>
-      </Menu.ItemGroup>
-
-      <hr style={{
-        margin: '8px 16px',
-        borderColor: 'rgba(255, 255, 255, 0.2)',
-        borderStyle: 'solid',
-        borderWidth: '0 0 1px 0'
-      }} />
-
-      <Menu.Item key="onprem" icon={
-        <LayoutPanelTop size={18} strokeWidth={1.5} color={clickedNavItem == 'OnPrem' ? '#000' : '#fff'} style={{
-          marginLeft: `${collapsed ? '36%' : '5%'}`
-        }} />
-      }>
-        OnPrem
-      </Menu.Item>
+        return (
+          <React.Fragment key={item.key}>
+            {(isFirstInGroup || item.showLine) && (
+              <hr style={{
+                margin: '8px 16px',
+                borderColor: 'rgba(255, 255, 255, 0.2)',
+                borderStyle: 'solid',
+                borderWidth: '0 0 1px 0'
+              }} />
+            )}
+            {isFirstInGroup ? (
+              <Menu.ItemGroup title={item.group}>
+                {renderMenuItem(item.key, item)}
+                {/* Add budget submenu if we're in OPERATE group */}
+                {item.group === 'OPERATE' && (
+                  <Menu.SubMenu
+                    key="budget"
+                    icon={getIcon('FileSpreadsheet', 
+                      (clickedNavItem === 'Bud vs Act' || clickedNavItem === 'Budget Unit') && collapsed
+                    )}
+                    title={<span style={{ color: '#fff' }}>{collapsed ? '' : 'Budget'}</span>}
+                    className={`budget-submenu ${
+                      (clickedNavItem === 'Bud vs Act' || clickedNavItem === 'Budget Unit') && collapsed 
+                        ? 'budget-submenu-selected' 
+                        : ''
+                    }`}
+                  >
+                    {Object.entries(menuConfig)
+                      .filter(([, menuItem]) => menuItem.parent === 'budget')
+                      .sort(([, itemA], [, itemB]) => itemA.order - itemB.order)
+                      .map(([key, menuItem]) => renderMenuItem(key, menuItem))
+                    }
+                  </Menu.SubMenu>
+                )}
+              </Menu.ItemGroup>
+            ) : (
+              renderMenuItem(item.key, item)
+            )}
+          </React.Fragment>
+        );
+      })}
     </Menu>
   )
 
@@ -425,7 +353,7 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
 
   return (
     <Layout style={{ minHeight: '100vh' }} className=''>
-      <Header className="app-header">
+      <AntHeader className="app-header">
         <div className="header-left">
           <img
             src="/static/assets/images/layout/images/csight.png"
@@ -462,10 +390,10 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
             <SettingOutlined />
           </Dropdown>
         </Space>
-      </Header>
+      </AntHeader>
 
       {!isMobile ? (
-        <Sider
+        <AntSider
           trigger={null}
           collapsible
           collapsed={collapsed}
@@ -490,7 +418,7 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
             className="sidebar-trigger"
           /> */}
           {sidebarContent}
-        </Sider>
+        </AntSider>
       ) : (
         <Drawer
           placement="left"
@@ -507,11 +435,11 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
       )}
 
       <Layout className={`custom-menu-item site-layout ${collapsed ? 'collapsed' : ''}`}>
-        <Content className="site-content" style={{ overflow: 'auto', height: 'calc(100vh - 60px)' }}>
+        <AntContent className="site-content" style={{ overflow: 'auto', height: 'calc(100vh - 60px)' }}>
           <ScrollButtons />
           <ChatBot />
           {children}
-        </Content>
+        </AntContent>
       </Layout>
     </Layout>
   )

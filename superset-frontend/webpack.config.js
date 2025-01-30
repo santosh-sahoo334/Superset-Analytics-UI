@@ -135,6 +135,123 @@ const plugins = [
     'process.env.REACT_APP_CINDY_AUTH_TOKEN': JSON.stringify(process.env.REACT_APP_CINDY_AUTH_TOKEN || ''),
     'process.env.ADMIN_EMAIL': JSON.stringify(process.env.ADMIN_EMAIL) || '[]',
     'process.env.REACT_APP_LOGO_TEXT': JSON.stringify(process.env.REACT_APP_LOGO_TEXT) || 'Multi-Cloud FinOps',
+    'process.env.REACT_APP_MENU_CONFIG': JSON.stringify({
+      dashboard: {
+        id: "dashboard",
+        name: "Dashboard",
+        group: null,
+        icon: "LayoutDashboard",
+        redirectTab: false,
+        order: 1
+      },
+      // OBSERVE group
+      cost: {
+        id: "cost",
+        name: "Cost",
+        group: "OBSERVE",
+        icon: "CircleDollarSign",
+        redirectTab: true,
+        order: 2
+      },
+      utilization: {
+        id: "utilization",
+        name: "Utilization",
+        group: "OBSERVE",
+        icon: "LayoutList",
+        redirectTab: true,
+        order: 3
+      },
+      billing: {
+        id: "billing",
+        name: "Billing",
+        replaceName: "Billing Plans",
+        group: "OBSERVE",
+        icon: "FileText",
+        redirectTab: true,
+        order: 4
+      },
+      tags: {
+        id: "tags",
+        name: "Tags",
+        group: "OBSERVE",
+        icon: "Tag",
+        redirectTab: true,
+        order: 5
+      },
+      // OPTIMIZE group
+      observability: {
+        id: "observability",
+        name: "Observability",
+        group: "OPTIMIZE",
+        icon: "Eye",
+        redirectTab: true,
+        order: 6
+      },
+      anomaly: {
+        id: "anomaly",
+        name: "Anomaly",
+        replaceName: "Anomaly",
+        group: "OPTIMIZE",
+        icon: "ChartNetwork",
+        redirectTab: true,
+        order: 7
+      },
+      recommendations: {
+        id: "recommendations",
+        name: "Recommendations",
+        group: "OPTIMIZE",
+        icon: "ThumbsUp",
+        redirectTab: true,
+        order: 8
+      },
+      // OPERATE group
+      governance: {
+        id: "governance",
+        name: "Governance",
+        replaceName: "Executive Report",
+        group: "OPERATE",
+        icon: "Building2",
+        redirectTab: true,
+        order: 9
+      },
+      'bud-vs-act': {
+        id: "bud-vs-act",
+        name: "Bud vs Act",
+        replaceName: "Budget vs Actuals",
+        group: "OPERATE",
+        parent: "budget",
+        icon: "Combine",
+        redirectTab: true,
+        order: 10
+      },
+      'budget-unit': {
+        id: "budget-unit",
+        name: "Budget Unit",
+        group: "OPERATE",
+        parent: "budget",
+        icon: "Boxes",
+        redirectTab: false,
+        order: 11
+      },
+      'green-ops': {
+        id: "green-ops",
+        name: "GreenOps",
+        group: "OPERATE",
+        icon: "Leaf",
+        redirectTab: true,
+        order: 12
+      },
+      // Ungrouped items at the end
+      'onprem': {
+        id: "onprem",
+        name: "OnPrem",
+        group: null,
+        icon: "LayoutPanelTop",
+        redirectTab: true,
+        order: 13,
+        showLine: true
+      }
+    }),
   }),
 
   new CopyPlugin({
