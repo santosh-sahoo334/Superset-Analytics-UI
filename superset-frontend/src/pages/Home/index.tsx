@@ -231,7 +231,7 @@ function Welcome({ user, addDangerToast }: WelcomeProps) {
   useEffect(()=>{
   
     if(userEmail && !adminList?.includes(userEmail)){
-      const slug = Cookies.get('slug') || 'births';
+      const slug = Cookies.get('slug') || 'teksecur';
       history.replace( `/dworks/dashboard/${slug}`);
       return
     }
