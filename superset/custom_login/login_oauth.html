@@ -200,8 +200,8 @@
         const REFRESH_TOKEN = 'refresh_token';
         const SLUG_KEY = 'slug';
         // For Ushur Frontend & Backend URL will change. Below ones for TekSecur Demo Instance
-        const SUPERSET_DOMAIN = 'https://csight.teksecur.com';
-        const backendAPIURL = 'https://csight-api.teksecur.com'
+        const CSIGHT_DOMAIN = '{{ appbuilder.app.config["CSIGHT_DOMAIN"] }}';
+        const backendAPIURL = '{{ appbuilder.app.config["CSIGHT_BACKEND"] }}';
 
         function showLoader() {
             document.getElementById('loader').classList.remove('hidden');
@@ -254,7 +254,7 @@
 
                 try {
                     const response = await fetch(
-                        `${SUPERSET_DOMAIN}/oauth-authorized/csight-auth-success?slug=${storedSlug}`,
+                        `${CSIGHT_DOMAIN}/oauth-authorized/csight-auth-success?slug=${storedSlug}`,
                         {
                             method: "GET",
                             credentials: 'include',
