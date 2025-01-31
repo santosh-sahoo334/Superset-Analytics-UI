@@ -240,16 +240,6 @@ const plugins = [
         icon: "Leaf",
         redirectTab: true,
         order: 12
-      },
-      // Ungrouped items at the end
-      'onprem': {
-        id: "onprem",
-        name: "OnPrem",
-        group: null,
-        icon: "LayoutPanelTop",
-        redirectTab: true,
-        order: 13,
-        showLine: true
       }
     }),
   }),

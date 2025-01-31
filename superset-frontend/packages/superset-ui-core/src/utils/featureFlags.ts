@@ -56,6 +56,7 @@ export enum FeatureFlag {
   TaggingSystem = 'TAGGING_SYSTEM',
   Thumbnails = 'THUMBNAILS',
   UseAnalagousColors = 'USE_ANALAGOUS_COLORS',
+  CsightOnpremFlag = 'CSIGHT_ONPREM_FLAG'
 }
 
 export type ScheduleQueriesProps = {

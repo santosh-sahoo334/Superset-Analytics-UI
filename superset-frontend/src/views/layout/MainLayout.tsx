@@ -43,6 +43,10 @@ import { LayoutDashboard, CircleDollarSign, LayoutList, FileText, Tag, Eye, Char
 import { v4 as uuidv4 } from "uuid";
 import * as LucideIcons from 'lucide-react';
 import { Header, Content, Sider } from 'antd'
+import {
+  FeatureFlag,
+  isFeatureEnabled
+} from '@superset-ui/core';
 
 import getBootstrapData from 'src/utils/getBootstrapData'
 
@@ -95,7 +99,18 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
       const config = typeof process.env.REACT_APP_MENU_CONFIG === 'string' 
         ? JSON.parse(process.env.REACT_APP_MENU_CONFIG)
         : process.env.REACT_APP_MENU_CONFIG || {};
-        
+      if (isFeatureEnabled(FeatureFlag.CsightOnpremFlag)) {
+        // Ungrouped items at the end
+        config.onprem = {
+          id: "onprem",
+          name: "OnPrem",
+          group: null,
+          icon: "LayoutPanelTop",
+          redirectTab: true,
+          order: 13,
+          showLine: true
+        };
+      }
       return config;
     } catch (error) {
       console.error('Error parsing REACT_APP_MENU_CONFIG:', error);
