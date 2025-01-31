@@ -22,10 +22,10 @@ phases:
       
       - if [ -z "$IMAGE_TAG" ]; then IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7); fi
       - echo "Resolved Image Tag - $IMAGE_TAG"
-      - echo "IMAGE_TAG=$IMAGE_TAG" >> $CODEBUILD_ENV_VAR_FILE  # Persist IMAGE_TAG
 
   build:
     commands:
+      - echo "Resolved Image Tag in build section - $IMAGE_TAG"
       - echo "Building the Docker image - $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG"
       - DOCKER_BUILDKIT=1 docker build --build-arg NODE_OPTIONS="--max-old-space-size=8192" \
         -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG .
@@ -33,6 +33,7 @@ phases:
   post_build:
     commands:
       - echo "Pushing the image to Amazon ECR..."
+      - echo "Resolved Image Tag in post_build section - $IMAGE_TAG"
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
       - echo "Build and push completed successfully"
 
