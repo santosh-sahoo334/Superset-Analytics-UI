@@ -754,7 +754,7 @@ class AuthOAuthView(AuthView):
             login_user(user)
             
             # next_url = "/dashboard/list"
-            next_url = '/superset/dashboard/'+ dashboard_slug
+            next_url = '/dworks/dashboard/'+ dashboard_slug
             return redirect(next_url)
         except jwt.ExpiredSignatureError:
             return redirect(f"https://{host}/login/")

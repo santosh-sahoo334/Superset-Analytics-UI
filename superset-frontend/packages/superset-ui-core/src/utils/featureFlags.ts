@@ -28,6 +28,7 @@ export enum FeatureFlag {
   AvoidColorsCollision = 'AVOID_COLORS_COLLISION',
   ChartPluginsExperimental = 'CHART_PLUGINS_EXPERIMENTAL',
   ConfirmDashboardDiff = 'CONFIRM_DASHBOARD_DIFF',
+  CsightOnpremFlag = 'CSIGHT_ONPREM_FLAG',
   /** @deprecated */
   DashboardCrossFilters = 'DASHBOARD_CROSS_FILTERS',
   DashboardVirtualization = 'DASHBOARD_VIRTUALIZATION',
@@ -56,7 +57,7 @@ export enum FeatureFlag {
   TaggingSystem = 'TAGGING_SYSTEM',
   Thumbnails = 'THUMBNAILS',
   UseAnalagousColors = 'USE_ANALAGOUS_COLORS',
-  CsightOnpremFlag = 'CSIGHT_ONPREM_FLAG'
+  
 }
 
 export type ScheduleQueriesProps = {
