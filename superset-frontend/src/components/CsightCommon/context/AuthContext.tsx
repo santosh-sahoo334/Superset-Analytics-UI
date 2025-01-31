@@ -154,38 +154,38 @@ const AuthState = () => {
     }
   };
 
-  const getAccessToken = async (refresh_page = false) => {
-    try {
-      if (refresh_page) {
-        setIsLoading(true);
-      }
-      const access_token = await refreshAccessToken();
+  // const getAccessToken = async (refresh_page = false) => {
+  //   try {
+  //     if (refresh_page) {
+  //       setIsLoading(true);
+  //     }
+  //     const access_token = await refreshAccessToken();
 
-      if (access_token) {
-        setAccessToken(access_token);
-        if (refresh_page) {
-          history.push(routesWithoutAuth.includes(pathname) ? "/" : pathname || "/");
-        }
-        setIsLoading(false);
-        return;
-      }
-      setIsLoading(false);
-      setAccessToken(null);
-      deleteCookies();
-      setTimeout(()=>{
-        history.replace('/logout');
-        window.location.reload();
-      },1000);
-    } catch (error) {
-      setIsLoading(false);
-      setAccessToken(null);
-      deleteCookies();
-      setTimeout(()=>{
-        history.replace('/logout');
-        window.location.reload();
-      },1000);
-    }
-  };
+  //     if (access_token) {
+  //       setAccessToken(access_token);
+  //       if (refresh_page) {
+  //         history.push(routesWithoutAuth.includes(pathname) ? "/" : pathname || "/");
+  //       }
+  //       setIsLoading(false);
+  //       return;
+  //     }
+  //     setIsLoading(false);
+  //     setAccessToken(null);
+  //     deleteCookies();
+  //     setTimeout(()=>{
+  //       history.replace('/logout');
+  //       window.location.reload();
+  //     },1000);
+  //   } catch (error) {
+  //     setIsLoading(false);
+  //     setAccessToken(null);
+  //     deleteCookies();
+  //     setTimeout(()=>{
+  //       history.replace('/logout');
+  //       window.location.reload();
+  //     },1000);
+  //   }
+  // };
 
   const logout = () => {
     setAccessToken(null);
@@ -196,69 +196,69 @@ const AuthState = () => {
     },1000);
   };
 
-  const autoRefreshToken = () => {
-    setInterval(() => {
-      const refreshToken = Cookies.get(REFRESH_TOKEN);
-      if (refreshToken) {
-        getAccessToken();
-      }
-    }, 1000 * 60 * 3);
-  };
+  // const autoRefreshToken = () => {
+  //   setInterval(() => {
+  //     const refreshToken = Cookies.get(REFRESH_TOKEN);
+  //     if (refreshToken) {
+  //       getAccessToken();
+  //     }
+  //   }, 1000 * 60 * 3);
+  // };
 
-  const checkToken = () => {
-    try {
-      const oidc_refresh_token = Cookies.get("oidc_refresh_token");
-      const oidc_access_token = Cookies.get("oidc_access_token");
+  // const checkToken = () => {
+  //   try {
+  //     const oidc_refresh_token = Cookies.get("oidc_refresh_token");
+  //     const oidc_access_token = Cookies.get("oidc_access_token");
 
-      if (oidc_refresh_token) {
-        setAccessToken(oidc_access_token);
-        Cookies.set(REFRESH_TOKEN, oidc_refresh_token);
-        Cookies.remove("oidc_refresh_token", {
-          path: "/",
-        });
-        Cookies.remove("oidc_access_token", {
-          path: "/",
-        });
-        Cookies.remove("oidc_refresh_token", {
-          path: "/",
-          domain: ".teksecur.com",
-        });
-        Cookies.remove("oidc_access_token", {
-          path: "/",
-          domain: ".teksecur.com",
-        });
-      }
-      const refreshToken = Cookies.get(REFRESH_TOKEN);
-      if (refreshToken && !hasTokenExpired(refreshToken)) {
-        getAccessToken(true);
-        autoRefreshToken();
-      } else if (routesWithoutAuth.includes(pathname)) {
-        setIsLoading(false);
-      } else {
-        setIsLoading(false);
-        deleteCookies();
-        setTimeout(()=>{
-          window.location.href = "/logout";
-          window.location.reload();
-        },1000);
-      }
-    } catch (error) {
-      setIsLoading(false);
-      deleteCookies();
-      setTimeout(()=>{
-        window.location.href = "/logout";
-        window.location.reload();
-      },1000);
-    }
-  };
+  //     if (oidc_refresh_token) {
+  //       setAccessToken(oidc_access_token);
+  //       Cookies.set(REFRESH_TOKEN, oidc_refresh_token);
+  //       Cookies.remove("oidc_refresh_token", {
+  //         path: "/",
+  //       });
+  //       Cookies.remove("oidc_access_token", {
+  //         path: "/",
+  //       });
+  //       Cookies.remove("oidc_refresh_token", {
+  //         path: "/",
+  //         domain: ".teksecur.com",
+  //       });
+  //       Cookies.remove("oidc_access_token", {
+  //         path: "/",
+  //         domain: ".teksecur.com",
+  //       });
+  //     }
+  //     const refreshToken = Cookies.get(REFRESH_TOKEN);
+  //     if (refreshToken && !hasTokenExpired(refreshToken)) {
+  //       getAccessToken(true);
+  //       autoRefreshToken();
+  //     } else if (routesWithoutAuth.includes(pathname)) {
+  //       setIsLoading(false);
+  //     } else {
+  //       setIsLoading(false);
+  //       deleteCookies();
+  //       setTimeout(()=>{
+  //         window.location.href = "/logout";
+  //         window.location.reload();
+  //       },1000);
+  //     }
+  //   } catch (error) {
+  //     setIsLoading(false);
+  //     deleteCookies();
+  //     setTimeout(()=>{
+  //       window.location.href = "/logout";
+  //       window.location.reload();
+  //     },1000);
+  //   }
+  // };
 
-  useEffect(() => {
-    const timeOutId = setTimeout(() => {
-      checkToken();
-    }, 1000);
+  // useEffect(() => {
+  //   const timeOutId = setTimeout(() => {
+  //     checkToken();
+  //   }, 1000);
 
-    return () => clearTimeout(timeOutId);
-  }, []);
+  //   return () => clearTimeout(timeOutId);
+  // }, []);
 
   return {
     isLoading,

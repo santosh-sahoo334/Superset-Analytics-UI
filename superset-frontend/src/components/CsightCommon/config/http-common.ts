@@ -1,8 +1,6 @@
 /* eslint-disable */
 import Cookies from "js-cookie";
 import axios from "axios";
-import getBootstrapData from "src/utils/getBootstrapData";
-import { useHistory } from "react-router-dom";
 
 const REFRESH_TOKEN = "refresh_token";
 const SLUG = "slug";
@@ -24,7 +22,6 @@ const parseJWT = (token) => {
       .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
       .join("")
   );
-
   return JSON.parse(jsonPayload);
 };
 
@@ -85,6 +82,7 @@ const refreshAccessToken = async () => {
         },
       }
     );
+    
     const newAccessToken = response.data.access_token;
     setCookies(newAccessToken, refresh);
     onAccessTokenRefreshed(newAccessToken);

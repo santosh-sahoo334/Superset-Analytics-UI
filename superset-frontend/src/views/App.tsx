@@ -25,6 +25,7 @@ import {
   Switch,
   Route,
   useLocation,
+  Redirect,
 } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { GlobalStyles } from 'src/GlobalStyles';
@@ -49,7 +50,7 @@ import ScrollButtons from 'src/components/ScrollButtons';
 import MainLayout from 'src/components/MainLayout';
 import RootLayoutCsight from './layout/layout';
 import MainLayoutCsight from './layout/MainLayout';
-
+import Cookies from 'js-cookie';
 import "../../src/styles/UI/page.scss";
 import "../../src/styles/UI/field.scss";
 import "../../src/styles/UI/stepper.scss";
@@ -118,6 +119,9 @@ const App = () => {
             </Suspense>
           </Route>
         ))}
+        <Route path="*">
+          <Redirect to={`/dworks/dashboard/${Cookies.get('slug') || 'teksecur'}`} />
+        </Route>
       </Switch>
       {
       userEmail && adminList?.includes(userEmail) ?

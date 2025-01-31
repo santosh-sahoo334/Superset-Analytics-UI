@@ -327,6 +327,9 @@ export function Menu({
             selectedKeys={activeTabs}
           >
             {menu.map((item, index) => {
+              if(item?.label == "SQL"){
+                return null;
+              }
               const props = {
                 index,
                 ...item,

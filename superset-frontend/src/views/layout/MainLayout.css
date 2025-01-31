@@ -566,8 +566,8 @@
   align-items: center !important;
 }
 
-.custom-sidebar.ant-menu-inline-collapsed .ant-menu-submenu-title {
-  justify-content: center !important;
+.custom-sidebar-budget .ant-menu-submenu-title > span {
+  padding-left: 12px !important;
 }
 
 .custom-sidebar .ant-menu-item-group-title {

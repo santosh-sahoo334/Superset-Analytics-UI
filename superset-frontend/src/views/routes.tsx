@@ -21,6 +21,7 @@
 import { FeatureFlag, isFeatureEnabled } from '@superset-ui/core';
 import React, { lazy } from 'react';
 import MainLayoutCsight from './layout/MainLayout';
+import getBootstrapData from 'src/utils/getBootstrapData';
 
 
 // not lazy loaded since this is the home page.
@@ -135,6 +136,16 @@ type Routes = {
 }[];
 
 export const routes: Routes = [
+  // Default route that's always available
+  {
+    path: '/dworks/dashboard/:idOrSlug/',
+    Component: Dashboard,
+    layout: MainLayoutCsight
+  },
+];
+
+// Admin-only routes
+const adminRoutes: Routes = [
   {
     path: '/dworks/welcome/',
     Component: Home,
@@ -142,11 +153,6 @@ export const routes: Routes = [
   {
     path: '/dashboard/list/',
     Component: DashboardList,
-  },
-    {
-    path: '/dworks/dashboard/:idOrSlug/',
-    Component: Dashboard,
-    layout: MainLayoutCsight
   },
   {
     path: '/chart/add',
@@ -232,15 +238,27 @@ export const routes: Routes = [
   },
 ];
 
+// Get bootstrap data and check admin status
+const bootstrapData = getBootstrapData();
+const userEmail = bootstrapData?.user?.username || null;
+const adminList = process.env.ADMIN_EMAIL || [];
+
+// Add admin routes if user is admin
+if (userEmail && adminList?.includes(userEmail)) {
+  routes.push(...adminRoutes);
+}
+
 if (isFeatureEnabled(FeatureFlag.TaggingSystem)) {
-  routes.push({
-    path: '/dworks/all_entities/',
-    Component: AllEntities,
-  });
-  routes.push({
-    path: '/dworks/tags/',
-    Component: Tags,
-  });
+  if (userEmail && adminList?.includes(userEmail)) {
+    routes.push({
+      path: '/dworks/all_entities/',
+      Component: AllEntities,
+    });
+    routes.push({
+      path: '/dworks/tags/',
+      Component: Tags,
+    });
+  }
 }
 
 const frontEndRoutes:any = routes

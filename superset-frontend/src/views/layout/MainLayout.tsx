@@ -28,7 +28,7 @@ import {
 import { Layout, Menu, Button, Drawer, Dropdown, Space } from 'antd'
 import { useMediaQuery } from 'react-responsive'
 import { MenuInfo } from 'rc-menu/lib/interface'
-import './MainLayout.css'
+// import './MainLayout.css'
 import ScrollButtons from 'src/components/ScrollButtons'
 import { LayoutContext } from 'src/layout/context/layoutcontext'
 import { DashboardLayout } from 'src/dashboard/types'
@@ -43,6 +43,18 @@ import { LayoutDashboard, CircleDollarSign, LayoutList, FileText, Tag, Eye, Char
 import { v4 as uuidv4 } from "uuid";
 import * as LucideIcons from 'lucide-react';
 import { Header, Content, Sider } from 'antd'
+
+import getBootstrapData from 'src/utils/getBootstrapData'
+
+const bootstrapData = getBootstrapData();
+const userEmail = bootstrapData?.user?.username || null;
+const adminList = process.env.ADMIN_EMAIL || [];
+
+// Conditionally import CSS only for non-admin users
+if (userEmail && !adminList?.includes(userEmail)) {
+  import('./MainLayout.css');
+}
+
 
 interface MainLayoutProps {
   children: React.ReactNode
@@ -84,7 +96,6 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
         ? JSON.parse(process.env.REACT_APP_MENU_CONFIG)
         : process.env.REACT_APP_MENU_CONFIG || {};
         
-      console.log("Menu Config:", config);
       return config;
     } catch (error) {
       console.error('Error parsing REACT_APP_MENU_CONFIG:', error);
@@ -211,7 +222,7 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
   };
 
   // Helper function to get icon component
-  const getIcon = (iconName: string, isSelected: boolean) => {
+  const getIcon = (iconName: string, isSelected: boolean, isBudget: boolean = false) => {
     const IconComponent = (LucideIcons as any)[iconName];
     return IconComponent ? (
       <IconComponent
@@ -219,7 +230,7 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
         strokeWidth={1.5}
         color={isSelected ? '#000' : '#fff'}
         style={{
-          marginLeft: `${collapsed ? '36%' : '5%'}`
+          marginLeft: `${collapsed ? isBudget ? "10%" : '36%' : '5%'}`
         }}
       />
     ) : null;
@@ -253,7 +264,7 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
         <Menu.Item
           key={key}
           className="budget-menu-item"
-          icon={getIcon(item.icon, isSelected)}
+          icon={getIcon(item.icon, isSelected,true)}
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -315,7 +326,7 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
               }} />
             )}
             {isFirstInGroup ? (
-              <Menu.ItemGroup title={item.group}>
+              <Menu.ItemGroup title={item.group} >
                 {renderMenuItem(item.key, item)}
                 {/* Add budget submenu if we're in OPERATE group */}
                 {item.group === 'OPERATE' && (
@@ -329,7 +340,7 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
                       (clickedNavItem === 'Bud vs Act' || clickedNavItem === 'Budget Unit') && collapsed 
                         ? 'budget-submenu-selected' 
                         : ''
-                    }`}
+                    }${!collapsed ? 'custom-sidebar-budget' : ''}`}
                   >
                     {Object.entries(menuConfig)
                       .filter(([, menuItem]) => menuItem.parent === 'budget')

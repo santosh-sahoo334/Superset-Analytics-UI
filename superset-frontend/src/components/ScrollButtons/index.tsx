@@ -69,7 +69,7 @@ const ScrollButtons = () => {
   const scrollAmount = 800; // Adjust this value to control scroll distance
 
   const scrollToDirection = (direction: 'up' | 'down') => {
-    const scrollableElement = document.querySelector('.site-content');
+    const scrollableElement = document.querySelector('.dashboard-page');
     if (scrollableElement) {
       const currentScroll = scrollableElement.scrollTop;
       const newPosition = direction === 'up' 
