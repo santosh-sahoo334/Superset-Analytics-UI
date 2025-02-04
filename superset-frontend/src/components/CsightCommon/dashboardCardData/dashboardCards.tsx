@@ -32,12 +32,19 @@ export const DashboardCards: React.FC<PotentialType> = ({
 
 
   function formatCurrency(value) {
-    if (value >= 1_000_000) {
-      return `$ ${(value / 1_000_000).toFixed(1)}M`;
-    } else if (value >= 1_000) {
-      return `$ ${(value / 1_000).toFixed(1)}K`;
+    // Convert value to number if it's a string
+    const numValue = typeof value === 'string' ? parseFloat(value) : value;
+    
+    if (isNaN(numValue)) {
+      return '$ 0.0';
+    }
+  
+    if (numValue >= 1_000_000) {
+      return `$ ${(numValue / 1_000_000)?.toFixed(1)}M`;
+    } else if (numValue >= 1_000) {
+      return `$ ${(numValue / 1_000)?.toFixed(1)}K`;
     } else {
-      return `$ ${value.toFixed(1)}`;
+      return `$ ${numValue?.toFixed(1)}`;
     }
   }
 
@@ -147,14 +154,14 @@ export const DashboardCards: React.FC<PotentialType> = ({
         <div className="flex items-center gap-2 flex-row justify-center">
           {formatCurrency(text)}
           {record.percentage_change_mom && (
-            <span style={{color: parseFloat(record.percentage_change_mom) >= 0 ? 'green' : 'red'}}>
+            <span style={{color: parseFloat(record.percentage_change_mom) < 0 || record.percentage_change_mom == 0 ? 'green' : 'red'}}>
               {parseFloat(record.percentage_change_mom) >= 0 ? (
-                <ArrowUpOutlined />
+                record.percentage_change_mom == 0 ? <span>~</span> : <ArrowUpOutlined/>
               ) : (
                 <ArrowDownOutlined/>
               )}
               <span>
-                &nbsp;{parseFloat(record.percentage_change_mom).toFixed(1)}%
+                &nbsp;{record.percentage_change_mom == 0 ? 0 : Math.abs(parseFloat(record.percentage_change_mom).toFixed(2))}%
               </span>
             </span>
           )}
