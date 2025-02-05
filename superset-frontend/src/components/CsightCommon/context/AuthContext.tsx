@@ -191,9 +191,10 @@ const AuthState = () => {
     setAccessToken(null);
     deleteCookies();
     setTimeout(()=>{
-      history.replace('/logout');
-      window.location.reload();
+      history.replace('/logout/');
+      // window.location.reload();
     },1000);
+
   };
 
   // const autoRefreshToken = () => {

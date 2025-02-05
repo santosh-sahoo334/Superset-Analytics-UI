@@ -66,8 +66,8 @@ const refreshAccessToken = async () => {
   if (!refresh) {
     deleteCookies();
     setTimeout(()=>{
-      window.location.href = "/logout";
-      window.location.reload();
+      window.location.href = "/logout/";
+      // window.location.reload();
     },1000);
     return null;
   }
@@ -90,8 +90,8 @@ const refreshAccessToken = async () => {
   } catch (error) {
     deleteCookies();
     setTimeout(()=>{
-      window.location.href = "/logout";
-      window.location.reload();
+      window.location.href = "/logout/";
+      // window.location.reload();
     },1000);
     return null;
   } finally {
