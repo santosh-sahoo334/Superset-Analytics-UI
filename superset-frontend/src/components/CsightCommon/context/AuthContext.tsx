@@ -191,7 +191,8 @@ const AuthState = () => {
     setAccessToken(null);
     deleteCookies();
     setTimeout(()=>{
-      history.replace('/logout/');
+      window.location.href = "/logout/";
+      // history.replace('/logout/');
       // window.location.reload();
     },1000);
 
