@@ -21,7 +21,7 @@ from typing import Optional
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_cors import CORS
-from flask import request, abort, redirect
+from flask import request, abort, redirect, session
 import urllib.parse
 import redis
 
@@ -111,8 +111,14 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
                 session_key = session_key[:-34]
                 # print(f"Existing Session Key from Request Cookie (Inside check blacklist app py) --> {session_key}")
                 if is_session_blacklisted(session_key):
+                    print("Found a Session to be blacklisted")
+                    # Clear the session and redirect to /login
+                    session.clear()  # Clear the session
+                    response = redirect("/login")
+                    response.set_cookie("session", "", expires=0)  # Expire the session cookie
+                    return response
                     # return redirect("/login")
-                    abort(403, "Not a Valid Session")
+                    # abort(403, "Not a Valid Session")
                 
             # Add the Ghost Cookie to Blacklisted
             black_list_ghost_cookie()
