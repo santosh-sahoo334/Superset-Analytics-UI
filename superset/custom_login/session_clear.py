@@ -211,7 +211,7 @@ def logout_user():
     also clean up the remember me cookie if it exists.
     """
     # Mark the Session as BlackListed post logout.
-    session_key = request.cookies.get('session')
+    session_key = request.cookies.get('session') # session is for Superset
     if session_key:
         session_key = session_key[:-34]
 
