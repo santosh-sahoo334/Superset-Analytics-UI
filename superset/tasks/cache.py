@@ -222,7 +222,7 @@ def fetch_url(data: str, headers: dict[str, str]) -> dict[str, str]:
         url = get_url_path("Superset.warm_up_cache")
         logger.info("Fetching %s with payload %s", url, data)
         req = request.Request(
-            url, data=bytes(data, "utf-8"), headers=headers, method="POST"
+            url, data=bytes(data, "utf-8"), headers=headers, method="PUT"
         )
         response = request.urlopen(  # pylint: disable=consider-using-with
             req, timeout=600
