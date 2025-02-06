@@ -304,15 +304,22 @@ class CSRFProtect:
         """
 
         if isinstance(view, Blueprint):
+            print(f"Exempting Blueprint: {view.name}")
             self._exempt_blueprints.add(view)
+            print(f"Current exempt blueprints: {self._exempt_blueprints}")
             return view
 
         if isinstance(view, str):
             view_location = view
+            print(f"Exempting string view location: {view_location}")
         else:
             view_location = ".".join((view.__module__, view.__name__))
+            print(f"Exempting view function: {view_location}")
+            print(f"View module: {view.__module__}")
+            print(f"View name: {view.__name__}")
 
         self._exempt_views.add(view_location)
+        print(f"Current exempt views: {self._exempt_views}")
         return view
 
     def _error_response(self, reason):

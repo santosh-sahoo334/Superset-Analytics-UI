@@ -87,13 +87,13 @@ def get_chart_csv_data(
 ) -> Optional[bytes]:
     content = None
     print(f"Auth Cookie inside get_chart_csv_data :: {auth_cookies}")
-    print(f"Current Flask session before opener: {session}")  # Original session
     if auth_cookies:
         opener = urllib.request.build_opener()
         cookie_str = ";".join([f"{key}={val}" for key, val in auth_cookies.items()])
         opener.addheaders.append(("Cookie", cookie_str))
+        print(f"Chart URL inside get_chart_csv_data :: {chart_url}")
+        print(f"opener inside get_chart_csv_data :: {opener}")
         response = opener.open(chart_url)
-        logger.debug(f"Session after opener request: {session}")  # New session context
         content = response.read()
         if response.getcode() != 200:
             raise URLError(response.getcode())
