@@ -107,6 +107,7 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
         @app.before_request
         def check_blacklist():
             session_key = request.cookies.get('session')  # Or however your session ID is retrieved
+            print(f"Inside app.py before request session_key :: {session_key}")
             if session_key:
                 session_key = session_key[:-34]
                 # print(f"Existing Session Key from Request Cookie (Inside check blacklist app py) --> {session_key}")
@@ -114,6 +115,7 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
                     print("Found a Session to be blacklisted")
                     # Clear the session and redirect to /login
                     session.clear()  # Clear the session
+                    logger.debug(f"Session after clear: {session}")
                     response = redirect("/login")
                     response.set_cookie("session", "", expires=0)  # Expire the session cookie
                     return response

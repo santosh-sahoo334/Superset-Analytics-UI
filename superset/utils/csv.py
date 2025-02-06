@@ -19,6 +19,7 @@ import re
 import urllib.request
 from typing import Any, Optional, Union
 from urllib.error import URLError
+from flask import session
 
 import numpy as np
 import pandas as pd
@@ -85,11 +86,14 @@ def get_chart_csv_data(
     chart_url: str, auth_cookies: Optional[dict[str, str]] = None
 ) -> Optional[bytes]:
     content = None
+    print(f"Auth Cookie inside get_chart_csv_data :: {auth_cookies}")
+    print(f"Current Flask session before opener: {session}")  # Original session
     if auth_cookies:
         opener = urllib.request.build_opener()
         cookie_str = ";".join([f"{key}={val}" for key, val in auth_cookies.items()])
         opener.addheaders.append(("Cookie", cookie_str))
         response = opener.open(chart_url)
+        logger.debug(f"Session after opener request: {session}")  # New session context
         content = response.read()
         if response.getcode() != 200:
             raise URLError(response.getcode())
