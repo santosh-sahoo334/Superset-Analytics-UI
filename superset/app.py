@@ -114,6 +114,7 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
                     print("Found a Session to be blacklisted")
                     # Clear the session and redirect to /login
                     session.clear()  # Clear the session
+                    print(f"Session after clear: {session}")
                     response = redirect("/login")
                     response.set_cookie("session", "", expires=0)  # Expire the session cookie
                     return response
