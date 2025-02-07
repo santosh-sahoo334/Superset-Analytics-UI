@@ -1,6 +1,8 @@
 /* eslint-disable */
 // @ts-nocheck
-import axiosInstance from "../../CsightCommon/config/axiosInstance";
+// import axiosInstance from "../../CsightCommon/config/axiosInstance";
+import { HTTP } from "../../CsightCommon/config/http-common";
+import { useAuth } from "../../CsightCommon/context/AuthContext";
 import { useToast } from "../../CsightCommon/context/ToastContext";
 import React, {
   createContext,
@@ -123,6 +125,7 @@ const AIbotState = () => {
   const [isResize, setIsResize] = useState<boolean>(false);
   const messageContainerRef = useRef<any>(null);
   const { showToast } = useToast();
+  const { accessToken } = useAuth();
   const [question, setQuestion] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedGraph, setSelectedGraph] = useState<SelectedGraph>({
@@ -226,14 +229,11 @@ const AIbotState = () => {
     try {
       setIsLoading(true);
       const taskStatusPayload = {
-        task_id: task_id,
-        email_id: process.env.REACT_APP_CINDY_EMAIL_ID_TOKEN,
-        AUTH_TOKEN: process.env.REACT_APP_CINDY_AUTH_TOKEN,
+        task_id: task_id
+        // email_id: process.env.REACT_APP_CINDY_EMAIL_ID_TOKEN,
+        // AUTH_TOKEN: process.env.REACT_APP_CINDY_AUTH_TOKEN,
       };
-      const { data } = await axiosInstance.post(
-        "/task_status",
-        taskStatusPayload
-      );
+      const { data } = await HTTP.post("/ragq/task_status", taskStatusPayload, { headers: { Authorization: accessToken } });
 
       if (data && data?.status === "Pending") {
         setTimeout(() => {
@@ -284,11 +284,11 @@ const AIbotState = () => {
         project_id: process.env.REACT_APP_CINDY_PROJECT_ID,
         question: question,
         doc_type: process.env.REACT_APP_CINDY_DOC_TYPE,
-        app_type: process.env.REACT_APP_CINDY_APP_TYPE,
-        email_id: process.env.REACT_APP_CINDY_EMAIL_ID_TOKEN,
-        AUTH_TOKEN: process.env.REACT_APP_CINDY_AUTH_TOKEN,
+        app_type: process.env.REACT_APP_CINDY_APP_TYPE
+        // email_id: process.env.REACT_APP_CINDY_EMAIL_ID_TOKEN,
+        // AUTH_TOKEN: process.env.REACT_APP_CINDY_AUTH_TOKEN,
       };
-      const { data } = await axiosInstance.post("/ragq", taskPayload);
+      const { data } = await HTTP.post("/ragq/", taskPayload, { headers: { Authorization: accessToken } });
       if (data && data?.task_id) {
         setPrompts((prevPrompt) => {
           return prevPrompt?.map((prompt) => {
@@ -326,11 +326,11 @@ const AIbotState = () => {
         org_id: process.env.REACT_APP_CINDY_ORG_ID,
         project_id: process.env.REACT_APP_CINDY_PROJECT_ID,
         doc_type: process.env.REACT_APP_CINDY_DOC_TYPE,
-        app_type: process.env.REACT_APP_CINDY_APP_TYPE,
-        email_id: process.env.REACT_APP_CINDY_EMAIL_ID_TOKEN,
-        AUTH_TOKEN: process.env.REACT_APP_CINDY_AUTH_TOKEN,
+        app_type: process.env.REACT_APP_CINDY_APP_TYPE
+        // email_id: process.env.REACT_APP_CINDY_EMAIL_ID_TOKEN,
+        // AUTH_TOKEN: process.env.REACT_APP_CINDY_AUTH_TOKEN,
       };
-      const { data } = await axiosInstance.post("/ragq4chart", taskPayload);
+      const { data } = await HTTP.post("/ragq4chart/", taskPayload, { headers: { Authorization: accessToken } });
       if (data && data?.task_id) {
         setPrompts((prevPrompt) => {
           return prevPrompt?.map((prompt) => {

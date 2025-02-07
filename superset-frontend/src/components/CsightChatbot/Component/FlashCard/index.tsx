@@ -4,7 +4,10 @@ import React, { useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useAIBotContext } from "../../Context";
 import { useToast } from "../../../CsightCommon/context/ToastContext";
-import axiosInstance from "../../../CsightCommon/config/axiosInstance";
+// import axiosInstance from "../../../CsightCommon/config/axiosInstance";
+import { HTTP } from "../../../CsightCommon/config/http-common";
+import React from "react";
+import { useAuth } from "src/components/CsightCommon/context/AuthContext";
 
 export const questionsList:any = {
   "Cost": "Ask Cindy about your cloud spend analysis and cost optimization opportunities. I can help identify spending patterns and potential savings.",
@@ -40,6 +43,9 @@ export const SuggestionQuestion = ({ question = "N/A", onClickSuggestion = (_que
 
 const FalshCard = ({clickedNavItem}:any) => {
   const { showToast } = useToast();
+
+  const { accessToken } = useAuth();
+
   const { flashCardData, setFlashCardData,setPrompts,getTaskID: getTaskIDQuestions } = useAIBotContext();
 
 
@@ -50,7 +56,7 @@ const FalshCard = ({clickedNavItem}:any) => {
     const id = uuidv4();
     setPrompts((p => ([...p, { id, answer: "", question: question, suggested_questions: [], task_id: null, isLoading: true, questionTime: new Date(), answerTime: null }])))
     getTaskIDQuestions(question, id)
-}
+ }
 
 
 
@@ -60,13 +66,14 @@ const FalshCard = ({clickedNavItem}:any) => {
   ) => {
     try {
       const taskStatusPayload = {
-        task_id: task_id,
-        email_id: process.env.REACT_APP_CINDY_EMAIL_ID_TOKEN,
-        AUTH_TOKEN: process.env.REACT_APP_CINDY_AUTH_TOKEN,
+        task_id: task_id
+        // email_id: process.env.REACT_APP_CINDY_EMAIL_ID_TOKEN,
+        // AUTH_TOKEN: process.env.REACT_APP_CINDY_AUTH_TOKEN,
       };
-      const { data } = await axiosInstance.post(
-        "/task_status",
-        taskStatusPayload
+      const { data } = await HTTP.post(
+        "/ragq/task_status",
+        taskStatusPayload,
+        { headers: { Authorization: accessToken } },
       );
 
       if (data && data?.status === "Pending") {
@@ -110,11 +117,11 @@ const FalshCard = ({clickedNavItem}:any) => {
         org_id: process.env.REACT_APP_CINDY_ORG_ID,
         project_id: process.env.REACT_APP_CINDY_PROJECT_ID,
         doc_type: process.env.REACT_APP_CINDY_DOC_TYPE,
-        app_type: process.env.REACT_APP_CINDY_APP_TYPE,
-        email_id: process.env.REACT_APP_CINDY_EMAIL_ID_TOKEN,
-        AUTH_TOKEN: process.env.REACT_APP_CINDY_AUTH_TOKEN,
+        app_type: process.env.REACT_APP_CINDY_APP_TYPE
+        // email_id: process.env.REACT_APP_CINDY_EMAIL_ID_TOKEN,
+        // AUTH_TOKEN: process.env.REACT_APP_CINDY_AUTH_TOKEN,
       };
-      const { data } = await axiosInstance.post("/ragq", taskPayload);
+      const { data } = await HTTP.post("/ragq/", taskPayload, { headers: { Authorization: accessToken } });
       if (data && data?.task_id) {
         setFlashCardData((fd:any) => {
           return fd.map((item:any) => {
