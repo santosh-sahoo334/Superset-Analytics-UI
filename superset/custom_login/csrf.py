@@ -101,10 +101,12 @@ def validate_csrf(data, secret_key=None, time_limit=None, token_key=None):
 
     if not data:
         raise ValidationError("The CSRF token is missing.")
-    print(f"Inside validate_csrf Field Name :: {field_name} Session-- > ")
+    requestEndPoint = request.endpoint
+    print(f"Inside validate_csrf Field Name :: {field_name}, requestEndPoint : {requestEndPoint} Session-- > ")
     print(session)
     if field_name not in session:
-        raise ValidationError("The CSRF session token is missing.")
+        session[field_name] = hashlib.sha1(os.urandom(64)).hexdigest()
+        # raise ValidationError("The CSRF session token is missing.")
 
     s = URLSafeTimedSerializer(secret_key, salt="wtf-csrf-token")
 
@@ -217,15 +219,20 @@ class CSRFProtect:
 
             if request.method not in app.config["WTF_CSRF_METHODS"]:
                 return
-
+            print(f"Request endpoint: {request.endpoint}")
             if not request.endpoint:
                 return
-
+            request_bp = app.blueprints.get(request.blueprint)
+            print(f"Request blueprint: {request_bp}")
             if app.blueprints.get(request.blueprint) in self._exempt_blueprints:
                 return
 
             view = app.view_functions.get(request.endpoint)
+            print(f"View module: {view.__module__}")
+            print(f"View name: {view.__name__}")
+            print(f"Full path: {view.__module__}.{view.__name__}")
             dest = f"{view.__module__}.{view.__name__}"
+            print(f"Dest: {view.__module__}.{view.__name__}")
 
             if dest in self._exempt_views:
                 return
@@ -235,30 +242,22 @@ class CSRFProtect:
     def _get_csrf_token(self):
         # find the token in the form data
         field_name = current_app.config["WTF_CSRF_FIELD_NAME"]
-        print(f"Inside _get_csrf_token, field name --> {field_name}")
         base_token = request.form.get(field_name)
-        print(f"Inside _get_csrf_token, base_token --> {base_token}")
 
         if base_token:
             return base_token
 
         # if the form has a prefix, the name will be {prefix}-csrf_token
-        form_keys = request.form
-        print(f"Inside _get_csrf_token, form keys --> {form_keys}")
         for key in request.form:
             if key.endswith(field_name):
                 csrf_token = request.form[key]
-                print(f"Inside _get_csrf_token, csrf token from form_keys --> {csrf_token}")
 
                 if csrf_token:
                     return csrf_token
 
         # find the token in the headers
-        wtf_csrf_headers = current_app.config["WTF_CSRF_HEADERS"]
-        print(f"Inside _get_csrf_token, wtf_csrf_headers from config --> {wtf_csrf_headers}")
         for header_name in current_app.config["WTF_CSRF_HEADERS"]:
             csrf_token = request.headers.get(header_name)
-            print(f"Inside _get_csrf_token, csrf_token from WTF_CSRF_HEADERS--> {csrf_token}")
 
             if csrf_token:
                 return csrf_token
@@ -304,22 +303,14 @@ class CSRFProtect:
         """
 
         if isinstance(view, Blueprint):
-            print(f"Exempting Blueprint: {view.name}")
             self._exempt_blueprints.add(view)
-            print(f"Current exempt blueprints: {self._exempt_blueprints}")
             return view
 
         if isinstance(view, str):
             view_location = view
-            print(f"Exempting string view location: {view_location}")
         else:
             view_location = ".".join((view.__module__, view.__name__))
-            print(f"Exempting view function: {view_location}")
-            print(f"View module: {view.__module__}")
-            print(f"View name: {view.__name__}")
-
         self._exempt_views.add(view_location)
-        print(f"Current exempt views: {self._exempt_views}")
         return view
 
     def _error_response(self, reason):
