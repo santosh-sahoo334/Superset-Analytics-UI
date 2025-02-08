@@ -105,8 +105,7 @@ def validate_csrf(data, secret_key=None, time_limit=None, token_key=None):
     print(f"Inside validate_csrf Field Name :: {field_name}, requestEndPoint : {requestEndPoint} Session-- > ")
     print(session)
     if field_name not in session:
-        session[field_name] = hashlib.sha1(os.urandom(64)).hexdigest()
-        # raise ValidationError("The CSRF session token is missing.")
+        raise ValidationError("The CSRF session token is missing.")
 
     s = URLSafeTimedSerializer(secret_key, salt="wtf-csrf-token")
 
@@ -245,6 +244,7 @@ class CSRFProtect:
         base_token = request.form.get(field_name)
 
         if base_token:
+            print(f"base_token from the form data inside _get_csrf_token :: {base_token}")
             return base_token
 
         # if the form has a prefix, the name will be {prefix}-csrf_token
@@ -253,6 +253,7 @@ class CSRFProtect:
                 csrf_token = request.form[key]
 
                 if csrf_token:
+                    print(f"csrf_token from the form prefix inside _get_csrf_token :: {csrf_token}")
                     return csrf_token
 
         # find the token in the headers
@@ -260,11 +261,13 @@ class CSRFProtect:
             csrf_token = request.headers.get(header_name)
 
             if csrf_token:
+                print(f"csrf_token from the request header _get_csrf_token :: {csrf_token}")
                 return csrf_token
 
         return None
 
     def protect(self):
+        print(f"Inside Protect request method :: {request.method}")
         if request.method not in current_app.config["WTF_CSRF_METHODS"]:
             return
 
