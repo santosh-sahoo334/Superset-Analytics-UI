@@ -243,14 +243,6 @@ def logout_user():
     user_logged_out.send(current_app._get_current_object(), user=user)
 
     current_app.login_manager._update_request_context_with_user()
-    # TekSecur Modified. Clear Session.
-    # print("Attempting to clear Session")
-    session.clear()
-    # print("After Clearing Session  --> ")
-    # print(session)
-    # response = make_response(redirect('/login'))
-    # print(f"response :{response}")
-    # response.delete_cookie('session')  # Remove the session cookie
     return True
 
 
