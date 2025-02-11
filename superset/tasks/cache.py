@@ -224,7 +224,7 @@ def fetch_url(data: str, headers: dict[str, str]) -> dict[str, str]:
         logger.info("Fetching %s with payload %s", url, data)
 
         # Get auth cookies similar to CSV fetch
-        user = security_manager.find_user(app.config["ALERT_REPORTS_EXECUTE_AS"])
+        user = security_manager.get_user_by_username(app.config["THUMBNAIL_SELENIUM_USER"])
         print(f"Username inside fetch_url celery task :: {user}")
         auth_cookies = machine_auth_provider_factory.instance.get_auth_cookies(user)
         print(f"auth_cookies inside fetch_url celery task :: {auth_cookies}")
