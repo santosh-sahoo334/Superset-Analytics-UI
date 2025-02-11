@@ -222,24 +222,12 @@ def fetch_url(data: str, headers: dict[str, str]) -> dict[str, str]:
     try:
         url = get_url_path("Superset.warm_up_cache")
         logger.info("Fetching %s with payload %s", url, data)
-
-        # Get auth cookies similar to CSV fetch
-        user = security_manager.get_user_by_username(app.config["THUMBNAIL_SELENIUM_USER"])
-        print(f"Username inside fetch_url celery task :: {user}")
-        auth_cookies = machine_auth_provider_factory.instance.get_auth_cookies(user)
-        print(f"auth_cookies inside fetch_url celery task :: {auth_cookies}")
-
-        # Add cookie to headers
-        if auth_cookies and 'session' in auth_cookies:
-            headers['Cookie'] = f"session={auth_cookies['session']}"
-
-        # Add accept header
-        headers['Accept'] = 'application/json'
+        logger.info("Using headers: %s", headers)
 
         req = request.Request(
             url, data=bytes(data, "utf-8"), headers=headers, method="PUT"
         )
-        print("Headers being sent: %s", headers)
+
         response = request.urlopen(  # pylint: disable=consider-using-with
             req, timeout=600
         )
@@ -297,10 +285,15 @@ def cache_warmup(
 
     user = security_manager.get_user_by_username(app.config["THUMBNAIL_SELENIUM_USER"])
     cookies = MachineAuthProvider.get_auth_cookies(user)
+    allowedHostForCacheWarmUp = app.config["CACHE_WARMUP_ALLOWED_HOST"]
+    logger.info(f"Cache Warm up allowed host --> {allowedHostForCacheWarmUp}")
     headers = {
         "Cookie": f"session={cookies.get('session', '')}",
         "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Host": f"{allowedHostForCacheWarmUp}"  # Add host header
     }
+    logger.info(f"Prepared header with allowed host :: {headers}")
 
     results: dict[str, list[str]] = {"scheduled": [], "errors": []}
     for payload in strategy.get_payloads():
