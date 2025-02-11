@@ -86,7 +86,6 @@ def get_chart_csv_data(
     chart_url: str, auth_cookies: Optional[dict[str, str]] = None
 ) -> Optional[bytes]:
     content = None
-    print(f"Auth Cookie inside get_chart_csv_data :: {auth_cookies}")
     if auth_cookies:
         opener = urllib.request.build_opener()
         cookie_str = ";".join([f"{key}={val}" for key, val in auth_cookies.items()])
@@ -96,12 +95,8 @@ def get_chart_csv_data(
             ("Cookie", cookie_str),
             ("Accept", "text/csv,application/json,*/*")
         ]
-        print(f"Chart URL inside get_chart_csv_data :: {chart_url}")
-        print(f"Cookie string being sent :: {cookie_str}")
         try:
             response = opener.open(chart_url)
-            print(f"Response code: {response.getcode()}")
-            print(f"Response headers: {response.headers}")
             content = response.read()
             if response.getcode() != 200:
                 raise URLError(response.getcode())
