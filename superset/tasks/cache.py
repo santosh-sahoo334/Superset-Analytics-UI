@@ -220,7 +220,9 @@ def fetch_url(data: str, headers: dict[str, str]) -> dict[str, str]:
     """
     result = {}
     try:
-        url = get_url_path("Superset.warm_up_cache")
+        # url = get_url_path("Superset.warm_up_cache")
+        url = "http://superset:8088/dworks/warm_up_cache/"  # Internal service URL
+        
         logger.info("Fetching %s with payload %s", url, data)
         logger.info("Using headers: %s", headers)
 
@@ -289,9 +291,7 @@ def cache_warmup(
     logger.info(f"Cache Warm up allowed host --> {allowedHostForCacheWarmUp}")
     headers = {
         "Cookie": f"session={cookies.get('session', '')}",
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Host": f"{allowedHostForCacheWarmUp}"  # Add host header
+        "Content-Type": "application/json"
     }
     logger.info(f"Prepared header with allowed host :: {headers}")
 
