@@ -78,11 +78,12 @@ interface AIBotContextType {
   prompts: PromptAndRespponse[];
   setPrompts: React.Dispatch<React.SetStateAction<PromptAndRespponse[]>>;
   getTextAnswer: (task_id: string) => Promise<void>;
-  getTaskID: (question: string, question_id: string) => Promise<void>;
+  getTaskID: (question: string, question_id: string, filterData: any) => Promise<void>;
   getGraphTaskID: (
     question: string,
     question_id: string,
-    chart_type: string
+    chart_type: string,
+    filterData: any
   ) => Promise<void>;
   messageContainerRef: React.MutableRefObject<any>;
   selectedGraph: SelectedGraph;
@@ -276,7 +277,7 @@ const AIbotState = () => {
     }
   };
 
-  const getTaskID = async (question: string, question_id: string) => {
+  const getTaskID = async (question: string, question_id: string, filterData: any) => {
     try {
       setIsLoading(true);
       const taskPayload = {
@@ -284,7 +285,8 @@ const AIbotState = () => {
         project_id: process.env.REACT_APP_CINDY_PROJECT_ID,
         question: question,
         doc_type: process.env.REACT_APP_CINDY_DOC_TYPE,
-        app_type: process.env.REACT_APP_CINDY_APP_TYPE
+        app_type: process.env.REACT_APP_CINDY_APP_TYPE,
+        ...filterData
         // email_id: process.env.REACT_APP_CINDY_EMAIL_ID_TOKEN,
         // AUTH_TOKEN: process.env.REACT_APP_CINDY_AUTH_TOKEN,
       };
@@ -316,7 +318,8 @@ const AIbotState = () => {
   const getGraphTaskID = async (
     question: string,
     question_id: string,
-    chart_type: string
+    chart_type: string,
+    filterData?: any
   ) => {
     try {
       setIsLoading(true);
@@ -326,7 +329,8 @@ const AIbotState = () => {
         org_id: process.env.REACT_APP_CINDY_ORG_ID,
         project_id: process.env.REACT_APP_CINDY_PROJECT_ID,
         doc_type: process.env.REACT_APP_CINDY_DOC_TYPE,
-        app_type: process.env.REACT_APP_CINDY_APP_TYPE
+        app_type: process.env.REACT_APP_CINDY_APP_TYPE,
+        ...filterData
         // email_id: process.env.REACT_APP_CINDY_EMAIL_ID_TOKEN,
         // AUTH_TOKEN: process.env.REACT_APP_CINDY_AUTH_TOKEN,
       };

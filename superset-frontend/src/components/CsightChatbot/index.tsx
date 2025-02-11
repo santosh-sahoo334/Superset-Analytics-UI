@@ -1,6 +1,6 @@
 /* eslint-disable */
 // @ts-nocheck
-import React, { useContext,useEffect, useState } from 'react';
+import React, { useContext,useEffect, useMemo, useState } from 'react';
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
@@ -18,6 +18,13 @@ import { OverlayPanel } from 'primereact/overlaypanel';
 import { useRef } from 'react';
 import { LayoutContext } from "../../layout/context/layoutcontext";
 import { questionsList } from "./Component/FlashCard";
+
+import getBootstrapData from 'src/utils/getBootstrapData'
+import { DataMaskStateWithId } from '@superset-ui/core';
+import React from 'react';
+import { useNativeFiltersDataMask, useFilters } from 'src/dashboard/components/nativeFilters/FilterBar/state';
+import { useImmer } from 'use-immer';
+import React from 'react';
 
 
 interface GRAPH_ITEMS {
@@ -81,7 +88,39 @@ const ChatBot = () => {
     flashCardData
   } = useAIBotContext();
 
+
+  const dataMaskApplied: DataMaskStateWithId = useNativeFiltersDataMask();
+  const [dataMaskSelected, setDataMaskSelected] =
+    useImmer<DataMaskStateWithId>(dataMaskApplied);
+  const filters = useFilters();
+  const filterValues = Object.values(filters);
+
+  // Merge dataMaskApplied with filterValues
+  const mergedFilters = useMemo(() => {
+    try {
+      if (!dataMaskApplied || !filterValues?.length) {
+        return [];
+      }
+
+      return filterValues.map(filter => {
+        if (!filter?.id) return filter;
+
+        const maskData = dataMaskApplied[filter.id];
+        if (!maskData) return filter;
+
+        return {
+          ...filter,
+          ...maskData
+        };
+      });
+    } catch (error) {
+      console.error('Error merging filters:', error);
+      return filterValues;
+    }
+  }, [dataMaskApplied, filterValues]);
+
   const { clickedNavItem,previousNavItem,setPreviousNavItem } = useContext(LayoutContext);
+
 
   const { showToast } = useToast();
 
@@ -108,6 +147,123 @@ const ChatBot = () => {
     }
     const id = uuidv4();
 
+    let filterData = {};
+
+    // Extract filter values based on clickedNavItem
+    if (clickedNavItem?.toLowerCase() === "cost") {
+      const filterMapping = {
+        "date": "datekey",
+        "service provider": "cloud_provider",
+        "account": "billing_account_name",
+        "customer": "customer_name",
+        "region": "resource_region",
+        "resource": "resource_name"
+      };
+
+      const extractedFilters = mergedFilters?.reduce((acc, filter) => {
+        const filterName = filter?.name?.toLowerCase();
+        if (filterName in filterMapping) {
+          acc[filterMapping[filterName]] = filter?.filterState?.value || null;
+        }
+        return acc;
+      }, {});
+      filterData = extractedFilters;
+      console.log("Extracted Filters for Cost:", extractedFilters);
+    } else if (clickedNavItem?.toLowerCase() === "billing") {
+      const filterMapping = {
+        "date": "datekey",
+        "service provider": "cloud_provider",
+        "account": "billing_account_name",
+        "region": "resource_region",
+        "resource": "resource_name"
+      };
+
+      const extractedFilters = mergedFilters?.reduce((acc, filter) => {
+        const filterName = filter?.name?.toLowerCase();
+        if (filterName in filterMapping) {
+          acc[filterMapping[filterName]] = filter?.filterState?.value || null;
+        }
+        return acc;
+      }, {});
+      filterData = extractedFilters;
+      console.log("Extracted Filters for Billing:", extractedFilters);
+    } else if (clickedNavItem?.toLowerCase() === "recommendations") {
+      const filterMapping = {
+        "date": "datekey",
+        "service provider": "cloud_provider",
+        "account": "billing_account_name",
+        "region": "resource_region",
+        "resource": "resource_name"
+      };
+
+      const extractedFilters = mergedFilters?.reduce((acc, filter) => {
+        const filterName = filter?.name?.toLowerCase();
+        if (filterName in filterMapping) {
+          acc[filterMapping[filterName]] = filter?.filterState?.value || null;
+        }
+        return acc;
+      }, {});
+      filterData = extractedFilters;
+      console.log("Extracted Filters for Recommendations:", extractedFilters);
+    } else if (clickedNavItem?.toLowerCase() === "greenops") {
+      const filterMapping = {
+        "date": "datekey",
+        "service provider": "cloud_provider",
+        "account": "billing_account_name",
+        "region": "resource_region",
+        "resource": "resource_name"
+      };
+
+      const extractedFilters = mergedFilters?.reduce((acc, filter) => {
+        const filterName = filter?.name?.toLowerCase();
+        if (filterName in filterMapping) {
+          acc[filterMapping[filterName]] = filter?.filterState?.value || null;
+        }
+        return acc;
+      }, {});
+      filterData = extractedFilters;
+      console.log("Extracted Filters for GreenOps:", extractedFilters);
+    } else if (clickedNavItem?.toLowerCase() === "tags") {
+      const filterMapping = {
+        "date": "datekey",
+        "service provider": "cloud_provider",
+        "account": "billing_account_name",
+        "region": "resource_region",
+        "resource": "resource_name",
+        "component": "resource_component",
+        "tag key": "tag_key",
+        "tag value": "tag_value"
+      };
+
+      const extractedFilters = mergedFilters?.reduce((acc, filter) => {
+        const filterName = filter?.name?.toLowerCase();
+        if (filterName in filterMapping) {
+          acc[filterMapping[filterName]] = filter?.filterState?.value || null;
+        }
+        return acc;
+      }, {});
+      filterData = extractedFilters;
+      console.log("Extracted Filters for Tags:", extractedFilters);
+    } else if (clickedNavItem?.toLowerCase() === "utilization") {
+      const filterMapping = {
+        "date": "datekey",
+        "account": "billing_account_name",
+        "region": "resource_region",
+        "instance name": "instance_name",
+        "instance type": "instance_type"
+      };
+
+      const extractedFilters = mergedFilters?.reduce((acc, filter) => {
+        const filterName = filter?.name?.toLowerCase();
+        if (filterName in filterMapping) {
+          acc[filterMapping[filterName]] = filter?.filterState?.value || null;
+        }
+        return acc;
+      }, {});
+      filterData = extractedFilters;
+      console.log("Extracted Filters for Utilization:", extractedFilters);
+    }
+
     // Handling Graph Question
     if (selectedGraph?.isSelected && selectedGraph?.graph_type) {
       setPrompts((p) => [
@@ -125,7 +281,12 @@ const ChatBot = () => {
           answerTime: null,
         },
       ]);
-      getGraphTaskID(question, id, selectedGraph?.graph_type);
+      const processedFilterData = Object.keys(filterData).reduce((acc, key) => {
+        acc[key] = filterData[key] !== null ? typeof filterData[key] == 'string' ? filterData[key] :  
+        filterData[key]?.toString() : null;
+        return acc;
+      }, {});
+      getGraphTaskID(question, id, selectedGraph?.graph_type, processedFilterData);
       return;
     }
 
@@ -142,7 +303,12 @@ const ChatBot = () => {
         answerTime: null,
       },
     ]);
-    getTaskID(question, id);
+    const processedFilterData = Object.keys(filterData).reduce((acc, key) => {
+      acc[key] = filterData[key] !== null ? typeof filterData[key] == 'string' ? filterData[key] : 
+      filterData[key]?.toString() : null;
+      return acc;
+    }, {});
+    getTaskID(question, id, processedFilterData);
   };
 
   // const onClickGraph = (type: string, graph_type: string) => {
