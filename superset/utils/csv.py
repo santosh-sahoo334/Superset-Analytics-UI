@@ -18,7 +18,7 @@ import logging
 import re
 import urllib.request
 from typing import Any, Optional, Union
-from urllib.error import URLError
+from urllib.error import URLError, HTTPError
 from flask import session
 
 import numpy as np
@@ -86,20 +86,26 @@ def get_chart_csv_data(
     chart_url: str, auth_cookies: Optional[dict[str, str]] = None
 ) -> Optional[bytes]:
     content = None
-    print(f"Auth Cookie inside get_chart_csv_data :: {auth_cookies}")
     if auth_cookies:
         opener = urllib.request.build_opener()
         cookie_str = ";".join([f"{key}={val}" for key, val in auth_cookies.items()])
-        opener.addheaders.append(("Cookie", cookie_str))
-        print(f"Chart URL inside get_chart_csv_data :: {chart_url}")
-        print(f"Auth Cookies BEFORE request :: {auth_cookies}")
-        response = opener.open(chart_url)
-        print(f"Auth Cookies AFTER request: {opener.handlers}")
-        content = response.read()
-        if response.getcode() != 200:
-            raise URLError(response.getcode())
+        # opener.addheaders.append(("Cookie", cookie_str))
+        #Just the essential headers
+        opener.addheaders = [
+            ("Cookie", cookie_str),
+            ("Accept", "text/csv,application/json,*/*")
+        ]
+        try:
+            response = opener.open(chart_url)
+            content = response.read()
+            if response.getcode() != 200:
+                raise URLError(response.getcode())
+        except HTTPError as e:
+            print(f"HTTP Error: {e.code} - {e.reason}")
+
     if content:
         return content
+    
     return None
 
 

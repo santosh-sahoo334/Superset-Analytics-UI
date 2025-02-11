@@ -268,13 +268,13 @@
 
             if (refreshToken && storedSlug) {
                 
-                Cookies.remove("session", {
-                    path: "/"
-                });
-                Cookies.remove("session", {
-                    path: "/",
-                    domain: ".teksecur.com"
-                });
+                // Cookies.remove("session", {
+                //     path: "/"
+                // });
+                // Cookies.remove("session", {
+                //     path: "/",
+                //     domain: ".teksecur.com"
+                // });
 
                 try {
                     const response = await fetch(

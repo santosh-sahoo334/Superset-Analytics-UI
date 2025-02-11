@@ -130,6 +130,7 @@ class EmailNotification(BaseNotification):  # pylint: disable=too-few-public-met
             html_table = ""
 
         call_to_action = __(app.config["EMAIL_REPORTS_CTA"])
+        call_to_action_url = app.config["EMAIL_REPORTS_CTA_URL"]
         img_tags = []
         for msgid in images.keys():
             img_tags.append(
@@ -158,7 +159,18 @@ class EmailNotification(BaseNotification):  # pylint: disable=too-few-public-met
               <body>
                 <div>{description}</div>
                 <br>
-                <b><a href="{self._content.url}">{call_to_action}</a></b><p></p>
+                <b><a href="{call_to_action_url}">{call_to_action}</a></b><p></p>
+                <div>
+                <p><strong>Navigation Path</strong></p>
+                <ol>
+                    <li>Once Logged in, please navigate to <strong>Cost</strong> Tab</li>
+                    <li>Scroll down to the Chart - <strong>Cost Breakdown by Resource</strong></li>
+                    <li>Click on the Resource Name, for example, <strong>AWSLambda</strong></li>
+                    <li>Other Charts will be refreshed as per the selected Resource Name.</li>
+                    <li>Scroll down to the Chart - <strong>Cost Breakdown by Resource ID</strong>.</li>
+                    <li>Sort the cost in descending order to see the Resource ID that caused the spike.</li>
+                </ol>
+                </div>
                 {html_table}
                 {img_tag}
               </body>
@@ -176,10 +188,18 @@ class EmailNotification(BaseNotification):  # pylint: disable=too-few-public-met
         )
 
     def _get_subject(self) -> str:
+        logger.info(f"Title + Chart Name Passed to Get the Email Title -- > {self._content.name}")
+        prefix = app.config["ALERT_TITLE_PREFIX"] if "alert" in self._content.name.lower() else app.config["EMAIL_REPORT_SUBJECT_PREFIX"]
+        title=self._content.name
+        second_colon_index=title.find(":", title.find(":") + 1)
+        title=title[:second_colon_index]
+
         return __(
             "%(prefix)s %(title)s",
-            prefix=app.config["EMAIL_REPORTS_SUBJECT_PREFIX"],
-            title=self._content.name,
+            prefix=prefix,
+            title=title
+            # prefix=app.config["EMAIL_REPORTS_SUBJECT_PREFIX"],
+            # title=self._content.name,
         )
 
     def _get_to(self) -> str:

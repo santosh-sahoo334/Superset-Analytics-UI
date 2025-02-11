@@ -73,18 +73,36 @@ class SlackNotification(BaseNotification):  # pylint: disable=too-few-public-met
         return ",".join(get_email_address_list(recipient_str))
 
     def _message_template(self, table: str = "") -> str:
+        logger.info(f"Title + Chart Name Passed to Get the Slack Title -- > {self._content.name}")
+        prefix=app.config["ALERT_TITLE_PREFIX"] if "alert" in self._content.name.lower() else app.config["EMAIL_REPORT_SUBJECT_PREFIX"]
+        title=self._content.name
+        second_colon_index=title.find(":", title.find(":") + 1)
+        title=title[:second_colon_index]
+
         return __(
-            """*%(name)s*
+            """*%(prefix)s %(name)s*
 
 %(description)s
 
-<%(url)s|Explore in Superset>
+<%(url)s|Explore in CSight>
+
+*Navigation Path*
+Here is how you can drill down the spike at a Resource ID Level.  
+1. Once Logged in, please navigate to *Cost* Tab
+2. Scroll down to the Chart - *Cost Breakdown by Resource*
+3. Click on the Resource Name, for example, AWSLambda. 
+4. Other Charts will be refreshed as per the selected Resource Name. 
+5. Scroll down to the Chart - *Cost Breakdown by Resource ID*.
+6. Sort the cost in descending order to see the Resource ID that caused the spike.
 
 %(table)s
 """,
-            name=self._content.name,
+            # name=self._content.name,
+            prefix=prefix,
+            name=title,
             description=self._content.description or "",
-            url=self._content.url,
+            # url=self._content.url,
+            url=app.config["EMAIL_REPORTS_CTA_URL"],
             table=table,
         )
 
