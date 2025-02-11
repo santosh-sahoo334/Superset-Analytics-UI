@@ -92,9 +92,10 @@ def get_chart_csv_data(
         cookie_str = ";".join([f"{key}={val}" for key, val in auth_cookies.items()])
         opener.addheaders.append(("Cookie", cookie_str))
         print(f"Chart URL inside get_chart_csv_data :: {chart_url}")
-        print(f"Auth Cookies BEFORE request :: {auth_cookies}")
+        print(f"Cookie string being sent :: {cookie_str}")
         response = opener.open(chart_url)
-        print(f"Auth Cookies AFTER request: {opener.handlers}")
+        print(f"Response code: {response.getcode()}")
+        print(f"Response headers: {response.headers}")
         content = response.read()
         if response.getcode() != 200:
             raise URLError(response.getcode())

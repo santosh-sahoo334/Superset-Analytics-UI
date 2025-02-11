@@ -126,6 +126,14 @@ class MachineAuthProvider:
             login_user(user)
             # A mock response object to get the cookie information from
             response = Response()
+
+            # Add these settings for HTTPS support
+            current_app.config['SESSION_COOKIE_SECURE'] = True
+            current_app.config['SESSION_COOKIE_DOMAIN'] = urlparse(current_app.config["WEBDRIVER_BASEURL"]).netloc
+            current_app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+            current_app.config['SESSION_COOKIE_HTTPONLY'] = True
+            current_app.config['PREFERRED_URL_SCHEME'] = 'https'
+
             current_app.session_interface.save_session(current_app, session, response)
 
         cookies = {}
@@ -140,7 +148,7 @@ class MachineAuthProvider:
                 cookie = parse_cookie(value)
                 cookie_tuple = list(cookie.items())[0]
                 cookies[cookie_tuple[0]] = cookie_tuple[1]
-
+        print(" **** Cookie prepared inside get_auth_cookies --> {cookies} ************* ")
         return cookies
 
 
