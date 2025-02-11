@@ -148,7 +148,7 @@ class MachineAuthProvider:
                 cookie = parse_cookie(value)
                 cookie_tuple = list(cookie.items())[0]
                 cookies[cookie_tuple[0]] = cookie_tuple[1]
-        print(" **** Cookie prepared inside get_auth_cookies --> {cookies} ************* ")
+        print(f" **** Cookie prepared inside get_auth_cookies --> {cookies} ************* ")
         return cookies
 
 
