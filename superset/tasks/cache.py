@@ -18,7 +18,7 @@ import json
 import logging
 from typing import Any, Optional, Union
 from urllib import request
-from urllib.error import URLError
+from urllib.error import URLError, HTTPError
 
 from celery.beat import SchedulingError
 from celery.utils.log import get_task_logger
@@ -33,6 +33,7 @@ from superset.tags.models import Tag, TaggedObject
 from superset.utils.date_parser import parse_human_datetime
 from superset.utils.machine_auth import MachineAuthProvider
 from superset.utils.urls import get_url_path
+from superset.extensions import machine_auth_provider_factory
 
 logger = get_task_logger(__name__)
 logger.setLevel(logging.INFO)
@@ -221,9 +222,24 @@ def fetch_url(data: str, headers: dict[str, str]) -> dict[str, str]:
     try:
         url = get_url_path("Superset.warm_up_cache")
         logger.info("Fetching %s with payload %s", url, data)
+
+        # Get auth cookies similar to CSV fetch
+        user = security_manager.find_user(app.config["ALERT_REPORTS_EXECUTE_AS"])
+        print(f"Username inside fetch_url celery task :: {user}")
+        auth_cookies = machine_auth_provider_factory.instance.get_auth_cookies(user)
+        print(f"auth_cookies inside fetch_url celery task :: {auth_cookies}")
+
+        # Add cookie to headers
+        if auth_cookies and 'session' in auth_cookies:
+            headers['Cookie'] = f"session={auth_cookies['session']}"
+
+        # Add accept header
+        headers['Accept'] = 'application/json'
+
         req = request.Request(
             url, data=bytes(data, "utf-8"), headers=headers, method="PUT"
         )
+        print("Headers being sent: %s", headers)
         response = request.urlopen(  # pylint: disable=consider-using-with
             req, timeout=600
         )
@@ -240,6 +256,10 @@ def fetch_url(data: str, headers: dict[str, str]) -> dict[str, str]:
                 data,
                 response.code,
             )
+    except HTTPError as e:
+        logger.error(f"HTTP Error: {e.code} - {e.reason}")
+        logger.error(f"Error headers: {e.headers}")
+        result = {"error": data, "exception": str(e)}
     except URLError as err:
         logger.exception("Error warming up cache!")
         result = {"error": data, "exception": str(err)}
