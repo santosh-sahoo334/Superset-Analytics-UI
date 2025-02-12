@@ -47,6 +47,8 @@ import {
   FeatureFlag,
   isFeatureEnabled
 } from '@superset-ui/core';
+import { useHistory } from 'react-router-dom';
+
 
 import getBootstrapData from 'src/utils/getBootstrapData'
 
@@ -65,6 +67,7 @@ interface MainLayoutProps {
 }
 
 import { questionsList } from "src/components/CsightChatbot/Component/FlashCard";
+import React from 'react'
 
 // Add interface for menu config
 interface MenuItemConfig {
@@ -87,6 +90,8 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [openKeys, setOpenKeys] = useState<string[]>([])
   const isMobile = useMediaQuery({ maxWidth: 768 });
+
+  const navigate = useHistory();
 
   const { setPrompts } = useAIBotContext();
 
@@ -227,7 +232,7 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
   const getSelectedKeys = () => {
     const currentKey = Object.keys(menuConfig).find(
       key => menuConfig[key].name === clickedNavItem
-    ) || 'dashboard';
+    ) ;
 
     if (collapsed && !isMobile && (currentKey === 'bud-vs-act' || currentKey === 'budget-unit')) {
       return [currentKey, 'budget'];
@@ -400,12 +405,19 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
           {!isMobile && <AppBreadCrumb />}
         </div>
 
-        <Space size={16} className="header-right">
+        <Space size={10} className="header-right">
+        <div className="!text-lg font-semibold !text-[#ACAFB7]">
+            Welcome, {bootstrapData?.user?.firstName} {bootstrapData?.user?.lastName}
+          </div>
           <BellOutlined />
           <SlidersOutlined />
           <Dropdown overlay={(
             <Menu>
-              <Menu.Item key="profile" icon={<UserOutlined />}>
+              <Menu.Item key="profile" icon={<UserOutlined />} onClick={() => {
+                  setActiveNavItem('Profile');
+                  setClickedNavItem('Profile');
+                  setPreviousNavItem(null);
+              }}>
                 Profile
               </Menu.Item>
               <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={() => logout()}>

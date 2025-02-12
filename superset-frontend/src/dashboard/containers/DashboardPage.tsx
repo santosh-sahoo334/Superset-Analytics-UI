@@ -64,6 +64,9 @@ import { LayoutContext } from 'src/layout/context/layoutcontext';
 import CsightDashboard from 'src/components/CsightDashboard';
 import CsightBudgetUnit from 'src/components/CsightBudgetUnit';
 import getBootstrapData from 'src/utils/getBootstrapData';
+import UserInformation from 'src/components/UserInformation';
+
+const bootstrapData = getBootstrapData();
 
 export const DashboardPageIdContext = React.createContext('');
 
@@ -174,6 +177,17 @@ export const DashboardPage: FC<PageProps> = ({ idOrSlug,className }: PageProps) 
   },{
     component: <CsightBudgetUnit/>,
     tabName: 'Budget Unit'
+  },{
+    component: <UserInformation userInfo={{
+      userName: bootstrapData?.user?.username,
+      isActive: bootstrapData?.user?.isActive,
+      role: 'FinOps',
+      loginCount: bootstrapData?.user?.loginCount,
+      firstName: bootstrapData?.user?.firstName,
+      lastName: bootstrapData?.user?.lastName,
+      email: bootstrapData?.user?.email
+    }}/>,
+    tabName: 'Profile'
   }];
 
   useEffect(() => {

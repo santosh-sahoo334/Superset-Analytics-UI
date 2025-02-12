@@ -630,7 +630,9 @@
 .header-left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
+  color: #666666;
+  font-size: 16px;
 }
 
 .header-logo {
@@ -648,6 +650,8 @@
 .header-right {
   display: flex;
   align-items: center;
+  color: #666666;
+  font-size: 16px;
 }
 
 .header-right .anticon {

@@ -46,12 +46,12 @@ const AnswerContainer: React.FC<AnswerContainerProps> = ({ answer, isLoading, su
                 ></i>
             </div>}
 
-            {!isLoading && <div className='flex align-items-start gap-3 w-full'>
+            {!isLoading && answer && <div className='flex align-items-start gap-3 w-full'>
                 <img src="/static/assets/images/layout/images/ai-icon.svg" alt='Ai Icon' height={34} width={34} />
                 <div className={`answer_container flex flex-column w-full`}>
                     <div style={{ width: isResize ? "70%" : "100%", whiteSpace: "pre-line" }}
                         dangerouslySetInnerHTML={{
-                            __html: (answer).replaceAll(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+                            __html: (answer)?.replaceAll(/\*\*(.*?)\*\*/g, '<b>$1</b>')
                         }}
                     />
                     {isGraphType && graphData?.labels && graphData?.labels?.length > 0 && <div className="graph_container mt-2 w-full" style={{ minWidth: '300px', margin: '0 auto' }}>
