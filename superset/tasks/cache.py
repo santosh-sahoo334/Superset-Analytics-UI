@@ -251,10 +251,10 @@ def fetch_url(data: str, headers: dict[str, str]) -> dict[str, str]:
                 data,
                 response.code,
             )
-    except HTTPError as e:
-        logger.error(f"HTTP Error: {e.code} - {e.reason}")
-        logger.error(f"Error headers: {e.headers}")
-        result = {"error": data, "exception": str(e)}
+    # except HTTPError as e:
+    #     logger.error(f"HTTP Error: {e.code} - {e.reason}")
+    #     logger.error(f"Error headers: {e.headers}")
+    #     result = {"error": data, "exception": str(e)}
     except URLError as err:
         logger.exception("Error warming up cache!")
         result = {"error": data, "exception": str(err)}
