@@ -723,19 +723,15 @@ class AuthOAuthView(AuthView):
     def csight_oauth_authorized(self) -> WerkzeugResponse:
 
         oid_accesstoken = request.cookies.get('refresh_token')
-        print(f"Access Token from Request --> {oid_accesstoken}")
 
         host = request.headers.get("Host")
-        print(f"Host :: {host}")
 
         #how to read request parameter
         dashboard_slug = request.args.get('slug')
-        print(f"Dashboard Slug ---> {dashboard_slug}")
 
         #decode oid_accesstoken from TekSecur IDAM
         try:
             decoded_token = jwt.decode(jwt=oid_accesstoken, key=None, options={"verify_signature": False}, algorithms=["HS256"]) #Still it is not secured one
-            print(f"decoded_token ---> {decoded_token}")
             userinfo = {
                 "email" : decoded_token.get('email'),
                 "first_name" : decoded_token.get('first_name'),

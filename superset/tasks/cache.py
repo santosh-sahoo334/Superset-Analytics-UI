@@ -220,8 +220,9 @@ def fetch_url(data: str, headers: dict[str, str]) -> dict[str, str]:
     """
     result = {}
     try:
-        # url = get_url_path("Superset.warm_up_cache")
-        url = "http://superset:8088/dworks/warm_up_cache/"  # Internal service URL
+        url = get_url_path("Superset.warm_up_cache")
+        print(f"URL inside fetch_url >> {url}")
+        # url = "http://superset:8088/dworks/warm_up_cache/"  # Internal service URL
         
         logger.info("Fetching %s with payload %s", url, data)
         logger.info("Using headers: %s", headers)
@@ -229,7 +230,11 @@ def fetch_url(data: str, headers: dict[str, str]) -> dict[str, str]:
         req = request.Request(
             url, data=bytes(data, "utf-8"), headers=headers, method="PUT"
         )
-
+        print(f"Request Method: {req.method}")
+        print(f"Request URL: {req.full_url}")
+        print(f"Request Headers: {req.headers}")
+        print(f"Request Data: {req.data}")
+        
         response = request.urlopen(  # pylint: disable=consider-using-with
             req, timeout=600
         )
@@ -287,8 +292,7 @@ def cache_warmup(
 
     user = security_manager.get_user_by_username(app.config["THUMBNAIL_SELENIUM_USER"])
     cookies = MachineAuthProvider.get_auth_cookies(user)
-    allowedHostForCacheWarmUp = app.config["CACHE_WARMUP_ALLOWED_HOST"]
-    logger.info(f"Cache Warm up allowed host --> {allowedHostForCacheWarmUp}")
+    
     headers = {
         "Cookie": f"session={cookies.get('session', '')}",
         "Content-Type": "application/json"
