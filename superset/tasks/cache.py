@@ -295,7 +295,8 @@ def cache_warmup(
     
     headers = {
         "Cookie": f"session={cookies.get('session', '')}",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "X-CSRFToken": cookies.get("csrf_token", "")  # Add CSRF token
     }
     logger.info(f"Prepared header with allowed host :: {headers}")
 

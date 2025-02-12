@@ -181,7 +181,7 @@ export const DashboardPage: FC<PageProps> = ({ idOrSlug,className }: PageProps) 
     component: <UserInformation userInfo={{
       userName: bootstrapData?.user?.username,
       isActive: bootstrapData?.user?.isActive,
-      role: 'FinOps',
+      role: 'FinOps Analyst',
       loginCount: bootstrapData?.user?.loginCount,
       firstName: bootstrapData?.user?.firstName,
       lastName: bootstrapData?.user?.lastName,
