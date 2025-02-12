@@ -152,12 +152,12 @@ const ChatBot = () => {
     // Extract filter values based on clickedNavItem
     if (clickedNavItem?.toLowerCase() === "cost") {
       const filterMapping = {
-        "date": "datekey",
-        "service provider": "cloud_provider",
-        "account": "billing_account_name",
-        "customer": "customer_name",
-        "region": "resource_region",
-        "resource": "resource_name"
+        "date": "filter_datekey",
+        "service provider": "filter_cloud_provider",
+        "account": "filter_billing_account_name",
+        "customer": "filter_customer_name",
+        "region": "filter_resource_region",
+        "resource": "filter_resource_name"
       };
 
       const extractedFilters = mergedFilters?.reduce((acc, filter) => {
@@ -171,11 +171,11 @@ const ChatBot = () => {
       console.log("Extracted Filters for Cost:", extractedFilters);
     } else if (clickedNavItem?.toLowerCase() === "billing") {
       const filterMapping = {
-        "date": "datekey",
-        "service provider": "cloud_provider",
-        "account": "billing_account_name",
-        "region": "resource_region",
-        "resource": "resource_name"
+        "date": "filter_datekey",
+        "service provider": "filter_cloud_provider",
+        "account": "filter_billing_account_name",
+        "region": "filter_resource_region",
+        "resource": "filter_resource_name"
       };
 
       const extractedFilters = mergedFilters?.reduce((acc, filter) => {
@@ -189,11 +189,11 @@ const ChatBot = () => {
       console.log("Extracted Filters for Billing:", extractedFilters);
     } else if (clickedNavItem?.toLowerCase() === "recommendations") {
       const filterMapping = {
-        "date": "datekey",
-        "service provider": "cloud_provider",
-        "account": "billing_account_name",
-        "region": "resource_region",
-        "resource": "resource_name"
+        "date": "filter_datekey",
+        "service provider": "filter_cloud_provider",
+        "account": "filter_billing_account_name",
+        "region": "filter_resource_region",
+        "resource": "filter_resource_name"
       };
 
       const extractedFilters = mergedFilters?.reduce((acc, filter) => {
@@ -207,11 +207,11 @@ const ChatBot = () => {
       console.log("Extracted Filters for Recommendations:", extractedFilters);
     } else if (clickedNavItem?.toLowerCase() === "greenops") {
       const filterMapping = {
-        "date": "datekey",
-        "service provider": "cloud_provider",
-        "account": "billing_account_name",
-        "region": "resource_region",
-        "resource": "resource_name"
+        "date": "filter_datekey",
+        "service provider": "filter_cloud_provider",
+        "account": "filter_billing_account_name",
+        "region": "filter_resource_region",
+        "resource": "filter_resource_name"
       };
 
       const extractedFilters = mergedFilters?.reduce((acc, filter) => {
@@ -225,14 +225,14 @@ const ChatBot = () => {
       console.log("Extracted Filters for GreenOps:", extractedFilters);
     } else if (clickedNavItem?.toLowerCase() === "tags") {
       const filterMapping = {
-        "date": "datekey",
-        "service provider": "cloud_provider",
-        "account": "billing_account_name",
-        "region": "resource_region",
-        "resource": "resource_name",
-        "component": "resource_component",
-        "tag key": "tag_key",
-        "tag value": "tag_value"
+        "date": "filter_datekey",
+        "service provider": "filter_cloud_provider",
+        "account": "filter_billing_account_name",
+        "region": "filter_resource_region",
+        "resource": "filter_resource_name",
+        "component": "filter_resource_component",
+        "tag key": "filter_tag_key",
+        "tag value": "filter_tag_value"
       };
 
       const extractedFilters = mergedFilters?.reduce((acc, filter) => {
@@ -246,11 +246,11 @@ const ChatBot = () => {
       console.log("Extracted Filters for Tags:", extractedFilters);
     } else if (clickedNavItem?.toLowerCase() === "utilization") {
       const filterMapping = {
-        "date": "datekey",
-        "account": "billing_account_name",
-        "region": "resource_region",
-        "instance name": "instance_name",
-        "instance type": "instance_type"
+        "date": "filter_datekey",
+        "account": "filter_billing_account_name",
+        "region": "filter_resource_region",
+        "instance name": "filter_instance_name",
+        "instance type": "filter_instance_type"
       };
 
       const extractedFilters = mergedFilters?.reduce((acc, filter) => {
@@ -263,6 +263,22 @@ const ChatBot = () => {
       filterData = extractedFilters;
       console.log("Extracted Filters for Utilization:", extractedFilters);
     }
+
+    const NAV_ITEM_MAPPING = {
+      "Cost": "cost",
+      "Utilization": "utilization",
+      "Billing": "billing",
+      "Tags": "tags",
+      "Observability": "observability",
+      "Anomaly": "anomaly",
+      "Recommendations": "recommendations",
+      "Governance": "governance",
+      "Bud vs Act": "bud vs act",
+      "GreenOps": "greenops",
+      "OnPrem": "onnprem"
+    };
+
+    filterData['page_name'] = NAV_ITEM_MAPPING[clickedNavItem] || null;
 
     // Handling Graph Question
     if (selectedGraph?.isSelected && selectedGraph?.graph_type) {
