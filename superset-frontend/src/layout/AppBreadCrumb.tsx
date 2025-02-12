@@ -14,6 +14,7 @@ const AppBreadcrumb = () => {
 
   const breadcrumbs = [
     {from: null, labels: 'Dashboard'},
+    {from: null, labels: 'Profile'},
     
     {from: 'Observe', labels: 'Cost'},
     {from: 'Observe', labels: 'Billing'},
