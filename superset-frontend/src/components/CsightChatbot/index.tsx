@@ -21,10 +21,9 @@ import { questionsList } from "./Component/FlashCard";
 
 import getBootstrapData from 'src/utils/getBootstrapData'
 import { DataMaskStateWithId } from '@superset-ui/core';
-import React from 'react';
 import { useNativeFiltersDataMask, useFilters } from 'src/dashboard/components/nativeFilters/FilterBar/state';
 import { useImmer } from 'use-immer';
-import React from 'react';
+import Cookies from 'js-cookie';
 
 
 interface GRAPH_ITEMS {
@@ -279,6 +278,7 @@ const ChatBot = () => {
     };
 
     filterData['page_name'] = NAV_ITEM_MAPPING[clickedNavItem] || null;
+    filterData['slug_name'] =  Cookies.get('slug') || 'teksecur';
 
     // Handling Graph Question
     if (selectedGraph?.isSelected && selectedGraph?.graph_type) {
