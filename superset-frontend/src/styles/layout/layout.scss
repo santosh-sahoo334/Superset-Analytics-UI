@@ -116,10 +116,11 @@ $sidebarShadow: 0 2px 4px -1px rgba(0, 0, 0, .2), 0 4px 5px 0 rgba(0, 0, 0, .14)
   width: 100%;
   height: 100%;
   background-color: #fff;
-  padding-top: 24px;
-  padding-right: 24px;
-  border-radius: 12px;
+  padding-top: 5px;
+  padding-right: 12px;
+  border-radius: 1px;
 }
+
 
 .question-date {
   text-align: right;
@@ -127,4 +128,9 @@ $sidebarShadow: 0 2px 4px -1px rgba(0, 0, 0, .2), 0 4px 5px 0 rgba(0, 0, 0, .14)
   color: #5b5c5d;
   font-size: 10px;
   margin-top: 10px;
+}
+
+.superset-button-secondary {
+  display: flex !important;
+  flex-direction: row !important;
 }

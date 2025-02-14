@@ -116,7 +116,7 @@ const Styles = styled.div`
     flex-direction: column;
     justify-content: center;
 
-    height: ${p => p.height}px;
+    // height: ${p => p.height}px;
 
     .pivot_table tbody tr {
       font-feature-settings: 'tnum' 1;

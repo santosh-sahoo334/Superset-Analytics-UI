@@ -423,7 +423,11 @@ class Chart extends React.Component {
 
     return (
       <SliceContainer
-        className="chart-slice"
+        style={{
+          paddingTop: isFullSize? '60px' : '0px',
+          paddingLeft: isFullSize? '60px' : '0px',
+        }}
+        className={`chart-slice`}
         data-test="chart-grid-component"
         data-test-chart-id={id}
         data-test-viz-type={slice.viz_type}

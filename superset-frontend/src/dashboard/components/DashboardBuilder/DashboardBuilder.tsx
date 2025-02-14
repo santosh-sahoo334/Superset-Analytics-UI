@@ -656,7 +656,7 @@ const DashboardBuilder: FC<DashboardBuilderProps> = () => {
           styles={css`
             // @z-index-above-dashboard-header (100) + 1 = 101
             ${fullSizeChartId &&
-            `div > .filterStatusPopover.ant-popover{z-index: 101} .chart-slice{padding: 60px 0px 0px 70px !important}`}
+            `div > .filterStatusPopover.ant-popover{z-index: 101}`}
           `}
         />
         {!editMode &&
