@@ -1,6 +1,6 @@
 /* Add at the very top of the file */
 * {
-  font-family: 'calibri', sans-serif !important;
+  font-family: 'calibri', sans-serif, 'primeicons' !important;
 }
 
 .stable-menu {

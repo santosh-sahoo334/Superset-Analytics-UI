@@ -721,7 +721,8 @@ const ChatBot = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   color: 'white',
-                  fontSize: '0.30rem'
+                  fontSize: '0.30rem',
+                  paddingTop: '15px'
                 }}
               />
             </div>
