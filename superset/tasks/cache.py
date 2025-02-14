@@ -221,19 +221,13 @@ def fetch_url(data: str, headers: dict[str, str]) -> dict[str, str]:
     result = {}
     try:
         url = get_url_path("Superset.warm_up_cache")
-        print(f"URL inside fetch_url >> {url}")
-        # url = "http://superset:8088/dworks/warm_up_cache/"  # Internal service URL
-        
+
         logger.info("Fetching %s with payload %s", url, data)
         logger.info("Using headers: %s", headers)
 
         req = request.Request(
             url, data=bytes(data, "utf-8"), headers=headers, method="PUT"
         )
-        print(f"Request Method: {req.method}")
-        print(f"Request URL: {req.full_url}")
-        print(f"Request Headers: {req.headers}")
-        print(f"Request Data: {req.data}")
         
         response = request.urlopen(  # pylint: disable=consider-using-with
             req, timeout=600
@@ -251,10 +245,6 @@ def fetch_url(data: str, headers: dict[str, str]) -> dict[str, str]:
                 data,
                 response.code,
             )
-    # except HTTPError as e:
-    #     logger.error(f"HTTP Error: {e.code} - {e.reason}")
-    #     logger.error(f"Error headers: {e.headers}")
-    #     result = {"error": data, "exception": str(e)}
     except URLError as err:
         logger.exception("Error warming up cache!")
         result = {"error": data, "exception": str(err)}
@@ -295,10 +285,8 @@ def cache_warmup(
     
     headers = {
         "Cookie": f"session={cookies.get('session', '')}",
-        "Content-Type": "application/json",
-        "X-CSRFToken": cookies.get("csrf_token", "")  # Add CSRF token
+        "Content-Type": "application/json"
     }
-    logger.info(f"Prepared header with allowed host :: {headers}")
 
     results: dict[str, list[str]] = {"scheduled": [], "errors": []}
     for payload in strategy.get_payloads():
