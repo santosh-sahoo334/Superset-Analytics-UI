@@ -425,7 +425,7 @@ class Chart extends React.Component {
       <SliceContainer
         style={{
           paddingTop: isFullSize? '60px' : '0px',
-          paddingLeft: isFullSize? '60px' : '0px',
+          paddingLeft: isFullSize? '70px' : '0px',
         }}
         className={`chart-slice`}
         data-test="chart-grid-component"
