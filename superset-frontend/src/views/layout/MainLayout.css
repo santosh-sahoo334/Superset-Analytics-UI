@@ -1,3 +1,8 @@
+/* Add at the very top of the file */
+* {
+  font-family: 'calibri', sans-serif !important;
+}
+
 .stable-menu {
   width: 100%;
 }
@@ -640,10 +645,17 @@
   width: auto;
 }
 
-.header-title {
+.header-title{
+  color: #323232 !important;
+  font-size: 15px !important;
+  text-align: center !important;
+  font-weight: 500 !important;
+}
+
+.header-title-csight {
+  color: #18279A !important;
   font-size: 18px;
   font-weight: 600;
-  color: #000;
   margin-right: 5px;
 }
 
@@ -845,7 +857,7 @@
     flex: 1;
   }
   
-  .header-title {
+  .header-title-csight {
     flex: 1;
     /* margin-right: 0; */
   }

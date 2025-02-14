@@ -20,10 +20,13 @@ import { LayoutContext } from "../../layout/context/layoutcontext";
 import { questionsList } from "./Component/FlashCard";
 
 import getBootstrapData from 'src/utils/getBootstrapData'
-import { DataMaskStateWithId } from '@superset-ui/core';
+import { DataMaskStateWithId, NO_TIME_RANGE } from '@superset-ui/core';
 import { useNativeFiltersDataMask, useFilters } from 'src/dashboard/components/nativeFilters/FilterBar/state';
 import { useImmer } from 'use-immer';
 import Cookies from 'js-cookie';
+import React from 'react';
+import { fetchTimeRange } from 'src/explore/components/controls/DateFilterControl';
+import React from 'react';
 
 
 interface GRAPH_ITEMS {
@@ -65,6 +68,108 @@ const countryOptionTemplate = (option) => {
       <div>{option.name}</div>
     </div>
   );
+};
+
+const formatDateRange = async (dateKey: string): Promise<{ from: string; to: string } | null> => {
+  try {
+    const { value: actualRange, error } = await fetchTimeRange(dateKey);
+    
+    if (error) {
+      console.log('error--', error);
+      return null;
+    }
+
+    // Handle null or undefined actualRange
+    if (!actualRange) {
+      console.log('No date range provided');
+      return null;
+    }
+
+    // Parse the date range string
+    const matches = actualRange.match(/(\d{4}-\d{2}-\d{2})(?:T(\d{2}:\d{2}:\d{2}))?\s*≤\s*col\s*<\s*(\d{4}-\d{2}-\d{2})(?:T(\d{2}:\d{2}:\d{2}))?/);
+    
+    if (!matches) {
+      console.log('Invalid date range format:', actualRange);
+      return null;
+    }
+
+    const [_, fromDate, fromTime, toDate, toTime] = matches;
+
+    // Validate date components
+    if (!fromDate || !toDate) {
+      console.log('Missing date components:', { fromDate, toDate });
+      return null;
+    }
+
+    try {
+      // Create from date with default time 00:00:00 if no time specified
+      const fromDateTime = new Date(`${fromDate}T${fromTime || '00:00:00'}`);
+      
+      // Validate fromDateTime
+      if (isNaN(fromDateTime.getTime())) {
+        console.log('Invalid from date:', fromDate, fromTime);
+        return null;
+      }
+
+      // Create to date with time 23:59:59 if no time specified or if time is before 23:59:59
+      const toDateTime = new Date(`${toDate}T${toTime || '23:59:59'}`);
+      const endOfDay = new Date(`${toDate}T23:59:59`);
+      
+      // Validate toDateTime and endOfDay
+      if (isNaN(toDateTime.getTime()) || isNaN(endOfDay.getTime())) {
+        console.log('Invalid to date:', toDate, toTime);
+        return null;
+      }
+
+      // If toDateTime is before endOfDay, use endOfDay instead
+      const finalToDateTime = toDateTime < endOfDay ? endOfDay : toDateTime;
+
+      // Ensure dates are in correct order
+      if (fromDateTime > finalToDateTime) {
+        console.log('From date is after to date');
+        return null;
+      }
+      
+      // Format dates in local time without timezone
+      const formattedFromDate = fromDateTime.toLocaleString('en-US', { 
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      }).replace(/(\d+)\/(\d+)\/(\d+),\s(\d+):(\d+):(\d+)/, '$3-$1-$2T$4:$5:$6');
+      
+      const formattedToDate = finalToDateTime.toLocaleString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      }).replace(/(\d+)\/(\d+)\/(\d+),\s(\d+):(\d+):(\d+)/, '$3-$1-$2T$4:$5:$6');
+      
+      // Validate final formatted dates
+      if (!formattedFromDate || !formattedToDate) {
+        console.log('Error formatting dates');
+        return null;
+      }
+
+      return {
+        from: formattedFromDate,
+        to: formattedToDate
+      };
+
+    } catch (error) {
+      console.error('Error processing dates:', error);
+      return null;
+    }
+  } catch (error) {
+    console.error('Error in formatDateRange:', error);
+    return null;
+  }
 };
 
 const ChatBot = () => {
@@ -136,7 +241,7 @@ const ChatBot = () => {
     setOpenChatModal(!opneChatModal);
   };
 
-  const onClickSend = () => {
+  const onClickSend = async() => {
     if (!question) {
       return showToast(
         "Please type valid question",
@@ -279,6 +384,19 @@ const ChatBot = () => {
 
     filterData['page_name'] = NAV_ITEM_MAPPING[clickedNavItem] || null;
     filterData['slug_name'] =  Cookies.get('slug') || 'teksecur';
+
+    if(filterData['filter_datekey'] && filterData['filter_datekey'] != NO_TIME_RANGE) {
+      const dateRange = await formatDateRange(filterData['filter_datekey']);
+      if (dateRange) {
+        filterData['filter_end_date'] = dateRange?.to;
+        filterData['filter_start_date'] = dateRange?.from;
+      }
+      delete filterData['filter_datekey'];
+    }else{
+      delete filterData['filter_datekey'];
+    }
+
+    console.log("filterData", filterData);
 
     // Handling Graph Question
     if (selectedGraph?.isSelected && selectedGraph?.graph_type) {
