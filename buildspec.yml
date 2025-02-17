@@ -65,7 +65,7 @@ phases:
       - echo "REACT_APP_CINDY_APP_TYPE=$REACT_APP_CINDY_APP_TYPE" >> $ENV_FILE
       - echo "REACT_APP_CINDY_EMAIL_ID_TOKEN=$REACT_APP_CINDY_EMAIL_ID_TOKEN" >> $ENV_FILE
       - echo "REACT_APP_CINDY_AUTH_TOKEN=$REACT_APP_CINDY_AUTH_TOKEN" >> $ENV_FILE
-      - cat $ENV_FILE # Check if env contents copied successfully
+      - cat $ENV_FILE  # Check if env contents copied successfully
 
   build:
     commands:
