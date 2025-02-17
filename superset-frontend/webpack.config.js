@@ -402,6 +402,7 @@ const config = {
     usedExports: 'global',
     minimizer: [new CssMinimizerPlugin(), '...'],
   },
+  parallelism: 4, // Adjust based on available CPUs
   resolve: {
     // resolve modules from `/superset_frontend/node_modules` and `/superset_frontend`
     modules: ['node_modules', APP_DIR],
