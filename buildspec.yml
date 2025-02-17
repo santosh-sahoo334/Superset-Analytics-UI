@@ -25,8 +25,52 @@ phases:
       - if [ -z "$IMAGE_TAG" ]; then IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7); fi
       - echo "Resolved Image Tag - $IMAGE_TAG"
 
+      # Fetch parameters from SSM Parameter Store and write to .env file
+      - echo "Fetching parameters from AWS SSM Parameter Store"
+
+      # Fetch ADMIN_EMAIL parameter from Parameter Store
+      - REACT_APP_SUPERSET_BASE_URL=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_SUPERSET_BASE_URL" --query "Parameter.Value" --output text)
+      - echo "REACT_APP_SUPERSET_BASE_URL - $REACT_APP_SUPERSET_BASE_URL"
+      - ADMIN_EMAIL=$(aws ssm get-parameter --name "/csight/frontend/ADMIN_EMAIL" --query "Parameter.Value" --output text)
+      - echo "ADMIN_EMAIL - $ADMIN_EMAIL"
+      - REACT_APP_LOGO_TEXT=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_LOGO_TEXT" --query "Parameter.Value" --output text)
+      - echo "REACT_APP_LOGO_TEXT - $REACT_APP_LOGO_TEXT"
+      - REACT_APP_CINDY_BASE_URL=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_CINDY_BASE_URL" --query "Parameter.Value" --output text)
+      - echo "REACT_APP_CINDY_BASE_URL - $REACT_APP_CINDY_BASE_URL"
+      - REACT_APP_CINDY_ORG_ID=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_CINDY_ORG_ID" --query "Parameter.Value" --output text)
+      - echo "REACT_APP_CINDY_ORG_ID - $REACT_APP_CINDY_ORG_ID"
+      - REACT_APP_CINDY_PROJECT_ID=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_CINDY_PROJECT_ID" --query "Parameter.Value" --output text)
+      - echo "REACT_APP_CINDY_PROJECT_ID - $REACT_APP_CINDY_PROJECT_ID"
+      - REACT_APP_CINDY_DOC_TYPE=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_CINDY_DOC_TYPE" --query "Parameter.Value" --output text)
+      - echo "REACT_APP_CINDY_DOC_TYPE - $REACT_APP_CINDY_DOC_TYPE"
+      - REACT_APP_CINDY_APP_TYPE=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_CINDY_APP_TYPE" --query "Parameter.Value" --output text)
+      - echo "REACT_APP_CINDY_APP_TYPE - $REACT_APP_CINDY_APP_TYPE"
+      - REACT_APP_CINDY_EMAIL_ID_TOKEN=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_CINDY_EMAIL_ID_TOKEN" --query "Parameter.Value" --output text)
+      - echo "REACT_APP_CINDY_EMAIL_ID_TOKEN - $REACT_APP_CINDY_EMAIL_ID_TOKEN"
+      - REACT_APP_CINDY_AUTH_TOKEN=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_CINDY_AUTH_TOKEN" --query "Parameter.Value" --output text)
+      - echo "REACT_APP_CINDY_AUTH_TOKEN - $REACT_APP_CINDY_AUTH_TOKEN"
+
+      # Find the superset-frontend folder location in the repository and write parameters to .env file
+      - echo "Writing parameters to .env file in superset-frontend folder"
+      - echo "CODEBUILD_SRC_DIR - $CODEBUILD_SRC_DIR"
+      - ls -lrt $CODEBUILD_SRC_DIR # Check what's there in SRC folder
+      - ENV_FILE="$CODEBUILD_SRC_DIR/superset-frontend/.env"
+      - echo "REACT_APP_SUPERSET_BASE_URL=$REACT_APP_SUPERSET_BASE_URL" > $ENV_FILE
+      - echo "ADMIN_EMAIL=$ADMIN_EMAIL" > $ENV_FILE
+      - echo "REACT_APP_LOGO_TEXT=$REACT_APP_LOGO_TEXT" >> $ENV_FILE
+      - echo "REACT_APP_CINDY_BASE_URL=$REACT_APP_CINDY_BASE_URL" >> $ENV_FILE
+      - echo "REACT_APP_CINDY_ORG_ID=$REACT_APP_CINDY_ORG_ID" >> $ENV_FILE
+      - echo "REACT_APP_CINDY_PROJECT_ID=$REACT_APP_CINDY_PROJECT_ID" >> $ENV_FILE
+      - echo "REACT_APP_CINDY_DOC_TYPE=$REACT_APP_CINDY_DOC_TYPE" >> $ENV_FILE
+      - echo "REACT_APP_CINDY_APP_TYPE=$REACT_APP_CINDY_APP_TYPE" >> $ENV_FILE
+      - echo "REACT_APP_CINDY_EMAIL_ID_TOKEN=$REACT_APP_CINDY_EMAIL_ID_TOKEN" >> $ENV_FILE
+      - echo "REACT_APP_CINDY_AUTH_TOKEN=$REACT_APP_CINDY_AUTH_TOKEN" >> $ENV_FILE
+      - cat $ENV_FILE # Check if env contents copied successfully
+
   build:
     commands:
+      # Check if the .env file exists before proceeding
+      - if [ ! -f "$CODEBUILD_SRC_DIR/superset-frontend/.env" ]; then echo ".env file does not exist. Build will not proceed."; exit 1; fi
       - echo "Resolved Image Tag in build section - $IMAGE_TAG"
       - echo "Building the Docker image - $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG"
       - DOCKER_BUILDKIT=1 docker build --no-cache --build-arg NODE_OPTIONS="--max-old-space-size=8192" -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG .
