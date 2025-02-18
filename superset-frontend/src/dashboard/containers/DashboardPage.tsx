@@ -145,6 +145,8 @@ const DashboardWrapper = ({ isVisible, children,className }) => {
   );
 };
 
+
+
 export const DashboardPage: FC<PageProps> = ({ idOrSlug,className }: PageProps) => {
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -304,23 +306,22 @@ export const DashboardPage: FC<PageProps> = ({ idOrSlug,className }: PageProps) 
     const userEmail:any = bootstrapData?.user?.username || null;
     const adminList = process.env.ADMIN_EMAIL || [];
     const isAdmin = adminList.includes(userEmail);
-    
-    const activeComponent = componentPages.find(page => page.tabName === activeNavItem)?.component;
-    const isKnownTab = componentPages.some(page => page.tabName === activeNavItem);
-    //hideTabList
-    return (
-      <>
-        <DashboardWrapper isVisible={isAdmin}>
-          <DashboardBuilder />
-        </DashboardWrapper>
-        
-        {!isAdmin && (
-          <DashboardWrapper isVisible={true}>
-            {activeComponent || (isKnownTab ? <UnderConstruction /> : <DashboardBuilder />)}
-          </DashboardWrapper>
-        )}
-      </>
-    );
+    // If user is admin, only show DashboardBuilder
+    if (isAdmin) {
+      return <DashboardBuilder />;
+    }
+
+    // Find matching component from componentPages array based on activeNavItem
+    const activeComponent = componentPages.find(
+      page => page.tabName === activeNavItem
+    )?.component;
+
+    // If no matching component found, show UnderConstruction
+    if (!activeComponent) {
+      return <DashboardBuilder />;
+    }
+
+    return activeComponent;
   };
 
   if (error) throw error; // caught in error boundary
