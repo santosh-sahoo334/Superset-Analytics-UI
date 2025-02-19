@@ -35,6 +35,20 @@ phases:
       - echo "ADMIN_EMAIL - $ADMIN_EMAIL"
       - REACT_APP_LOGO_TEXT=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_LOGO_TEXT" --with-decryption --query "Parameter.Value" --output text)
       - echo "REACT_APP_LOGO_TEXT - $REACT_APP_LOGO_TEXT"
+      - REACT_APP_CINDY_BASE_URL=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_CINDY_BASE_URL" --with-decryption --query "Parameter.Value" --output text)
+      - echo "REACT_APP_CINDY_BASE_URL - $REACT_APP_CINDY_BASE_URL"
+      - REACT_APP_CINDY_ORG_ID=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_CINDY_ORG_ID" --with-decryption --query "Parameter.Value" --output text)
+      - echo "REACT_APP_CINDY_ORG_ID - $REACT_APP_CINDY_ORG_ID"
+      - REACT_APP_CINDY_PROJECT_ID=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_CINDY_PROJECT_ID" --with-decryption --query "Parameter.Value" --output text)
+      - echo "REACT_APP_CINDY_PROJECT_ID - $REACT_APP_CINDY_PROJECT_ID"
+      - REACT_APP_CINDY_DOC_TYPE=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_CINDY_DOC_TYPE" --with-decryption --query "Parameter.Value" --output text)
+      - echo "REACT_APP_CINDY_DOC_TYPE - $REACT_APP_CINDY_DOC_TYPE"
+      - REACT_APP_CINDY_APP_TYPE=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_CINDY_APP_TYPE" --with-decryption --query "Parameter.Value" --output text)
+      - echo "REACT_APP_CINDY_APP_TYPE - $REACT_APP_CINDY_APP_TYPE"
+      - REACT_APP_CINDY_EMAIL_ID_TOKEN=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_CINDY_EMAIL_ID_TOKEN" --with-decryption --query "Parameter.Value" --output text)
+      - echo "REACT_APP_CINDY_EMAIL_ID_TOKEN - $REACT_APP_CINDY_EMAIL_ID_TOKEN"
+      - REACT_APP_CINDY_AUTH_TOKEN=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_CINDY_AUTH_TOKEN" --with-decryption --query "Parameter.Value" --output text)
+      - echo "REACT_APP_CINDY_AUTH_TOKEN - $REACT_APP_CINDY_AUTH_TOKEN"
 
       # Find the superset-frontend folder location in the repository and write parameters to .env file
       - echo "Writing parameters to .env file in superset-frontend folder"
@@ -42,6 +56,13 @@ phases:
       - echo "REACT_APP_SUPERSET_BASE_URL=$REACT_APP_SUPERSET_BASE_URL" > $ENV_FILE
       - echo "ADMIN_EMAIL=$ADMIN_EMAIL" >> $ENV_FILE
       - echo "REACT_APP_LOGO_TEXT=$REACT_APP_LOGO_TEXT" >> $ENV_FILE
+      - echo "REACT_APP_CINDY_BASE_URL=$REACT_APP_CINDY_BASE_URL" >> $ENV_FILE
+      - echo "REACT_APP_CINDY_ORG_ID=$REACT_APP_CINDY_ORG_ID" >> $ENV_FILE
+      - echo "REACT_APP_CINDY_PROJECT_ID=$REACT_APP_CINDY_PROJECT_ID" >> $ENV_FILE
+      - echo "REACT_APP_CINDY_DOC_TYPE=$REACT_APP_CINDY_DOC_TYPE" >> $ENV_FILE
+      - echo "REACT_APP_CINDY_APP_TYPE=$REACT_APP_CINDY_APP_TYPE" >> $ENV_FILE
+      - echo "REACT_APP_CINDY_EMAIL_ID_TOKEN=$REACT_APP_CINDY_EMAIL_ID_TOKEN" >> $ENV_FILE
+      - echo "REACT_APP_CINDY_AUTH_TOKEN=$REACT_APP_CINDY_AUTH_TOKEN" >> $ENV_FILE
       - cat $ENV_FILE  # Check if env contents copied successfully
 
   build:
