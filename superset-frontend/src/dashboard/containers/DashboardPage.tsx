@@ -145,8 +145,6 @@ const DashboardWrapper = ({ isVisible, children,className }) => {
   );
 };
 
-
-
 export const DashboardPage: FC<PageProps> = ({ idOrSlug,className }: PageProps) => {
   const theme = useTheme();
   const dispatch = useDispatch();

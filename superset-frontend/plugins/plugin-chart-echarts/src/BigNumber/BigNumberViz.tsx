@@ -335,6 +335,7 @@ export default styled(BigNumberVis)`
     }
 
     .text-container {
+      min-height: 90px;
       display: flex;
       flex-direction: column;
       justify-content: center;
