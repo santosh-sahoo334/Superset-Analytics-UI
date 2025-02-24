@@ -385,7 +385,7 @@ class Row extends React.PureComponent {
                         )}
                         editMode
                         style={{
-                          height: containerHeight,
+                          height: '100%',
                           ...(remainColumnCount === 0 &&
                             itemIndex === rowItems.length - 1 && { width: 16 }),
                         }}

@@ -1,22 +1,27 @@
 /* @import 'antd/dist/reset.css'; */
 
-body {
+/* body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
+} */
 
-#root {
+/* #root {
   height: 100vh;
-} 
+}  */
 
-code {
+/* code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
-}
+} */
+
+
+
+
+
 
 .logo-text {
   font-size: 18px;
@@ -34,4 +39,159 @@ code {
   box-shadow: 0 1px 0px rgba(0, 0, 0, 0.2);
   transition: background-color 0.1s ease, box-shadow 0.1s ease;
   /* Add any other styling you want for the selected state */
+}
+
+/* Copied from Superset CSS Style */
+
+
+
+
+/* CAUTION -- remove the global navigation bar - Make the Dashboard Full Screen*/
+
+/* Global Font Styles */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+/* Apply fonts globally using :root and body */
+:root {
+  --primary-font: 'Calibri', 'sans-serif', 'primeicons';
+  --font-family: 'Calibri', 'sans-serif', 'primeicons';
+  --font-family-h1: 'Calibri', 'sans-serif', 'primeicons';
+  --font-family-h2: 'Calibri', 'sans-serif', 'primeicons';
+  --font-family-h3: 'Calibri', 'sans-serif', 'primeicons';
+  --font-family-h4: 'Calibri', 'sans-serif', 'primeicons';
+  --font-family-h5: 'Calibri', 'sans-serif', 'primeicons';
+  --font-family-h6: 'Calibri', 'sans-serif', 'primeicons';
+}
+
+body {
+  font-family: Calibri, sans-serif, primeicons !important;
+}
+
+* {
+  font-family: Calibri, sans-serif, primeicons !important;
+}
+
+/* Hide main menu */
+#main-menu {
+  display: none;
+}
+
+/* Hide scrollbar for the entire page/html/body */
+html, body {
+  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+  overflow: hidden;
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: Calibri, sans-serif, primeicons !important;
+}
+
+/* Hide scrollbar for the entire page/html/body in Webkit browsers */
+html::-webkit-scrollbar, 
+body::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* Reduce Space berween Chart Title and Chart Menu (3 dots) */
+/*.css-8ctgse {*/
+/*    padding: 1px 0px;*/
+/*}*/
+/* Chart Container - To avoid Hiding the terndline bar in bignumber charts */
+/*.chart-container {*/
+/*    width: 100%;*/
+/*    height: 100%;*/
+/*    background-color: #fff;*/
+/*    padding-top: 5px;*/
+/*    padding-right: 12px;*/
+/*    border-radius: 1px;*/
+/*}*/
+/* Chart - Header title */  
+.header-title {
+color: #323232 !important;
+font-size: 15px;
+text-align: center;
+font-weight: bold !important;
+}
+/* Big Number Chart -- start*/
+.superset-legacy-chart-big-number .header-line
+{
+text-align: center !important;
+font-size: 30px !important;
+display: block;
+width: 100%;
+}
+.superset-legacy-chart-big-number .kicker
+{
+  text-align: center !important;
+  font-size: 30px !important;
+  color: #000080;
+  display: block;
+  width: 100%;
+}
+.superset-legacy-chart-big-number .subheader-line
+{
+  text-align: center !important;
+  font-size: 15px !important;
+  color: #000080;
+  display: block;
+  width: 100%;
+  
+}
+.superset-legacy-chart-big-number .text-container
+{
+text-align: center !important;
+display: block;
+width: 100%;
+}
+/* Big Number Chart -- End*/
+
+/* Border Start */
+/* Spacing between Charts/Columns */
+.grid-row > :not(:only-child):not(:last-child):not(.hover-menu) {
+ margin-right: 4px !important;
+}
+/* Space between Grid Rows -- Start*/
+.grid-content > div:not(:only-child):not(:last-child):not(.empty-droptarget) {
+  margin-bottom: 8px !important;
+}
+.grid-container {
+ margin: 4px !important;
+}
+.dashboard-component-chart-holder:after {
+border: 0 !important;
+}
+.dashboard--editing .grid-row:after {
+border: 0 !important;
+display:none;
+}
+.dragdroppable {
+width: 100%;
+}
+.dragdroppable-column .resizable-container {
+width: 100% !important;
+max-width: 100% !important;
+}
+.grid-row {
+  background-color: #F7F7F7 !important;
+  padding: 2px !important;
+}
+.dashboard-component-tabs-content > div:not(:last-child):not(.empty-droptarget) {
+    margin-bottom: 0px !important;
+}
+/* Space between Grid Rows -- End*/
+
+/* Headers row */
+.dashboard-component-header {
+  padding: 6px 0 !important;
+}
+.header-medium {
+  font-size: 20px !important;
+}
+.header-style-option {
+  color: #000080 !important;
+  font-weight: 600;
+  text-align: center !important;
+  background-color: #F7F7F7 !important;
 }

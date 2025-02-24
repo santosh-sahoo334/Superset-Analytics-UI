@@ -1,7 +1,7 @@
 /* Add at the very top of the file */
-* {
+/* * {
   font-family: 'calibri', sans-serif, 'primeicons' !important;
-}
+} */
 
 .stable-menu {
   width: 100%;
@@ -643,13 +643,6 @@
 .header-logo {
   height: 40px;
   width: auto;
-}
-
-.header-title{
-  color: #323232 !important;
-  font-size: 15px !important;
-  text-align: center !important;
-  font-weight: 500 !important;
 }
 
 .header-title-csight {
@@ -1325,18 +1318,7 @@
   background: #F3E7BF !important;
 } */
 
-/* Hide scrollbar for the entire page/html/body */
-html, body {
-  scrollbar-width: none;  /* Firefox */
-  -ms-overflow-style: none;  /* IE and Edge */
-  overflow: hidden;
-}
 
-/* Hide scrollbar for the entire page/html/body in Webkit browsers */
-html::-webkit-scrollbar, 
-body::-webkit-scrollbar {
-  display: none;
-}
 
 /* Show scrollbar only in site-content */
 .site-content {
