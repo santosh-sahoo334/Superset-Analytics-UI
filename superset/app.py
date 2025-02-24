@@ -117,6 +117,8 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
                     print(f"Session after clear: {session}")
                     response = redirect("/login")
                     response.set_cookie("session", "", expires=0)  # Expire the session cookie
+                    response.set_cookie("refresh_token", "", expires=0)  # Expire the refresh_token
+                    response.set_cookie("slug", "", expires=0)  # Expire the slug
                     return response
                     # return redirect("/login")
                     # abort(403, "Not a Valid Session")
