@@ -169,10 +169,10 @@ display:none;
 .dragdroppable {
 width: 100%;
 }
-.dragdroppable-column .resizable-container {
+/* .dragdroppable-column .resizable-container {
 width: 100% !important;
 max-width: 100% !important;
-}
+} */
 .grid-row {
   background-color: #F7F7F7 !important;
   padding: 2px !important;
