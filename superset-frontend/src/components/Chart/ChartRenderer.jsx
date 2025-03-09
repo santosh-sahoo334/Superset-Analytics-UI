@@ -33,8 +33,17 @@ import { EmptyStateBig, EmptyStateSmall } from 'src/components/EmptyState';
 import { ChartSource } from 'src/types/ChartSource';
 import ChartContextMenu from './ChartContextMenu/ChartContextMenu';
 
+import getBootstrapData from 'src/utils/getBootstrapData';
+
+const bootstrapData = getBootstrapData();
+
+const userEmail = bootstrapData?.user?.username || null;
+
+const adminList =process.env.ADMIN_EMAIL || [];
+
 const propTypes = {
   annotationData: PropTypes.object,
+  actions: PropTypes.object,
   actions: PropTypes.object,
   chartId: PropTypes.number.isRequired,
   datasource: PropTypes.object,
@@ -345,8 +354,8 @@ class ChartRenderer extends React.Component {
             id={`chart-id-${chartId}`}
             className={chartClassName}
             chartType={vizType}
-            width={width<1350?width:1350}
-            height={height<550?vizType === 'table'?height-15:(height-26):vizType === 'table'?600:550}
+            width={userEmail && !adminList?.includes(userEmail)?width<1350?width:1350:width}
+            height={userEmail && !adminList?.includes(userEmail)?height<550?vizType === 'table'?height-15:(height-26):vizType === 'table'?600:550:height-15}
             annotationData={annotationData}
             datasource={datasource}
             initialValues={initialValues}

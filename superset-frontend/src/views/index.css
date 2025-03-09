@@ -118,14 +118,14 @@ font-weight: bold !important;
 .superset-legacy-chart-big-number .header-line
 {
 text-align: center !important;
-font-size: 30px !important;
+font-size: 1.5rem !important;
 display: block;
 width: 100%;
 }
 .superset-legacy-chart-big-number .kicker
 {
   text-align: center !important;
-  font-size: 30px !important;
+  font-size: 1.5rem !important;
   color: #000080;
   display: block;
   width: 100%;
@@ -133,7 +133,7 @@ width: 100%;
 .superset-legacy-chart-big-number .subheader-line
 {
   text-align: center !important;
-  font-size: 15px !important;
+  font-size: 1rem !important;
   color: #000080;
   display: block;
   width: 100%;
@@ -149,16 +149,16 @@ width: 100%;
 
 /* Border Start */
 /* Spacing between Charts/Columns */
-.grid-row > :not(:only-child):not(:last-child):not(.hover-menu) {
+/* .grid-row > :not(:only-child):not(:last-child):not(.hover-menu) {
  margin-right: 4px !important;
-}
+} */
 /* Space between Grid Rows -- Start*/
-.grid-content > div:not(:only-child):not(:last-child):not(.empty-droptarget) {
+/* .grid-content > div:not(:only-child):not(:last-child):not(.empty-droptarget) {
   margin-bottom: 8px !important;
-}
-.grid-container {
+} */
+/* .grid-container {
  margin: 4px !important;
-}
+} */
 .dashboard-component-chart-holder:after {
 border: 0 !important;
 }
@@ -166,16 +166,16 @@ border: 0 !important;
 border: 0 !important;
 display:none;
 }
-.dragdroppable {
+/* .dragdroppable {
 width: 100%;
-}
+} */
 /* .dragdroppable-column .resizable-container {
 width: 100% !important;
 max-width: 100% !important;
 } */
 .grid-row {
   background-color: #F7F7F7 !important;
-  padding: 2px !important;
+  padding: 1px !important;
 }
 .dashboard-component-tabs-content > div:not(:last-child):not(.empty-droptarget) {
     margin-bottom: 0px !important;

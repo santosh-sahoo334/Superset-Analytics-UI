@@ -40,6 +40,14 @@ import SliceHeader from '../SliceHeader';
 import MissingChart from '../MissingChart';
 import { slicePropShape, chartPropShape } from '../../util/propShapes';
 
+import getBootstrapData from 'src/utils/getBootstrapData';
+
+const bootstrapData = getBootstrapData();
+
+const userEmail = bootstrapData?.user?.username || null;
+
+const adminList =process.env.ADMIN_EMAIL || [];
+
 const propTypes = {
   id: PropTypes.number.isRequired,
   componentId: PropTypes.string.isRequired,
@@ -424,8 +432,8 @@ class Chart extends React.Component {
     return (
       <SliceContainer
         style={{
-          paddingTop: isFullSize? '60px' : '0px',
-          paddingLeft: isFullSize? '70px' : '0px',
+          paddingTop: userEmail && !adminList?.includes(userEmail)? isFullSize? '60px' : '0px': '0px',
+          paddingLeft: userEmail && !adminList?.includes(userEmail)? isFullSize? '70px' : '0px': '0px',
         }}
         className={`chart-slice`}
         data-test="chart-grid-component"

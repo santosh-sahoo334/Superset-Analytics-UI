@@ -82,16 +82,16 @@ const GridRow = styled.div`
     height: fit-content;
 
     & > :not(:last-child):not(.hover-menu) {
-      ${!editMode && `margin-right: ${theme.gridUnit * 4}px;`}
+      ${!editMode && `margin-right: ${theme.gridUnit * 1}px;`}
     }
 
     & .empty-droptarget {
       position: relative;
       align-self: center;
       &.empty-droptarget--vertical {
-        min-width: ${theme.gridUnit * 4}px;
+        min-width: ${theme.gridUnit * 1}px;
         &:not(:last-child) {
-          width: ${theme.gridUnit * 4}px;
+          width: ${theme.gridUnit * 1}px;
         }
         &:first-child:not(.droptarget-side) {
           z-index: ${EMPTY_CONTAINER_Z_INDEX};

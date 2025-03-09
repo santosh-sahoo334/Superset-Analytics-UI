@@ -122,8 +122,8 @@ const StyledHeader = styled.div`
       position: absolute;
       content: '';
       display: none;
-      width: calc(100% - ${theme.gridUnit * 2}px);
-      height: calc(100% - ${theme.gridUnit * 2}px);
+      width: calc(100% - ${theme.gridUnit * 1}px);
+      height: calc(100% - ${theme.gridUnit * 1}px);
       left: ${theme.gridUnit}px;
       top: ${theme.gridUnit}px;
       border: 1px dashed transparent;
@@ -308,9 +308,9 @@ const StyledDashboardContent = styled.div<{
       width: 0;
       flex: 1;
       position: relative;
-      margin-top: ${theme.gridUnit * 6}px;
-      margin-right: ${theme.gridUnit * 8}px;
-      margin-bottom: ${theme.gridUnit * 6}px;
+      margin-top: ${theme.gridUnit * 1.5}px;
+      margin-right: ${theme.gridUnit * 2}px;
+      margin-bottom: ${theme.gridUnit * 1.5}px;
       margin-left: ${marginLeft}px;
 
       ${editMode &&

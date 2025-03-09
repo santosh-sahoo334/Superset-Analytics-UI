@@ -63,8 +63,9 @@ const GridContent = styled.div`
     }
 
     .empty-droptarget {
+      min-width: 1px !important;
       width: 100%;
-      height: ${theme.gridUnit * 4}px;
+      height: ${theme.gridUnit * 1}px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -74,8 +75,8 @@ const GridContent = styled.div`
       &:before {
         content: '';
         display: block;
-        width: calc(100% - ${theme.gridUnit * 2}px);
-        height: calc(100% - ${theme.gridUnit * 2}px);
+        width: calc(100% - ${theme.gridUnit * 1}px);
+        height: calc(100% - ${theme.gridUnit * 1}px);
         border: 1px dashed transparent;
         border-radius: ${theme.gridUnit}px;
         opacity: 0.5;
