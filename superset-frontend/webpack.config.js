@@ -135,6 +135,8 @@ const plugins = [
     'process.env.REACT_APP_CINDY_AUTH_TOKEN': JSON.stringify(process.env.REACT_APP_CINDY_AUTH_TOKEN || ''),
     'process.env.ADMIN_EMAIL': JSON.stringify(process.env.ADMIN_EMAIL) || '[]',
     'process.env.REACT_APP_LOGO_TEXT': JSON.stringify(process.env.REACT_APP_LOGO_TEXT) || 'Multi-Cloud FinOps',
+    'process.env.REACT_APP_DWORKS_BASE_URL': JSON.stringify(process.env.REACT_APP_DWORKS_BASE_URL || ''),
+    'process.env.REACT_APP_DWORKS_API_KEY': JSON.stringify(process.env.REACT_APP_DWORKS_API_KEY || ''),
     'process.env.REACT_APP_MENU_CONFIG': JSON.stringify({
       dashboard: {
         id: "dashboard",

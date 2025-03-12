@@ -99,6 +99,10 @@ const refreshAccessToken = async () => {
   }
 };
 
+const RAG_HTTP = axios.create({
+  baseURL: `${process.env.REACT_APP_SUPERSET_BASE_URL}`,
+});
+
 const HTTP = axios.create({
   baseURL: `${process.env.REACT_APP_SUPERSET_BASE_URL}/api/v1`,
 });
@@ -148,7 +152,17 @@ HTTP.interceptors.response.use(
   }
 );
 
+const DWORKS_HTTP = axios.create({
+  baseURL: `${process.env.REACT_APP_DWORKS_BASE_URL}/api/v1/`,
+  headers: {
+    'X-API-Key': `${process.env.REACT_APP_DWORKS_API_KEY}`,
+    'Content-Type': 'application/json',
+  }
+});
+
 export {
+  RAG_HTTP,
+  DWORKS_HTTP,
   HTTP,
   REFRESH_TOKEN,
   SLUG,

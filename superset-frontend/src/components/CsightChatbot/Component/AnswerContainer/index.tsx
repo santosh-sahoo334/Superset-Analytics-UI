@@ -1,6 +1,6 @@
 /* eslint-disable */
 // @ts-nocheck
-import React from 'react'
+import React, { useContext, useMemo } from 'react'
 import { v4 as uuidv4 } from "uuid"
 import { GraphData, useAIBotContext } from '../../Context'
 import BarEchart from '../../Graph/Echart/BarEchart'
@@ -8,7 +8,17 @@ import LineEchart from '../../Graph/Echart/LineEchart'
 import PieEchart from '../../Graph/Echart/PieEchart'
 import DonutEchart from '../../Graph/Echart/DonutEchart'
 import { useToast } from '../../../CsightCommon/context/ToastContext'
-
+import React from 'react'
+import { DataMaskStateWithId } from '@superset-ui/core'
+import React from 'react'
+import { useNativeFiltersDataMask, useFilters } from 'src/dashboard/components/nativeFilters/FilterBar/state'
+import { useImmer } from 'use-immer'
+import React from 'react'
+import { LayoutContext } from 'src/layout/context/layoutcontext'
+import React from 'react'
+import { extractFiltersForNavItem } from '../../index'
+import React from 'react'
+import Cookie from 'js-cookie'
 interface AnswerContainerProps {
     answer: string
     isLoading: boolean
@@ -25,13 +35,98 @@ export const SuggestionQuestion = ({ question = "N/A", onClickSuggestion = (_que
     </div>
 }
 
-const AnswerContainer: React.FC<AnswerContainerProps> = ({ answer, isLoading, suggested_questions = [], graphData, isGraphType, date, graphType }) => {
-    const { isResize, getTaskID, setPrompts } = useAIBotContext()
+const AnswerContainer: React.FC<AnswerContainerProps> = ({ spinalQuestions, answer, isLoading, suggested_questions = [], graphData, isGraphType, date, graphType, pageName, slugName }) => {
+    const { isResize, getTaskID, setPrompts,getSpinalAnswer,setIsLoading } = useAIBotContext()
     const { showToast } = useToast()
 
-    const onClickSuggestion = (question: string) => {
+    const dataMaskApplied: DataMaskStateWithId = useNativeFiltersDataMask();
+    const [dataMaskSelected, setDataMaskSelected] =
+        useImmer<DataMaskStateWithId>(dataMaskApplied);
+    const filters = useFilters();
+    const filterValues = Object.values(filters);
+
+    // Merge dataMaskApplied with filterValues
+    const mergedFilters = useMemo(() => {
+        try {
+            if (!dataMaskApplied || !filterValues?.length) {
+                return [];
+            }
+
+            return filterValues.map(filter => {
+                if (!filter?.id) return filter;
+
+                const maskData = dataMaskApplied[filter.id];
+                if (!maskData) return filter;
+
+                return {
+                    ...filter,
+                    ...maskData
+                };
+            });
+        } catch (error) {
+            console.error('Error merging filters:', error);
+            return filterValues;
+        }
+    }, [dataMaskApplied, filterValues]);
+
+    const { clickedNavItem, previousNavItem, setPreviousNavItem } = useContext(LayoutContext);
+
+    const onSpinalQuestion = async (question: string, page_name: string) => {
+        const id = uuidv4();
+        try {
+            setIsLoading(true);
+            console.log("question===", question);
+            if (!question) {
+                return showToast(
+                "Please select valid question",
+                "error",
+                "Invalid Question"
+            );
+        }
+
+        const filterData = await extractFiltersForNavItem(clickedNavItem, mergedFilters);
+        console.log("filterData===", filterData);
+
+        setPrompts((p) => [
+            ...p,
+            {
+              id,
+              answer: "",
+              question: question,
+              suggested_questions: [],
+              task_id: null,
+              isLoading: true,
+              questionTime: new Date(),
+              answerTime: null,
+            },
+          ]);
+          const processedFilterData = Object.keys(filterData).reduce((acc, key) => {
+            acc[key] = filterData[key] !== null ? typeof filterData[key] == 'string' ? filterData[key] : 
+            filterData[key]?.toString() : null;
+            return acc;
+          }, {});
+          getSpinalAnswer(question, id, processedFilterData, (page_name || pageName), (slugName || Cookie.get("slug")));
+        } catch (error) {
+            setIsLoading(false);
+            console.error('Error onSpinalQuestion:', error);
+            showToast("Something went wrong.", "error", "Something went wrong.");
+            setPrompts((prevPrompt) => {
+                return prevPrompt?.map((prompt) => {
+                  if (prompt?.id === id) {
+                    return { ...prompt, isLoading: false };
+                  }
+                  return prompt;
+                });
+              });
+        }
+    }
+
+    const onClickSuggestion = async (question: string, page_name: string) => {
         if (!question) {
             return showToast("Please type valid question", "error", "Invalid Question")
+        }
+        if (page_name || spinalQuestions) {
+            return await onSpinalQuestion(question, page_name);
         }
         const id = uuidv4();
         setPrompts((p => ([...p, { id, answer: "", question: question, suggested_questions: [], task_id: null, isLoading: true, questionTime: new Date(), answerTime: null }])))
@@ -79,9 +174,17 @@ const AnswerContainer: React.FC<AnswerContainerProps> = ({ answer, isLoading, su
                 <div className="questions-container">
                     <div className="flex gap-3 flex-column">
                         {suggested_questions?.map((question, index) => (
-                            <div key={index}>
-                                <SuggestionQuestion question={question} onClickSuggestion={onClickSuggestion} />
-                            </div>
+                            typeof question === 'string' ? (
+                                <div key={index}>
+                                    <SuggestionQuestion question={question} onClickSuggestion={()=>onClickSuggestion(question)} />
+                                </div>
+                            ) : (
+                                question?.questions?.map((q, index) => (
+                                    <div key={index}>
+                                        <SuggestionQuestion question={q} onClickSuggestion={()=>onClickSuggestion(q,question?.page_name)} />
+                                    </div>
+                                ))
+                            )
                         ))}
                     </div>
                 </div>

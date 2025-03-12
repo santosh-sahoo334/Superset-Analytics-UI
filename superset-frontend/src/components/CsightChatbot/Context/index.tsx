@@ -1,7 +1,7 @@
 /* eslint-disable */
 // @ts-nocheck
 // import axiosInstance from "../../CsightCommon/config/axiosInstance";
-import { HTTP } from "../../CsightCommon/config/http-common";
+import { HTTP, DWORKS_HTTP, RAG_HTTP } from "../../CsightCommon/config/http-common";
 import { useAuth } from "../../CsightCommon/context/AuthContext";
 import { useToast } from "../../CsightCommon/context/ToastContext";
 import React, {
@@ -79,6 +79,7 @@ interface AIBotContextType {
   setPrompts: React.Dispatch<React.SetStateAction<PromptAndRespponse[]>>;
   getTextAnswer: (task_id: string) => Promise<void>;
   getTaskID: (question: string, question_id: string, filterData: any) => Promise<void>;
+  getSpinalAnswer: (question: string, question_id: string, filterData: any, pageName: string, slugName: string) => Promise<void>;
   getGraphTaskID: (
     question: string,
     question_id: string,
@@ -92,29 +93,32 @@ interface AIBotContextType {
   setFlashCardData: React.Dispatch<React.SetStateAction<FlashCardData[]>>;
   selectedDropDownGraph: any;
   setselectedDropDownGraph: React.Dispatch<any>;
+  getQuestionList: (body: any) => Promise<void>;
 }
 
 const AibotContext = createContext<AIBotContextType>({
   opneChatModal: false,
   setOpenChatModal: () => false,
   isResize: false,
-  setIsResize: () => {},
+  setIsResize: () => { },
   question: "",
   setQuestion: () => "",
   isLoading: false,
   setIsLoading: () => false,
   prompts: [],
   setPrompts: () => [],
-  getTaskID: async () => {},
-  getGraphTaskID: async () => {},
-  getTextAnswer: async () => {},
+  getTaskID: async () => { },
+  getSpinalAnswer: async () => { },
+  getGraphTaskID: async () => { },
+  getTextAnswer: async () => { },
   messageContainerRef: null,
   selectedGraph: { isSelected: false, type: null, graph_type: null },
-  setSelectedGraph: () => {},
+  setSelectedGraph: () => { },
   flashCardData: [],
-  setFlashCardData: () => {},
+  setFlashCardData: () => { },
   selectedDropDownGraph: null,
   setselectedDropDownGraph: () => null,
+  getQuestionList: async () => { },
 });
 
 interface AIBotProviderProps {
@@ -157,7 +161,7 @@ const AIbotState = () => {
     // },
   ]);
 
- const parseSuggestedQuestions = (jsonString: string) => {
+  const parseSuggestedQuestions = (jsonString: string) => {
     try {
       const pattern = /^```json\s*([\s\S]*?)\s*```$/;
       const cleanedString = jsonString.replace(pattern, "$1")?.trim();
@@ -186,6 +190,46 @@ const AIbotState = () => {
     return jsonString;
   };
 
+  interface ParsedResponseData {
+    answer: string;
+    suggestedQuestions: any[];
+  }
+
+  const parseResponseData = (data: { answer: string; question: string; suggested_questions: string }): ParsedResponseData => {
+    try {
+      // Split the answer by the JSON block markers
+      const parts = data.answer.split(/```json|```/);
+      
+      // Combine text parts (before and after JSON) and clean them
+      const textParts = parts.filter((part, index) => index % 2 === 0)
+        .map(part => part.trim())
+        .filter(part => part.length > 0);
+      
+      // Join text parts with proper spacing
+      const textAnswer = textParts.join('\n\n');
+
+      // Extract JSON content
+      let suggestedQuestions: any[] = [];
+      const jsonMatch = data.answer.match(/```json\s*([\s\S]*?)\s*```/);
+      
+      if (jsonMatch && jsonMatch[1]) {
+        const jsonContent = jsonMatch[1].trim();
+        suggestedQuestions = JSON.parse(jsonContent);
+      }
+
+      return {
+        answer: textAnswer,
+        suggestedQuestions
+      };
+    } catch (error) {
+      console.error("Error parsing response data:", error);
+      return {
+        answer: data.answer,
+        suggestedQuestions: []
+      };
+    }
+  };
+
   const parseGraphData = (jsonString: string) => {
     try {
       const pattern = /```json\s*([\s\S]*?)\s*```/;
@@ -196,7 +240,7 @@ const AIbotState = () => {
         const cleanedString = match[1].trim();
         // Remove trailing commas before JSON parsing
         const removeTrailingCommas = cleanedString.replace(/,(\s*[}\]])/g, '$1');
-        const removeCommentFromCleanedJson = 
+        const removeCommentFromCleanedJson =
           removeCommentsFromJSON(removeTrailingCommas);
         const parsedString = JSON.parse(removeCommentFromCleanedJson);
 
@@ -244,24 +288,45 @@ const AIbotState = () => {
       }
 
       if (data && data?.result?.answer) {
-        setPrompts((prompts:any) =>
-          prompts?.map((p:any) => {
+        setPrompts((prompts: any) =>
+          prompts?.map((p: any) => {
             if (p.task_id === task_id) {
-              const graphData = isGraphType
-                ? parseGraphData(data?.result?.answer)
-                : null;
-              return {
-                ...p,
-                answer: isGraphType
-                  ? extractTextBeforeJson(data?.result?.answer)
-                  : data?.result?.answer,
-                suggested_questions: parseSuggestedQuestions(
-                  data?.result?.suggested_questions
-                ),
-                isLoading: false,
-                graphData: graphData?.isValid ? graphData?.data : null,
-                answerTime: new Date(),
-              };
+              if (p?.isStandardQuestion) {
+                const { answer, suggestedQuestions } = parseResponseData(data?.result);
+                console.log("answer===", answer);
+                console.log("suggestedQuestions===", suggestedQuestions);
+                const graphData = isGraphType
+                  ? parseGraphData(data?.result?.answer)
+                  : null;
+                return {
+                  ...p,
+                  answer: isGraphType
+                    ? extractTextBeforeJson(answer)
+                    : answer,
+                  suggested_questions: suggestedQuestions && suggestedQuestions.length>0 ? (suggestedQuestions?.['on-screen_questions'] || suggestedQuestions) : parseSuggestedQuestions(
+                    data?.result?.suggested_questions
+                  ),
+                  isLoading: false,
+                  graphData: graphData?.isValid ? graphData?.data : null,
+                  answerTime: new Date(),
+                };
+              } else {
+                const graphData = isGraphType
+                  ? parseGraphData(data?.result?.answer)
+                  : null;
+                return {
+                  ...p,
+                  answer: isGraphType
+                    ? extractTextBeforeJson(data?.result?.answer)
+                    : data?.result?.answer,
+                  suggested_questions: parseSuggestedQuestions(
+                    data?.result?.suggested_questions
+                  ),
+                  isLoading: false,
+                  graphData: graphData?.isValid ? graphData?.data : null,
+                  answerTime: new Date(),
+                };
+              }
             }
             return p;
           })
@@ -274,8 +339,94 @@ const AIbotState = () => {
     } catch (error) {
       setIsLoading(false);
       showToast("Something went wrong.", "error", "Something went wrong.");
+      setPrompts((prevPrompt) => {
+        return prevPrompt?.map((prompt) => {
+          if (prompt?.task_id === task_id) {
+            return { ...prompt, isLoading: false };
+          }
+          return prompt;
+        });
+      });
     }
   };
+
+  const ragQuerySpinalCord = async (data: any, question: string, question_id: string) => {
+    try {
+      console.log("ragQuerySpinalCord data===", data);
+      const taskPayload = {
+        org_id: process.env.REACT_APP_CINDY_ORG_ID,
+        project_id: process.env.REACT_APP_CINDY_PROJECT_ID,
+        question: question,
+        doc_type: process.env.REACT_APP_CINDY_DOC_TYPE,
+        app_type: process.env.REACT_APP_CINDY_APP_TYPE,
+        spinal_cord_data: JSON.stringify(data),
+        // email_id: process.env.REACT_APP_CINDY_EMAIL_ID_TOKEN,
+        // AUTH_TOKEN: process.env.REACT_APP_CINDY_AUTH_TOKEN,
+      };
+      const { data: dataSpinalCord } = await HTTP.post("/ragqexpress/", taskPayload, { headers: { Authorization: accessToken } });
+      console.log("ragQuerySpinalCord data===", dataSpinalCord);
+      if (dataSpinalCord && dataSpinalCord?.task_id) {
+        setPrompts((prevPrompt) => {
+          return prevPrompt?.map((prompt) => {
+            if (prompt?.id === question_id) {
+              return { ...prompt, task_id: dataSpinalCord?.task_id };
+            }
+            return prompt;
+          });
+        });
+        getTextAnswer(dataSpinalCord?.task_id);
+      } else {
+        setPrompts((prevPrompt) => {
+          return prevPrompt?.map((prompt) => {
+            if (prompt?.id === question_id) {
+              return { ...prompt, isLoading: false };
+            }
+            return prompt;
+          });
+        });
+        setIsLoading(false);
+        showToast("Something went wrong.", "error", "Something went wrong.");
+      }
+    } catch (error) {
+      setIsLoading(false);
+      showToast("Something went wrong.", "error", "Something went wrong.");
+      setPrompts((prevPrompt) => {
+        return prevPrompt?.map((prompt) => {
+          if (prompt?.id === question_id) {
+            return { ...prompt, isLoading: false };
+          }
+          return prompt;
+        });
+      });
+    }
+  }
+
+  const getSpinalAnswer = async (question: string, question_id: string, filterData: any, pageName: string, slugName: string) => {
+    try {
+      setIsLoading(true);
+      const taskPayload = {
+        question: question,
+        ...filterData,
+        page_name: pageName,
+        slug_name: slugName
+      };
+      let { data } = await DWORKS_HTTP.post("/cisght/ask_q", taskPayload);
+      console.log("getSpinalAnswer data===", data);
+      data = data && data.length > 0 ? data : [];
+      ragQuerySpinalCord(data, question, question_id);
+    } catch (error) {
+      setIsLoading(false);
+      showToast("Something went wrong.", "error", "Something went wrong.");
+      setPrompts((prevPrompt) => {
+        return prevPrompt?.map((prompt) => {
+          if (prompt?.id === question_id) {
+            return { ...prompt, isLoading: false };
+          }
+          return prompt;
+        });
+      });
+    }
+  }
 
   const getTaskID = async (question: string, question_id: string, filterData: any) => {
     try {
@@ -314,6 +465,16 @@ const AIbotState = () => {
       showToast("Something went wrong.", "error", "Something went wrong.");
     }
   };
+
+  const getQuestionList = async (body: any) => {
+    try {
+      const { data } = await DWORKS_HTTP.post("/csight/quesiton_list", body);
+      return data;
+    } catch (error) {
+      console.log("getQuestionList error", error);
+      return [];
+    }
+  }
 
   const getGraphTaskID = async (
     question: string,
@@ -380,6 +541,8 @@ const AIbotState = () => {
     setFlashCardData,
     selectedDropDownGraph,
     setselectedDropDownGraph,
+    getQuestionList,
+    getSpinalAnswer
   };
 };
 

@@ -172,6 +172,106 @@ const formatDateRange = async (dateKey: string): Promise<{ from: string; to: str
   }
 };
 
+// Extract this to a common function outside the ChatBot component
+export const extractFiltersForNavItem = async (clickedNavItem, mergedFilters) => {
+  let filterData = {};
+  
+  // Filter mapping definitions by nav item
+  const filterMappings = {
+    "cost": {
+      "date": "filter_datekey",
+      "service provider": "filter_cloud_provider",
+      "account": "filter_billing_account_name",
+      "customer": "filter_customer_name",
+      "region": "filter_resource_region",
+      "resource": "filter_resource_name"
+    },
+    "billing": {
+      "date": "filter_datekey",
+      "service provider": "filter_cloud_provider",
+      "account": "filter_billing_account_name",
+      "region": "filter_resource_region",
+      "resource": "filter_resource_name"
+    },
+    "recommendations": {
+      "date": "filter_datekey",
+      "service provider": "filter_cloud_provider",
+      "account": "filter_billing_account_name",
+      "region": "filter_resource_region",
+      "resource": "filter_resource_name"
+    },
+    "greenops": {
+      "date": "filter_datekey",
+      "service provider": "filter_cloud_provider",
+      "account": "filter_billing_account_name",
+      "region": "filter_resource_region",
+      "resource": "filter_resource_name"
+    },
+    "tags": {
+      "date": "filter_datekey",
+      "service provider": "filter_cloud_provider",
+      "account": "filter_billing_account_name",
+      "region": "filter_resource_region",
+      "resource": "filter_resource_name",
+      "component": "filter_resource_component",
+      "tag key": "filter_tag_key",
+      "tag value": "filter_tag_value"
+    },
+    "utilization": {
+      "date": "filter_datekey",
+      "account": "filter_billing_account_name",
+      "region": "filter_resource_region",
+      "instance name": "filter_instance_name",
+      "instance type": "filter_instance_type"
+    }
+  };
+
+  const navItemLower = clickedNavItem?.toLowerCase();
+  const mapping = filterMappings[navItemLower];
+  
+  if (mapping) {
+    const extractedFilters = mergedFilters?.reduce((acc, filter) => {
+      const filterName = filter?.name?.toLowerCase();
+      if (filterName in mapping) {
+        acc[mapping[filterName]] = filter?.filterState?.value || null;
+      }
+      return acc;
+    }, {});
+    
+    filterData = extractedFilters;
+    console.log(`Extracted Filters for ${clickedNavItem}:`, extractedFilters);
+  }
+
+  const NAV_ITEM_MAPPING = {
+    "Cost": "cost",
+    "Utilization": "utilization",
+    "Billing": "billing",
+    "Tags": "tags",
+    "Observability": "observability",
+    "Anomaly": "anomaly",
+    "Recommendations": "recommendations",
+    "Governance": "governance",
+    "Bud vs Act": "bud vs act",
+    "GreenOps": "greenops",
+    "OnPrem": "onnprem"
+  };
+
+  filterData['page_name'] = NAV_ITEM_MAPPING[clickedNavItem] || null;
+  filterData['slug_name'] = Cookies.get('slug') || 'teksecur';
+
+  if(filterData['filter_datekey'] && filterData['filter_datekey'] != NO_TIME_RANGE) {
+    const dateRange = await formatDateRange(filterData['filter_datekey']);
+    if (dateRange) {
+      filterData['filter_end_date'] = dateRange?.to;
+      filterData['filter_start_date'] = dateRange?.from;
+    }
+    delete filterData['filter_datekey'];
+  } else {
+    delete filterData['filter_datekey'];
+  }
+  return filterData;
+};
+
 const ChatBot = () => {
   const {
     opneChatModal,
@@ -189,7 +289,8 @@ const ChatBot = () => {
     getGraphTaskID,
     selectedDropDownGraph,
     setselectedDropDownGraph,
-    flashCardData
+    flashCardData,
+    getQuestionList
   } = useAIBotContext();
 
 
@@ -251,152 +352,11 @@ const ChatBot = () => {
     }
     const id = uuidv4();
 
-    let filterData = {};
+    // Replace the large filter extraction block with a call to the common function
+    const filterData = await extractFiltersForNavItem(clickedNavItem, mergedFilters);
 
-    // Extract filter values based on clickedNavItem
-    if (clickedNavItem?.toLowerCase() === "cost") {
-      const filterMapping = {
-        "date": "filter_datekey",
-        "service provider": "filter_cloud_provider",
-        "account": "filter_billing_account_name",
-        "customer": "filter_customer_name",
-        "region": "filter_resource_region",
-        "resource": "filter_resource_name"
-      };
-
-      const extractedFilters = mergedFilters?.reduce((acc, filter) => {
-        const filterName = filter?.name?.toLowerCase();
-        if (filterName in filterMapping) {
-          acc[filterMapping[filterName]] = filter?.filterState?.value || null;
-        }
-        return acc;
-      }, {});
-      filterData = extractedFilters;
-      console.log("Extracted Filters for Cost:", extractedFilters);
-    } else if (clickedNavItem?.toLowerCase() === "billing") {
-      const filterMapping = {
-        "date": "filter_datekey",
-        "service provider": "filter_cloud_provider",
-        "account": "filter_billing_account_name",
-        "region": "filter_resource_region",
-        "resource": "filter_resource_name"
-      };
-
-      const extractedFilters = mergedFilters?.reduce((acc, filter) => {
-        const filterName = filter?.name?.toLowerCase();
-        if (filterName in filterMapping) {
-          acc[filterMapping[filterName]] = filter?.filterState?.value || null;
-        }
-        return acc;
-      }, {});
-      filterData = extractedFilters;
-      console.log("Extracted Filters for Billing:", extractedFilters);
-    } else if (clickedNavItem?.toLowerCase() === "recommendations") {
-      const filterMapping = {
-        "date": "filter_datekey",
-        "service provider": "filter_cloud_provider",
-        "account": "filter_billing_account_name",
-        "region": "filter_resource_region",
-        "resource": "filter_resource_name"
-      };
-
-      const extractedFilters = mergedFilters?.reduce((acc, filter) => {
-        const filterName = filter?.name?.toLowerCase();
-        if (filterName in filterMapping) {
-          acc[filterMapping[filterName]] = filter?.filterState?.value || null;
-        }
-        return acc;
-      }, {});
-      filterData = extractedFilters;
-      console.log("Extracted Filters for Recommendations:", extractedFilters);
-    } else if (clickedNavItem?.toLowerCase() === "greenops") {
-      const filterMapping = {
-        "date": "filter_datekey",
-        "service provider": "filter_cloud_provider",
-        "account": "filter_billing_account_name",
-        "region": "filter_resource_region",
-        "resource": "filter_resource_name"
-      };
-
-      const extractedFilters = mergedFilters?.reduce((acc, filter) => {
-        const filterName = filter?.name?.toLowerCase();
-        if (filterName in filterMapping) {
-          acc[filterMapping[filterName]] = filter?.filterState?.value || null;
-        }
-        return acc;
-      }, {});
-      filterData = extractedFilters;
-      console.log("Extracted Filters for GreenOps:", extractedFilters);
-    } else if (clickedNavItem?.toLowerCase() === "tags") {
-      const filterMapping = {
-        "date": "filter_datekey",
-        "service provider": "filter_cloud_provider",
-        "account": "filter_billing_account_name",
-        "region": "filter_resource_region",
-        "resource": "filter_resource_name",
-        "component": "filter_resource_component",
-        "tag key": "filter_tag_key",
-        "tag value": "filter_tag_value"
-      };
-
-      const extractedFilters = mergedFilters?.reduce((acc, filter) => {
-        const filterName = filter?.name?.toLowerCase();
-        if (filterName in filterMapping) {
-          acc[filterMapping[filterName]] = filter?.filterState?.value || null;
-        }
-        return acc;
-      }, {});
-      filterData = extractedFilters;
-      console.log("Extracted Filters for Tags:", extractedFilters);
-    } else if (clickedNavItem?.toLowerCase() === "utilization") {
-      const filterMapping = {
-        "date": "filter_datekey",
-        "account": "filter_billing_account_name",
-        "region": "filter_resource_region",
-        "instance name": "filter_instance_name",
-        "instance type": "filter_instance_type"
-      };
-
-      const extractedFilters = mergedFilters?.reduce((acc, filter) => {
-        const filterName = filter?.name?.toLowerCase();
-        if (filterName in filterMapping) {
-          acc[filterMapping[filterName]] = filter?.filterState?.value || null;
-        }
-        return acc;
-      }, {});
-      filterData = extractedFilters;
-      console.log("Extracted Filters for Utilization:", extractedFilters);
-    }
-
-    const NAV_ITEM_MAPPING = {
-      "Cost": "cost",
-      "Utilization": "utilization",
-      "Billing": "billing",
-      "Tags": "tags",
-      "Observability": "observability",
-      "Anomaly": "anomaly",
-      "Recommendations": "recommendations",
-      "Governance": "governance",
-      "Bud vs Act": "bud vs act",
-      "GreenOps": "greenops",
-      "OnPrem": "onnprem"
-    };
-
-    filterData['page_name'] = NAV_ITEM_MAPPING[clickedNavItem] || null;
-    filterData['slug_name'] =  Cookies.get('slug') || 'teksecur';
-
-    if(filterData['filter_datekey'] && filterData['filter_datekey'] != NO_TIME_RANGE) {
-      const dateRange = await formatDateRange(filterData['filter_datekey']);
-      if (dateRange) {
-        filterData['filter_end_date'] = dateRange?.to;
-        filterData['filter_start_date'] = dateRange?.from;
-      }
-      delete filterData['filter_datekey'];
-    }else{
-      delete filterData['filter_datekey'];
-    }
-
-    console.log("filterData", filterData);
+    console.log("filterData===", filterData);
+    
 
     // Handling Graph Question
     if (selectedGraph?.isSelected && selectedGraph?.graph_type) {
@@ -413,6 +373,7 @@ const ChatBot = () => {
           graphType: selectedGraph?.graph_type,
           questionTime: new Date(),
           answerTime: null,
+          isStandardQuestion: true,
         },
       ]);
       const processedFilterData = Object.keys(filterData).reduce((acc, key) => {
@@ -435,6 +396,7 @@ const ChatBot = () => {
         isLoading: true,
         questionTime: new Date(),
         answerTime: null,
+        isStandardQuestion: true,
       },
     ]);
     const processedFilterData = Object.keys(filterData).reduce((acc, key) => {
@@ -486,15 +448,80 @@ const ChatBot = () => {
     }
   }, [question]);
 
+  const setDefaultQuestionsList = async() => {
+    console.log("setDefaultQuestionsList clickedNavItem===", clickedNavItem);
+    const pageName = {
+      'Cost': 'cost',
+      'Utilization': 'utilization',
+      'Billing': 'billing',
+      'Tags': 'tags',
+      'Recommendations': 'recommendations',
+      'Bud vs Act': 'bud vs act',
+      'GreenOps': 'greenops',
+      'Observability': 'cost',
+      'Anomaly': 'cost',
+      'Governance': 'cost',
+      'OnPrem': 'cost'
+    }
+    if(pageName[clickedNavItem]){
+     const data = await getQuestionList({
+      page_name: pageName[clickedNavItem],
+      slug_name: Cookies.get('slug') || 'tekse  ur'
+     });
+     console.log("setDefaultQuestionsList data===", data);
+     if(data?.length > 0){
+      const id = uuidv4();
+      setPrompts((p) => [
+        ...p,
+        {
+          id,
+          answer: '',
+          question: '',
+          suggested_questions: data,
+          task_id: null,
+          isLoading: false,
+          questionTime: new Date(),
+          answerTime: new Date(),
+          notShow: true,
+          spinalQuestions: true,
+          pageName: pageName[clickedNavItem],
+          slugName: Cookies.get('slug') || 'teksecur'
+        },
+      ]);
+      scrollToBottom();
+     }
+    }
+  }
+
+  const scrollToBottom = () => {
+    setTimeout(() => {
+      const chatbotContainer = document.getElementById("pr_id_1_content");
+      console.log("chatbotContainer===", chatbotContainer);
+      
+      if (chatbotContainer) {
+        chatbotContainer.scrollTop = chatbotContainer.scrollHeight-300;
+        
+        // Always force scroll to bottom using scrollTo for better compatibility
+        chatbotContainer.scrollTo({
+          top: chatbotContainer.scrollHeight-300,
+          behavior: 'smooth'
+        });
+      }
+    }, 300); // Increased timeout to ensure content is rendered
+  };
+
   useEffect(() => {
     if(flashCardData?.length <= 0){
+      setDefaultQuestionsList();
       setPreviousNavItem(clickedNavItem);
       return
     }
     if(!opneChatModal){
+      // setDefaultQuestionsList();
       return
     }
     if(previousNavItem === clickedNavItem){
+      // setDefaultQuestionsList();
       return
     }
     setPreviousNavItem(clickedNavItem);
@@ -515,7 +542,7 @@ const ChatBot = () => {
       },
     ]);
 
-
+    setDefaultQuestionsList();
     // setPrompts((prompts:any) =>
     //   prompts?.map((p:any) => {
     //     if (p.task_id === task_id) {
@@ -539,11 +566,19 @@ const ChatBot = () => {
     //   })
     // );
     // getTaskID(questionsList[clickedNavItem], id);
+    if (opneChatModal) {
+      scrollToBottom();
+    }
   }, [opneChatModal]);
 
+  useEffect(() => {
+    if (opneChatModal && prompts.length > 0) {
+      scrollToBottom();
+    }
+  }, [prompts]);
 
   return (
-    <div className="relative">
+    <div className="relative" >
       <Dialog
         position="bottom-right"
         contentClassName="p-0 border-round-top-sm"
@@ -569,6 +604,7 @@ const ChatBot = () => {
         <div style={{ height: `120px` }} />
 
         <div
+          id="chatbot-container"
           className="flex flex-column align-items-end gap-4"
           style={{ padding: "0px 24px 0px 24px" }}
           ref={messageContainerRef}
@@ -593,6 +629,9 @@ const ChatBot = () => {
                   graphData={p?.graphData}
                   graphType={p?.graphType}
                   date={p?.answerTime}
+                  spinalQuestions={p?.spinalQuestions}
+                  pageName={p?.pageName}
+                  slugName={p?.slugName}
                 />
               </div>
             );
@@ -708,7 +747,10 @@ const ChatBot = () => {
               <Button
                 disabled={isLoading}
                 icon="pi pi-send"
-                onClick={onClickSend}
+                onClick={()=>{
+                  onClickSend();
+                  scrollToBottom();
+                }}
                 className="p-button-rounded"
                 style={{
                   marginRight: '5px',
