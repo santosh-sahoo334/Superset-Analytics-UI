@@ -98,6 +98,7 @@ const AnswerContainer: React.FC<AnswerContainerProps> = ({ spinalQuestions, answ
               isLoading: true,
               questionTime: new Date(),
               answerTime: null,
+              spinalQuestions: spinalQuestions,
             },
           ]);
           const processedFilterData = Object.keys(filterData).reduce((acc, key) => {

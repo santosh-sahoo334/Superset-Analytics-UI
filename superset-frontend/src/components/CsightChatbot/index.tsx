@@ -290,7 +290,9 @@ const ChatBot = () => {
     selectedDropDownGraph,
     setselectedDropDownGraph,
     flashCardData,
-    getQuestionList
+    getQuestionList,
+    currentQuestionList, 
+    setCurrentQuestionList
   } = useAIBotContext();
 
 
@@ -471,6 +473,7 @@ const ChatBot = () => {
      console.log("setDefaultQuestionsList data===", data);
      if(data?.length > 0){
       const id = uuidv4();
+      setCurrentQuestionList(data);
       setPrompts((p) => [
         ...p,
         {
@@ -490,6 +493,8 @@ const ChatBot = () => {
       ]);
       scrollToBottom();
      }
+    }else {
+      setCurrentQuestionList([]);
     }
   }
 

@@ -1,6 +1,7 @@
 /* eslint-disable */
 // @ts-nocheck
 // import axiosInstance from "../../CsightCommon/config/axiosInstance";
+import React from "react";
 import { HTTP, DWORKS_HTTP, RAG_HTTP } from "../../CsightCommon/config/http-common";
 import { useAuth } from "../../CsightCommon/context/AuthContext";
 import { useToast } from "../../CsightCommon/context/ToastContext";
@@ -94,6 +95,8 @@ interface AIBotContextType {
   selectedDropDownGraph: any;
   setselectedDropDownGraph: React.Dispatch<any>;
   getQuestionList: (body: any) => Promise<void>;
+  currentQuestionList: any[];
+  setCurrentQuestionList: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
 const AibotContext = createContext<AIBotContextType>({
@@ -119,6 +122,8 @@ const AibotContext = createContext<AIBotContextType>({
   selectedDropDownGraph: null,
   setselectedDropDownGraph: () => null,
   getQuestionList: async () => { },
+  currentQuestionList: [],
+  setCurrentQuestionList: () => { },
 });
 
 interface AIBotProviderProps {
@@ -160,6 +165,8 @@ const AIbotState = () => {
     //     questionTime: new Date(),
     // },
   ]);
+
+  const [currentQuestionList, setCurrentQuestionList] = useState([]);
 
   const parseSuggestedQuestions = (jsonString: string) => {
     try {
@@ -291,6 +298,7 @@ const AIbotState = () => {
         setPrompts((prompts: any) =>
           prompts?.map((p: any) => {
             if (p.task_id === task_id) {
+              console.log("301 p===", p);
               if (p?.isStandardQuestion) {
                 const { answer, suggestedQuestions } = parseResponseData(data?.result);
                 console.log("answer===", answer);
@@ -319,7 +327,7 @@ const AIbotState = () => {
                   answer: isGraphType
                     ? extractTextBeforeJson(data?.result?.answer)
                     : data?.result?.answer,
-                  suggested_questions: parseSuggestedQuestions(
+                  suggested_questions: p?.spinalQuestions ? currentQuestionList : parseSuggestedQuestions(
                     data?.result?.suggested_questions
                   ),
                   isLoading: false,
@@ -379,7 +387,7 @@ const AIbotState = () => {
         setPrompts((prevPrompt) => {
           return prevPrompt?.map((prompt) => {
             if (prompt?.id === question_id) {
-              return { ...prompt, isLoading: false };
+              return { ...prompt, isLoading: false,suggested_questions: currentQuestionList || [] };
             }
             return prompt;
           });
@@ -393,7 +401,7 @@ const AIbotState = () => {
       setPrompts((prevPrompt) => {
         return prevPrompt?.map((prompt) => {
           if (prompt?.id === question_id) {
-            return { ...prompt, isLoading: false };
+            return { ...prompt, isLoading: false,suggested_questions: currentQuestionList || [] };
           }
           return prompt;
         });
@@ -420,7 +428,7 @@ const AIbotState = () => {
       setPrompts((prevPrompt) => {
         return prevPrompt?.map((prompt) => {
           if (prompt?.id === question_id) {
-            return { ...prompt, isLoading: false };
+            return { ...prompt, isLoading: false,suggested_questions: currentQuestionList };
           }
           return prompt;
         });
@@ -542,7 +550,9 @@ const AIbotState = () => {
     selectedDropDownGraph,
     setselectedDropDownGraph,
     getQuestionList,
-    getSpinalAnswer
+    getSpinalAnswer,
+    currentQuestionList, 
+    setCurrentQuestionList
   };
 };
 
