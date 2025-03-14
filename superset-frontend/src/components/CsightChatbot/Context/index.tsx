@@ -174,7 +174,7 @@ const AIbotState = () => {
       const cleanedString = jsonString.replace(pattern, "$1")?.trim();
       return JSON.parse(cleanedString);
     } catch (error) {
-      return [];
+      return null;
     }
   };
 
@@ -311,9 +311,11 @@ const AIbotState = () => {
                   answer: isGraphType
                     ? extractTextBeforeJson(answer)
                     : answer,
-                  suggested_questions: suggestedQuestions && suggestedQuestions.length>0 ? (suggestedQuestions?.['on-screen_questions'] || suggestedQuestions) : parseSuggestedQuestions(
+                  suggested_questions: suggestedQuestions && suggestedQuestions.length>0 ? 
+                  (suggestedQuestions?.['on-screen_questions'] || suggestedQuestions || currentQuestionList || []) 
+                  : parseSuggestedQuestions(
                     data?.result?.suggested_questions
-                  ),
+                  ) || currentQuestionList || [],
                   isLoading: false,
                   graphData: graphData?.isValid ? graphData?.data : null,
                   answerTime: new Date(),
@@ -329,7 +331,7 @@ const AIbotState = () => {
                     : data?.result?.answer,
                   suggested_questions: p?.spinalQuestions ? currentQuestionList : parseSuggestedQuestions(
                     data?.result?.suggested_questions
-                  ),
+                  ) || currentQuestionList || [],
                   isLoading: false,
                   graphData: graphData?.isValid ? graphData?.data : null,
                   answerTime: new Date(),
