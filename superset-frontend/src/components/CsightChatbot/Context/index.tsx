@@ -251,12 +251,28 @@ const AIbotState = () => {
           removeCommentsFromJSON(removeTrailingCommas);
         const parsedString = JSON.parse(removeCommentFromCleanedJson);
 
+        // Check if values is an array of objects with label and data properties
+        const isComplexValuesFormat = Array.isArray(parsedString?.values) && 
+          parsedString?.values.length > 0 && 
+          typeof parsedString?.values[0] === 'object' &&
+          parsedString?.values[0]?.label &&
+          Array.isArray(parsedString?.values[0]?.data);
+
+        // Transform complex format while maintaining backward compatibility
+        const formattedValues = isComplexValuesFormat 
+          ? parsedString.values.map((item: any) => ({
+              label: item.label,
+              data: item.data
+            }))
+          : parsedString?.values || [];
+
+
         return {
           isValid: true,
           data: {
             title: parsedString?.title || "",
             labels: parsedString?.labels || [],
-            values: parsedString?.values || [],
+            values: formattedValues,
           },
         };
       } else {
@@ -306,16 +322,19 @@ const AIbotState = () => {
                 const graphData = isGraphType
                   ? parseGraphData(data?.result?.answer)
                   : null;
+
+                const questionsList = suggestedQuestions && suggestedQuestions.length>0 ? 
+                (suggestedQuestions?.['on-screen_questions'] || suggestedQuestions || currentQuestionList || []) 
+                : parseSuggestedQuestions(
+                  data?.result?.suggested_questions
+                ) || currentQuestionList || [];
+
                 return {
                   ...p,
                   answer: isGraphType
                     ? extractTextBeforeJson(answer)
                     : answer,
-                  suggested_questions: suggestedQuestions && suggestedQuestions.length>0 ? 
-                  (suggestedQuestions?.['on-screen_questions'] || suggestedQuestions || currentQuestionList || []) 
-                  : parseSuggestedQuestions(
-                    data?.result?.suggested_questions
-                  ) || currentQuestionList || [],
+                  suggested_questions: questionsList,
                   isLoading: false,
                   graphData: graphData?.isValid ? graphData?.data : null,
                   answerTime: new Date(),

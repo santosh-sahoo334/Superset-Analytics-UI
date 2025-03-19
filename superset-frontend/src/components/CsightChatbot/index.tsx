@@ -174,7 +174,21 @@ const formatDateRange = async (dateKey: string): Promise<{ from: string; to: str
 
 // Extract this to a common function outside the ChatBot component
 export const extractFiltersForNavItem = async (clickedNavItem, mergedFilters) => {
-  let filterData = {};
+  let filterData = {
+    "filter_cloud_provider": null,
+    "filter_billing_account_name": null,
+    "filter_customer_name": null,
+    "filter_resource_region": null,
+    "filter_resource_name": null,
+    "page_name": "cost",
+    "slug_name": "teksecur",
+    "filter_end_date": new Date().toISOString().split('T')[0] + 'T23:59:59',
+    "filter_start_date": (() => {
+      const today = new Date();
+      const firstDayPrevMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+      return firstDayPrevMonth.toISOString().split('T')[0] + 'T00:00:00';
+    })()
+  };
   
   // Filter mapping definitions by nav item
   const filterMappings = {
@@ -473,7 +487,11 @@ const ChatBot = () => {
      console.log("setDefaultQuestionsList data===", data);
      if(data?.length > 0){
       const id = uuidv4();
-      setCurrentQuestionList(data);
+      const currentQuestionListData = [{
+        page_name: pageName[clickedNavItem],
+        questions: data
+      }];
+      setCurrentQuestionList(currentQuestionListData);
       setPrompts((p) => [
         ...p,
         {
@@ -519,14 +537,17 @@ const ChatBot = () => {
     if(flashCardData?.length <= 0){
       setDefaultQuestionsList();
       setPreviousNavItem(clickedNavItem);
+      scrollToBottom();
       return
     }
     if(!opneChatModal){
       // setDefaultQuestionsList();
+      scrollToBottom();
       return
     }
     if(previousNavItem === clickedNavItem){
       // setDefaultQuestionsList();
+      scrollToBottom();
       return
     }
     setPreviousNavItem(clickedNavItem);
@@ -571,9 +592,7 @@ const ChatBot = () => {
     //   })
     // );
     // getTaskID(questionsList[clickedNavItem], id);
-    if (opneChatModal) {
-      scrollToBottom();
-    }
+    scrollToBottom();
   }, [opneChatModal]);
 
   useEffect(() => {
