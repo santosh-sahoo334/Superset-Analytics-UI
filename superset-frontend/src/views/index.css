@@ -72,9 +72,9 @@ body {
 }
 
 /* Hide main menu */
-#main-menu {
+/* #main-menu {
   display: none;
-}
+} */
 
 /* Hide scrollbar for the entire page/html/body */
 html, body {

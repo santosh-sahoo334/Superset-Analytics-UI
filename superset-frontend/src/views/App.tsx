@@ -90,6 +90,15 @@ const LocationPathnameLogger = () => {
 };
 
 const App = () => {
+  
+  useEffect(() => {
+    if(userEmail && !adminList?.includes(userEmail)){
+      const mainMenu = document.getElementById('main-menu');
+      if (mainMenu) {
+        mainMenu.style.display = 'none';
+      }
+    }
+  }, [bootstrapData]);
 
   return (
     <Router>

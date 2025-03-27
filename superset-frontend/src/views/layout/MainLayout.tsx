@@ -475,7 +475,7 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
       <Layout className={`custom-menu-item site-layout ${collapsed ? 'collapsed' : ''}`}>
         <AntContent className="site-content" style={{ overflow: 'auto', height: 'calc(100vh - 60px)' }}>
           <ScrollButtons />
-          <ChatBot />
+          {isFeatureEnabled(FeatureFlag.CsightChatbot) && <ChatBot />}
           {children}
         </AntContent>
       </Layout>
