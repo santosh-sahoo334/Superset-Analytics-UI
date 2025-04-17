@@ -12,6 +12,8 @@ import React, {
   useRef,
   useState,
 } from "react";
+import Cookie from "js-cookie";
+import React from "react";
 
 export const GRAPH_COLORS = [
   "#005AAB",
@@ -466,6 +468,7 @@ const AIbotState = () => {
         question: question,
         doc_type: process.env.REACT_APP_CINDY_DOC_TYPE,
         app_type: process.env.REACT_APP_CINDY_APP_TYPE,
+        slug_name: Cookie.get("slug"),
         ...filterData
         // email_id: process.env.REACT_APP_CINDY_EMAIL_ID_TOKEN,
         // AUTH_TOKEN: process.env.REACT_APP_CINDY_AUTH_TOKEN,
@@ -520,6 +523,7 @@ const AIbotState = () => {
         project_id: process.env.REACT_APP_CINDY_PROJECT_ID,
         doc_type: process.env.REACT_APP_CINDY_DOC_TYPE,
         app_type: process.env.REACT_APP_CINDY_APP_TYPE,
+        slug_name: Cookie.get("slug"),
         ...filterData
         // email_id: process.env.REACT_APP_CINDY_EMAIL_ID_TOKEN,
         // AUTH_TOKEN: process.env.REACT_APP_CINDY_AUTH_TOKEN,
