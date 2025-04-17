@@ -81,7 +81,7 @@ const formatDateRange = async (dateKey: string): Promise<{ from: string; to: str
 
     // Handle null or undefined actualRange
     if (!actualRange) {
-      console.log('No date range provided');
+      // console.log('No date range provided');
       return null;
     }
 
@@ -89,7 +89,7 @@ const formatDateRange = async (dateKey: string): Promise<{ from: string; to: str
     const matches = actualRange.match(/(\d{4}-\d{2}-\d{2})(?:T(\d{2}:\d{2}:\d{2}))?\s*≤\s*col\s*<\s*(\d{4}-\d{2}-\d{2})(?:T(\d{2}:\d{2}:\d{2}))?/);
     
     if (!matches) {
-      console.log('Invalid date range format:', actualRange);
+      // console.log('Invalid date range format:', actualRange);
       return null;
     }
 
@@ -97,7 +97,7 @@ const formatDateRange = async (dateKey: string): Promise<{ from: string; to: str
 
     // Validate date components
     if (!fromDate || !toDate) {
-      console.log('Missing date components:', { fromDate, toDate });
+      // console.log('Missing date components:', { fromDate, toDate });
       return null;
     }
 
@@ -107,7 +107,7 @@ const formatDateRange = async (dateKey: string): Promise<{ from: string; to: str
       
       // Validate fromDateTime
       if (isNaN(fromDateTime.getTime())) {
-        console.log('Invalid from date:', fromDate, fromTime);
+        // console.log('Invalid from date:', fromDate, fromTime);
         return null;
       }
 
@@ -117,7 +117,7 @@ const formatDateRange = async (dateKey: string): Promise<{ from: string; to: str
       
       // Validate toDateTime and endOfDay
       if (isNaN(toDateTime.getTime()) || isNaN(endOfDay.getTime())) {
-        console.log('Invalid to date:', toDate, toTime);
+        // console.log('Invalid to date:', toDate, toTime);
         return null;
       }
 
@@ -126,7 +126,7 @@ const formatDateRange = async (dateKey: string): Promise<{ from: string; to: str
 
       // Ensure dates are in correct order
       if (fromDateTime > finalToDateTime) {
-        console.log('From date is after to date');
+        // console.log('From date is after to date');
         return null;
       }
       
@@ -153,7 +153,7 @@ const formatDateRange = async (dateKey: string): Promise<{ from: string; to: str
       
       // Validate final formatted dates
       if (!formattedFromDate || !formattedToDate) {
-        console.log('Error formatting dates');
+        // console.log('Error formatting dates');
         return null;
       }
 
@@ -253,7 +253,7 @@ export const extractFiltersForNavItem = async (clickedNavItem, mergedFilters) =>
     }, {});
     
     filterData = extractedFilters;
-    console.log(`Extracted Filters for ${clickedNavItem}:`, extractedFilters);
+    // console.log(`Extracted Filters for ${clickedNavItem}:`, extractedFilters);
   }
 
   const NAV_ITEM_MAPPING = {
@@ -371,7 +371,7 @@ const ChatBot = () => {
     // Replace the large filter extraction block with a call to the common function
     const filterData = await extractFiltersForNavItem(clickedNavItem, mergedFilters);
 
-    console.log("filterData===", filterData);
+    // console.log("filterData===", filterData);
     
 
     // Handling Graph Question
@@ -465,7 +465,7 @@ const ChatBot = () => {
   }, [question]);
 
   const setDefaultQuestionsList = async() => {
-    console.log("setDefaultQuestionsList clickedNavItem===", clickedNavItem);
+    // console.log("setDefaultQuestionsList clickedNavItem===", clickedNavItem);
     const pageName = {
       'Cost': 'cost',
       'Utilization': 'utilization',
@@ -484,7 +484,7 @@ const ChatBot = () => {
       page_name: pageName[clickedNavItem],
       slug_name: Cookies.get('slug') || 'tekse  ur'
      });
-     console.log("setDefaultQuestionsList data===", data);
+    //  console.log("setDefaultQuestionsList data===", data);
      if(data?.length > 0){
       const id = uuidv4();
       const currentQuestionListData = [{
@@ -519,7 +519,7 @@ const ChatBot = () => {
   const scrollToBottom = () => {
     setTimeout(() => {
       const chatbotContainer = document.getElementById("pr_id_1_content");
-      console.log("chatbotContainer===", chatbotContainer);
+      // console.log("chatbotContainer===", chatbotContainer);
       
       if (chatbotContainer) {
         chatbotContainer.scrollTop = chatbotContainer.scrollHeight-300;

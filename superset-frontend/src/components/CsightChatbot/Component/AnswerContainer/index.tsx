@@ -75,7 +75,7 @@ const AnswerContainer: React.FC<AnswerContainerProps> = ({ spinalQuestions, answ
         const id = uuidv4();
         try {
             setIsLoading(true);
-            console.log("question===", question);
+            // console.log("question===", question);
             if (!question) {
                 return showToast(
                 "Please select valid question",
@@ -85,7 +85,7 @@ const AnswerContainer: React.FC<AnswerContainerProps> = ({ spinalQuestions, answ
         }
 
         const filterData = await extractFiltersForNavItem(clickedNavItem, mergedFilters);
-        console.log("filterData===", filterData);
+        // console.log("filterData===", filterData);
 
         setPrompts((p) => [
             ...p,

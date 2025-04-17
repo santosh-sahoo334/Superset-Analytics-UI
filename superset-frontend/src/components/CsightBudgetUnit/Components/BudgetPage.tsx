@@ -122,7 +122,7 @@ const BudgetPage: React.FunctionComponent<BudgetPageProps> = ({
         countPerPage: event.rows,
       });
     };
-    console.log(budgets);
+    // console.log(budgets);
     
   return (
     <div className="custom-table">
