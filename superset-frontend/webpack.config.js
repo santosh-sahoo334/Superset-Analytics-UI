@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-console */
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -137,6 +138,11 @@ const plugins = [
     'process.env.REACT_APP_LOGO_TEXT': JSON.stringify(process.env.REACT_APP_LOGO_TEXT) || 'Multi-Cloud FinOps',
     'process.env.REACT_APP_DWORKS_BASE_URL': JSON.stringify(process.env.REACT_APP_DWORKS_BASE_URL || ''),
     'process.env.REACT_APP_DWORKS_API_KEY': JSON.stringify(process.env.REACT_APP_DWORKS_API_KEY || ''),
+    'process.env.REACT_APP_INFO_MONTHLY_COST': JSON.stringify(process.env.REACT_APP_INFO_MONTHLY_COST || ''),
+    'process.env.REACT_APP_INFO_POTENTIAL_SAVINGS': JSON.stringify(process.env.REACT_APP_INFO_POTENTIAL_SAVINGS || ''),
+    'process.env.REACT_APP_INFO_ALERTS': JSON.stringify(process.env.REACT_APP_INFO_ALERTS || ''),
+    'process.env.REACT_APP_INFO_RECOMMENDATIONS': JSON.stringify(process.env.REACT_APP_INFO_RECOMMENDATIONS || ''),
+    'process.env.REACT_APP_INFO_NEW_ASSETS': JSON.stringify(process.env.REACT_APP_INFO_NEW_ASSETS || ''),
     'process.env.REACT_APP_MENU_CONFIG': JSON.stringify({
       dashboard: {
         id: "dashboard",
@@ -210,7 +216,7 @@ const plugins = [
       governance: {
         id: "governance",
         name: "Governance",
-        replaceName: "Executive Report",
+        replaceName: "Governance",
         group: "OPERATE",
         icon: "Building2",
         redirectTab: true,

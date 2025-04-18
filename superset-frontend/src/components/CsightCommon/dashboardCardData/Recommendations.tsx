@@ -8,6 +8,7 @@ import { Tooltip } from "primereact/tooltip";
 import { HTTP } from "../config/http-common";
 import { useAuth } from "../context/AuthContext";
 import LoadingSpinner from "../LoadingSpinner";
+import { InfoCircleOutlined } from "@ant-design/icons";
 import { ArrowUpOutlined, DollarOutlined, SettingOutlined } from "@ant-design/icons";
 
 const TruncatedHeader = ({ text }: { text: string }) => {
@@ -188,11 +189,33 @@ export const RecommendationsTable = () => {
             />
             <span className="text-2xl font-medium">Recommendations</span>
           </div>
+          {process.env.REACT_APP_INFO_RECOMMENDATIONS && (
+            <>
+          <Tooltip
+          target={`#recommendations-info`}
+           content={
+            process.env.REACT_APP_INFO_RECOMMENDATIONS
+          } position="left"/>
+            <InfoCircleOutlined id="recommendations-info" className='cursor-pointer text-gray-500 hover:text-gray-700' style={{
+              fontSize: '10px',
+              position: 'absolute',
+              right: 0,
+              top: 10,
+              marginTop: '5px',
+              marginRight: '5px'
+          }} />
+          </>
+          )}
           <div ref={tableRef} style={{ maxHeight: "280px", overflowY: "auto" }}>
             <DataTable
               value={recommenddationsData}
               scrollable
               className="w-full dashboard-table-update  h-full"
+              emptyMessage={
+                <div className="text-center py-4">
+                  <span style={{ color: 'red', fontWeight: 'medium' }}>No new Recommendation</span>
+                </div>
+              }
             >
               {columnOrder.map((columnKey) => (
                 <Column

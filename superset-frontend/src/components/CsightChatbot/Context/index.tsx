@@ -206,6 +206,38 @@ const AIbotState = () => {
 
   const parseResponseData = (data: { answer: string; question: string; suggested_questions: string }): ParsedResponseData => {
     try {
+      // Check if the answer contains JSON with a chart keyword
+      const chartJsonMatch = data.answer.match(/```json\s*([\s\S]*?)\s*```/);
+      if (chartJsonMatch && chartJsonMatch[1] && chartJsonMatch[1].includes('"chart"')) {
+        // If JSON contains chart data, return the answer as is without extracting
+        let suggestedQuestions: any[] = [];
+
+        if (data?.suggested_questions && data?.suggested_questions?.length > 0) {
+            try {
+              // Check if suggested_questions is already a JSON string with ```json markers
+              if (data?.suggested_questions?.includes('```json')) {
+                const suggestedJsonMatch = data?.suggested_questions?.match(/```json\s*([\s\S]*?)\s*```/);
+                if (suggestedJsonMatch && suggestedJsonMatch?.[1]) {
+                  const jsonContent = suggestedJsonMatch?.[1]?.trim();
+                  suggestedQuestions = JSON.parse(jsonContent);
+                }
+              } else {
+                // Try to parse it directly as JSON
+                suggestedQuestions = JSON.parse(data?.suggested_questions || "[]");
+              }
+            } catch (suggestedError) {
+              console.error("Error parsing suggested_questions:", suggestedError);
+            }
+          }
+
+
+        return {
+          answer: data.answer,
+          suggestedQuestions: suggestedQuestions
+        };
+      }
+      
+      // If no chart data, proceed with normal parsing
       // Split the answer by the JSON block markers
       const parts = data.answer.split(/```json|```/);
       
@@ -226,6 +258,27 @@ const AIbotState = () => {
         suggestedQuestions = JSON.parse(jsonContent);
       }
 
+      // console.log("suggestedQuestions===", suggestedQuestions);
+
+      // If suggestedQuestions is empty, check if suggested_questions exists and parse it
+      if ((data?.suggested_questions && data?.suggested_questions?.length > 0) || (suggestedQuestions?.length === 0 && data?.suggested_questions)) {
+        try {
+          // Check if suggested_questions is already a JSON string with ```json markers
+          if (data?.suggested_questions?.includes('```json')) {
+            const suggestedJsonMatch = data?.suggested_questions?.match(/```json\s*([\s\S]*?)\s*```/);
+            if (suggestedJsonMatch && suggestedJsonMatch?.[1]) {
+              const jsonContent = suggestedJsonMatch?.[1]?.trim();
+              suggestedQuestions = JSON.parse(jsonContent);
+            }
+          } else {
+            // Try to parse it directly as JSON
+            suggestedQuestions = JSON.parse(data?.suggested_questions || "[]");
+          }
+        } catch (suggestedError) {
+          console.error("Error parsing suggested_questions:", suggestedError);
+        }
+      }
+
       return {
         answer: textAnswer,
         suggestedQuestions
@@ -241,56 +294,141 @@ const AIbotState = () => {
 
   const parseGraphData = (jsonString: string) => {
     try {
-      const pattern = /```json\s*([\s\S]*?)\s*```/;
-      const match = jsonString.match(pattern);
-
-      // If a match is found, return the clean JSON content
-      if (match && match[1]) {
-        const cleanedString = match[1].trim();
-        // Remove trailing commas before JSON parsing
-        const removeTrailingCommas = cleanedString.replace(/,(\s*[}\]])/g, '$1');
-        const removeCommentFromCleanedJson =
-          removeCommentsFromJSON(removeTrailingCommas);
-        const parsedString = JSON.parse(removeCommentFromCleanedJson);
-
-        // Check if values is an array of objects with label and data properties
-        const isComplexValuesFormat = Array.isArray(parsedString?.values) && 
-          parsedString?.values.length > 0 && 
-          typeof parsedString?.values[0] === 'object' &&
-          parsedString?.values[0]?.label &&
-          Array.isArray(parsedString?.values[0]?.data);
-
-        // Transform complex format while maintaining backward compatibility
-        const formattedValues = isComplexValuesFormat 
-          ? parsedString.values.map((item: any) => ({
-              label: item.label,
-              data: item.data
-            }))
-          : parsedString?.values || [];
-
-
-        return {
-          isValid: true,
-          data: {
-            title: parsedString?.title || "",
-            labels: parsedString?.labels || [],
-            values: formattedValues,
-          },
-        };
-      } else {
+      // Extract all JSON blocks from the response
+      const pattern = /```json\s*([\s\S]*?)\s*```/g;
+      const matches = [...jsonString.matchAll(pattern)];
+      
+      // If no matches found, return invalid result
+      if (!matches || matches.length === 0) {
         return {
           isValid: false,
           data: null,
         };
       }
+      
+      // Look for a JSON block that contains chart data
+      for (const match of matches) {
+        if (match && match[1]) {
+          const cleanedString = match[1].trim();
+          
+          // Check if this block contains placeholder values like "value1, value2"
+          const containsPlaceholders = /\[.*value\d.*\]/i.test(cleanedString);
+          
+          if (containsPlaceholders) {
+            // Extract title, labels, and create dummy values
+            try {
+              // Use regex to extract the title
+              const titleMatch = /"title"\s*:\s*"([^"]+)"/.exec(cleanedString);
+              const title = titleMatch ? titleMatch[1] : "Chart";
+              
+              // Extract labels array using regex
+              const labelsMatch = /"labels"\s*:\s*\[(.*?)\]/.exec(cleanedString);
+              const labelsString = labelsMatch ? labelsMatch[1] : "";
+              const labels = labelsString.split(',')
+                .map(label => label.trim().replace(/"/g, ''))
+                .filter(label => label.length > 0);
+              
+              // Create dummy values (all 10)
+              const values = Array(labels.length).fill(10);
+              
+              return {
+                isValid: true,
+                data: {
+                  title: title,
+                  labels: labels,
+                  values: values,
+                },
+              };
+            } catch (placeholderError) {
+              console.log("Error parsing placeholder values:", placeholderError);
+              continue;
+            }
+          }
+          
+          // Regular JSON parsing for non-placeholder data
+          try {
+            // Remove trailing commas before JSON parsing
+            const removeTrailingCommas = cleanedString.replace(/,(\s*[}\]])/g, '$1');
+            const removeCommentFromCleanedJson = removeCommentsFromJSON(removeTrailingCommas);
+            const parsedString = JSON.parse(removeCommentFromCleanedJson);
+            
+            // Check if this JSON block contains chart data
+            if (parsedString.chart) {
+              // Extract data from the chart object
+              const chartData = parsedString.chart;
+              
+              // Check if values is an array of objects with label and data properties
+              const isComplexValuesFormat = Array.isArray(chartData?.values) && 
+                chartData?.values?.length > 0 && 
+                typeof chartData?.values?.[0] === 'object' &&
+                chartData?.values?.[0]?.label &&
+                Array.isArray(chartData?.values?.[0]?.data);
+
+              // Transform complex format while maintaining backward compatibility
+              const formattedValues = isComplexValuesFormat 
+                ? chartData?.values?.map((item: any) => ({
+                    label: item?.label,
+                    data: item?.data
+                  }))
+                : chartData?.values || [];
+
+              return {
+                isValid: true,
+                data: {
+                  title: chartData?.title || "",
+                  labels: chartData?.labels || [],
+                  values: formattedValues,
+                },
+              };
+            } else if (parsedString.title && (parsedString.labels || parsedString.values)) {
+              // Direct chart format without the "chart" wrapper
+              // Check if values is an array of objects with label and data properties
+              const isComplexValuesFormat = Array.isArray(parsedString?.values) && 
+                parsedString?.values?.length > 0 && 
+                typeof parsedString?.values?.[0] === 'object' &&
+                parsedString?.values?.[0]?.label &&
+                Array.isArray(parsedString?.values?.[0]?.data);
+
+              // Transform complex format while maintaining backward compatibility
+              const formattedValues = isComplexValuesFormat 
+                ? parsedString?.values?.map((item: any) => ({
+                    label: item?.label,
+                    data: item?.data
+                  }))
+                : parsedString?.values || [];
+
+              return {
+                isValid: true,
+                data: {
+                  title: parsedString?.title || "",
+                  labels: parsedString?.labels || [],
+                  values: formattedValues,
+                },
+              };
+            }
+            // If this JSON block doesn't contain chart data, continue to the next one
+          } catch (innerError) {
+            // If parsing this specific JSON block fails, try the next one
+            console.log("Error parsing individual JSON block:", innerError);
+            continue;
+          }
+        }
+      }
+      
+      // If we've checked all JSON blocks and none contain chart data
+      return {
+        isValid: false,
+        data: null,
+      };
     } catch (error) {
-      console.log("parseError", error);
+      console.log("parseGraphData error:", error);
       return {
         isValid: false,
         data: null,
       };
     }
   };
+
 
   const getTextAnswer = async (
     task_id: string,
@@ -316,15 +454,15 @@ const AIbotState = () => {
         setPrompts((prompts: any) =>
           prompts?.map((p: any) => {
             if (p.task_id === task_id) {
-              console.log("301 p===", p);
+              // console.log("301 p===", p);
               if (p?.isStandardQuestion) {
                 const { answer, suggestedQuestions } = parseResponseData(data?.result);
-                console.log("answer===", answer);
-                console.log("suggestedQuestions===", suggestedQuestions);
+                // console.log("answer===", answer);
+                // console.log("suggestedQuestions===", suggestedQuestions);
                 const graphData = isGraphType
                   ? parseGraphData(data?.result?.answer)
                   : null;
-
+                // console.log("graphData===", graphData);
                 const questionsList = suggestedQuestions && suggestedQuestions.length>0 ? 
                 (suggestedQuestions?.['on-screen_questions'] || suggestedQuestions || currentQuestionList || []) 
                 : parseSuggestedQuestions(
@@ -345,6 +483,7 @@ const AIbotState = () => {
                 const graphData = isGraphType
                   ? parseGraphData(data?.result?.answer)
                   : null;
+                // console.log("graphData===", graphData);
                 return {
                   ...p,
                   answer: isGraphType
@@ -383,7 +522,7 @@ const AIbotState = () => {
 
   const ragQuerySpinalCord = async (data: any, question: string, question_id: string) => {
     try {
-      console.log("ragQuerySpinalCord data===", data);
+      // console.log("ragQuerySpinalCord data===", data);
       const taskPayload = {
         org_id: process.env.REACT_APP_CINDY_ORG_ID,
         project_id: process.env.REACT_APP_CINDY_PROJECT_ID,
@@ -395,7 +534,7 @@ const AIbotState = () => {
         // AUTH_TOKEN: process.env.REACT_APP_CINDY_AUTH_TOKEN,
       };
       const { data: dataSpinalCord } = await HTTP.post("/ragqexpress/", taskPayload, { headers: { Authorization: accessToken } });
-      console.log("ragQuerySpinalCord data===", dataSpinalCord);
+      // console.log("ragQuerySpinalCord data===", dataSpinalCord);
       if (dataSpinalCord && dataSpinalCord?.task_id) {
         setPrompts((prevPrompt) => {
           return prevPrompt?.map((prompt) => {
@@ -442,7 +581,7 @@ const AIbotState = () => {
         slug_name: slugName
       };
       let { data } = await DWORKS_HTTP.post("/cisght/ask_q", taskPayload);
-      console.log("getSpinalAnswer data===", data);
+      // console.log("getSpinalAnswer data===", data);
       data = data && data.length > 0 ? data : [];
       ragQuerySpinalCord(data, question, question_id);
     } catch (error) {

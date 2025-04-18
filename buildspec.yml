@@ -39,6 +39,16 @@ phases:
       - echo "REACT_APP_DWORKS_BASE_URL - $REACT_APP_DWORKS_BASE_URL"
       - REACT_APP_DWORKS_API_KEY=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_DWORKS_API_KEY" --with-decryption --query "Parameter.Value" --output text)
       - echo "REACT_APP_DWORKS_API_KEY - $REACT_APP_DWORKS_API_KEY"
+      - REACT_APP_INFO_MONTHLY_COST=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_INFO_MONTHLY_COST" --with-decryption --query "Parameter.Value" --output text)
+      - echo "REACT_APP_INFO_MONTHLY_COST - $REACT_APP_INFO_MONTHLY_COST"\
+      - REACT_APP_INFO_POTENTIAL_SAVINGS=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_INFO_POTENTIAL_SAVINGS" --with-decryption --query "Parameter.Value" --output text)
+      - echo "REACT_APP_INFO_POTENTIAL_SAVINGS - $REACT_APP_INFO_POTENTIAL_SAVINGS"
+      - REACT_APP_INFO_ALERTS=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_INFO_ALERTS" --with-decryption --query "Parameter.Value" --output text)
+      - echo "REACT_APP_INFO_ALERTS - $REACT_APP_INFO_ALERTS"
+      - REACT_APP_INFO_RECOMMENDATIONS=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_INFO_RECOMMENDATIONS" --with-decryption --query "Parameter.Value" --output text)
+      - echo "REACT_APP_INFO_RECOMMENDATIONS - $REACT_APP_INFO_RECOMMENDATIONS"
+      - REACT_APP_INFO_NEW_ASSETS=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_INFO_NEW_ASSETS" --with-decryption --query "Parameter.Value" --output text)
+      - echo "REACT_APP_INFO_NEW_ASSETS - $REACT_APP_INFO_NEW_ASSETS"
 
       # Find the superset-frontend folder location in the repository and write parameters to .env file
       - echo "Writing parameters to .env file in superset-frontend folder"
@@ -48,6 +58,11 @@ phases:
       - echo "REACT_APP_LOGO_TEXT=$REACT_APP_LOGO_TEXT" >> $ENV_FILE
       - echo "REACT_APP_DWORKS_BASE_URL=$REACT_APP_DWORKS_BASE_URL" >> $ENV_FILE
       - echo "REACT_APP_DWORKS_API_KEY=$REACT_APP_DWORKS_API_KEY" >> $ENV_FILE
+      - echo "REACT_APP_INFO_MONTHLY_COST=$REACT_APP_INFO_MONTHLY_COST" >> $ENV_FILE
+      - echo "REACT_APP_INFO_POTENTIAL_SAVINGS=$REACT_APP_INFO_POTENTIAL_SAVINGS" >> $ENV_FILE
+      - echo "REACT_APP_INFO_ALERTS=$REACT_APP_INFO_ALERTS" >> $ENV_FILE
+      - echo "REACT_APP_INFO_RECOMMENDATIONS=$REACT_APP_INFO_RECOMMENDATIONS" >> $ENV_FILE
+      - echo "REACT_APP_INFO_NEW_ASSETS=$REACT_APP_INFO_NEW_ASSETS" >> $ENV_FILE
       - cat $ENV_FILE  # Check if env contents copied successfully
 
   build:

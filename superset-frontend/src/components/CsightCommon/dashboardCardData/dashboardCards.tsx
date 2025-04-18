@@ -9,6 +9,7 @@ import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import React from 'react';
 import { LayoutContext } from 'src/layout/context/layoutcontext';
+import { Tooltip } from 'antd';
 interface PotentialType {
   title: string;
   result: any;
@@ -219,6 +220,21 @@ export const DashboardCards: React.FC<PotentialType> = ({
               {title}
             </h4>
           </div>
+          {
+          ((title === 'Monthly Cost' && process.env.REACT_APP_INFO_MONTHLY_COST) || (title === 'Potential Savings' && process.env.REACT_APP_INFO_POTENTIAL_SAVINGS) ) && (  
+          <Tooltip title={
+            title === 'Monthly Cost' ? process.env.REACT_APP_INFO_MONTHLY_COST : process.env.REACT_APP_INFO_POTENTIAL_SAVINGS } placement="left">
+            <InfoCircleOutlined className='cursor-pointer text-gray-500 hover:text-gray-700' style={{
+              fontSize: '10px',
+              position: 'absolute',
+              right: 0,
+              top: 0,
+              marginTop: '5px',
+            marginRight: '5px'
+          }} />
+          </Tooltip>
+          )
+          }
           {title === 'Monthly Cost' && resourceData?.result?.length > 0 && (
             <div className='flex flex-row items-center w-full' style={{alignItems: 'center', minWidth: '50%', justifyContent: 'center'}} >
               <Popover 

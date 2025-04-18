@@ -8,7 +8,8 @@ import { Tooltip } from "primereact/tooltip";
 import { HTTP } from "../config/http-common";
 import { useAuth } from "../context/AuthContext";
 import LoadingSpinner from "../LoadingSpinner";
-import { ArrowUpOutlined, DollarOutlined, SettingOutlined } from "@ant-design/icons";
+import { ArrowUpOutlined, DollarOutlined, SettingOutlined,InfoCircleOutlined } from "@ant-design/icons";
+import React from "react";
 
 export const ResourcesTable = () => {
   const [resourcesData, setResourcesData] = useState<any[]>([]);
@@ -156,11 +157,33 @@ export const ResourcesTable = () => {
           <SettingOutlined className="text-xl"/>
             <span className="text-2xl font-medium">New Assets</span>
           </div>
+                   {process.env.REACT_APP_INFO_NEW_ASSETS && (
+            <>
+          <Tooltip
+          target={`#new-assets-info`}
+           content={
+            process.env.REACT_APP_INFO_NEW_ASSETS
+          } position="left"/>
+            <InfoCircleOutlined id="new-assets-info" className='cursor-pointer text-gray-500 hover:text-gray-700' style={{
+              fontSize: '10px',
+              position: 'absolute',
+              right: 0,
+              top: 10,
+              marginTop: '5px',
+              marginRight: '5px'
+          }} />
+          </>
+          )}
           <div ref={tableRef} style={{ maxHeight: "275px", overflowY: "auto" }}>
             <DataTable
               value={resourcesData}
               scrollable
               className="w-full dashboard-table-update"
+              emptyMessage={
+                <div className="text-center py-4">
+                  <span style={{ color: '#45BA84', fontWeight: 'medium' }}>No new Assets found</span>
+                </div>
+              }
             >
               {columnLabelsList.map((col) => (
                 <Column

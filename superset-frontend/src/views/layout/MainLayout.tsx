@@ -166,7 +166,7 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
   }
 
   const tabOptionClick = async (itemTab?: any) => {
-    hidTabBar();
+    // hidTabBar();
     const findTab = findTabIdByName(dashboardLayout, itemTab);
     if (findTab) {
       // Search for the tab element by ID
