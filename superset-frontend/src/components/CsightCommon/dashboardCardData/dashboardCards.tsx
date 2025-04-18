@@ -225,7 +225,7 @@ export const DashboardCards: React.FC<PotentialType> = ({
           <Tooltip title={
             title === 'Monthly Cost' ? process.env.REACT_APP_INFO_MONTHLY_COST : process.env.REACT_APP_INFO_POTENTIAL_SAVINGS } placement="left">
             <InfoCircleOutlined className='cursor-pointer text-gray-500 hover:text-gray-700' style={{
-              fontSize: '10px',
+              fontSize: '14px',
               position: 'absolute',
               right: 0,
               top: 0,

@@ -165,12 +165,17 @@ export const ResourcesTable = () => {
             process.env.REACT_APP_INFO_NEW_ASSETS
           } position="left"/>
             <InfoCircleOutlined id="new-assets-info" className='cursor-pointer text-gray-500 hover:text-gray-700' style={{
-              fontSize: '10px',
+              fontSize: '16px',
+              color: '#007BFF',
               position: 'absolute',
-              right: 0,
+              right: 10,
               top: 10,
-              marginTop: '5px',
-              marginRight: '5px'
+              marginTop: '-3px',
+              marginRight: '1px',
+              backgroundColor: '#f0f8ff',
+              borderRadius: '50%',
+              padding: '5px',
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
           }} />
           </>
           )}

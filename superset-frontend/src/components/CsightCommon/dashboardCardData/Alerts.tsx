@@ -183,13 +183,13 @@ export const AlertsTableUI = () => {
             process.env.REACT_APP_INFO_ALERTS
           } position="left"/>
             <InfoCircleOutlined id="alerts-info" className='cursor-pointer text-gray-500 hover:text-gray-700' style={{
-              fontSize: '20px',
+              fontSize: '16px',
               color: '#007BFF',
               position: 'absolute',
               right: 10,
               top: 10,
-              marginTop: '5px',
-              marginRight: '5px',
+              marginTop: '-3px',
+              marginRight: '1px',
               backgroundColor: '#f0f8ff',
               borderRadius: '50%',
               padding: '5px',
