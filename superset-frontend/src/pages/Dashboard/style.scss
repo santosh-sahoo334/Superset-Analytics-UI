@@ -8,12 +8,8 @@
   }
 
   .hideTabList {
-    // Target the ant-tabs-nav elements
-    .ant-tabs-nav {
-      display: none !important; // Hide the element
-    }
     .dashboard-header-container {
-      display: none !important; // Hide the element
+      display: none !important; 
     }
   }
 

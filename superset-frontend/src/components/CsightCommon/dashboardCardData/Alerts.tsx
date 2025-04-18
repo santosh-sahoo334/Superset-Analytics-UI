@@ -175,6 +175,23 @@ export const AlertsTableUI = () => {
             <InfoCircleOutlined className="text-xl" />
             <span className="text-2xl font-medium">Alerts</span>
           </div>
+          {process.env.REACT_APP_INFO_ALERTS && (
+            <>
+          <Tooltip
+          target={`#alerts-info`}
+           content={
+            process.env.REACT_APP_INFO_ALERTS
+          } position="left"/>
+            <InfoCircleOutlined id="alerts-info" className='cursor-pointer text-gray-500 hover:text-gray-700' style={{
+              fontSize: '10px',
+              position: 'absolute',
+              right: 0,
+              top: 10,
+              marginTop: '5px',
+              marginRight: '5px'
+          }} />
+          </>
+          )}
           <div
             ref={tableRef}
             style={{ maxHeight: "280px", overflowY: "auto" }} // Scrollable container
@@ -183,6 +200,11 @@ export const AlertsTableUI = () => {
               value={alertsData}
               scrollable
               className="w-full alert-table dashboard-table-update h-full"
+              emptyMessage={
+                <div className="text-center py-4">
+                  <span style={{ color: '#45BA84', fontWeight: 'medium' }}>No Alerts Found</span>
+                </div>
+              }
             >
               {columnOrder.map((columnKey) => (
                 <Column
