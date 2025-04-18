@@ -117,7 +117,7 @@ useEffect(() => {
         const tabNavs = tabsElement.querySelectorAll('[role="tablist"].ant-tabs-nav');
         
         // Only hide the first tab nav if it exists
-        if (tabNavs.length > 0) {
+        if (tabNavs?.length > 0) {
           const firstTabNav = tabNavs[0] as HTMLElement;
           if (firstTabNav) {
             firstTabNav.style.display = 'none';
