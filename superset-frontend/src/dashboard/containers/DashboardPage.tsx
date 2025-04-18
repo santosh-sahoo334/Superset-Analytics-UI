@@ -218,7 +218,7 @@ export const DashboardPage: FC<PageProps> = ({ idOrSlug,className }: PageProps) 
 
   useEffect(() => {
     const hideTabNavigation = () => {
-      const tabsElement = document.getElementById('TABS-WDmJcG4gyQ');
+      const tabsElement = document.getElementById('TABS-WHBGnJPOIm');
       if (tabsElement) {
         // Find all tab nav elements within this TABS container
         const tabNavs = tabsElement.querySelectorAll('[role="tablist"].ant-tabs-nav');
