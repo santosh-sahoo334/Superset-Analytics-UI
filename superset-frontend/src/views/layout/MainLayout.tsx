@@ -99,6 +99,53 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
     state => state.dashboardLayout.present,
   );
 
+useEffect(() => {
+  if(dashboardLayout){
+    const hideTabNavigation = () => {
+      const tabValues = Object.keys(dashboardLayout)
+        .filter(key => {
+          const parents = dashboardLayout[key]?.parents;
+          return key.startsWith('TABS') && 
+                 Array.isArray(parents) && 
+                 parents.length === 2 &&
+                 parents.includes('ROOT_ID') && 
+                 parents.includes('GRID_ID');
+        });
+      const tabsElement = document.getElementById(tabValues?.[0]);
+      if (tabsElement) {
+        // Find all tab nav elements within this TABS container
+        const tabNavs = tabsElement.querySelectorAll('[role="tablist"].ant-tabs-nav');
+        
+        // Only hide the first tab nav if it exists
+        if (tabNavs.length > 0) {
+          const firstTabNav = tabNavs[0] as HTMLElement;
+          if (firstTabNav) {
+            firstTabNav.style.display = 'none';
+          }
+        }
+      }
+    };
+
+    // Run initially
+    hideTabNavigation();
+    
+    // Set up a MutationObserver to handle dynamically loaded tabs
+    const observer = new MutationObserver(() => {
+      hideTabNavigation();
+    });
+
+    observer.observe(document.body, { 
+      childList: true, 
+      subtree: true 
+    });
+
+    // Clean up observer on component unmount
+    return () => {
+      observer.disconnect();
+    };
+  }
+  }, [dashboardLayout]);
+
   const menuConfig: Record<string, MenuItemConfig> = (() => {
     try {
       const config = typeof process.env.REACT_APP_MENU_CONFIG === 'string' 
