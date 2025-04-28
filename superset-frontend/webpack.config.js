@@ -213,14 +213,24 @@ const plugins = [
         order: 8
       },
       // OPERATE group
-      governance: {
-        id: "governance",
-        name: "Governance",
+      'cost-compliance': {
+        id: "cost-compliance",
+        name: "Cost Compliance",
         replaceName: "Governance",
         group: "OPERATE",
+        parent: "governance",
         icon: "Building2",
         redirectTab: true,
         order: 9
+      },
+      'security-compliance': {
+        id: "security-compliance",
+        name: "Security Compliance",
+        group: "OPERATE",
+        parent: "governance",
+        icon: "Shield",
+        redirectTab: true,
+        order: 10
       },
       'bud-vs-act': {
         id: "bud-vs-act",
@@ -230,7 +240,7 @@ const plugins = [
         parent: "budget",
         icon: "Combine",
         redirectTab: true,
-        order: 10
+        order: 11
       },
       'budget-unit': {
         id: "budget-unit",
@@ -239,7 +249,7 @@ const plugins = [
         parent: "budget",
         icon: "Boxes",
         redirectTab: false,
-        order: 11
+        order: 12
       },
       'green-ops': {
         id: "green-ops",
@@ -247,7 +257,7 @@ const plugins = [
         group: "OPERATE",
         icon: "Leaf",
         redirectTab: true,
-        order: 12
+        order: 13
       }
     }),
   }),

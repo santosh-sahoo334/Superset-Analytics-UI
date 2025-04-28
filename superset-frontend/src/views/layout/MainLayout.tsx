@@ -163,6 +163,31 @@ useEffect(() => {
           showLine: true
         };
       }
+      // if (isFeatureEnabled(FeatureFlag.CsightCostComplianceFlag)) {
+      //   // Ungrouped items at the end
+      //   config['cost-compliance'] = {
+      //     id: "cost-compliance",
+      //     name: "Cost Compliance",
+      //     replaceName: "Governance",
+      //     group: "OPERATE",
+      //     parent: "governance",
+      //     icon: "Building2",
+      //     redirectTab: true,
+      //     order: 9
+      //   }
+      // }
+      // if (isFeatureEnabled(FeatureFlag.CsightSecurityComplianceFlag)) {
+      //   // Ungrouped items at the end
+      //   config['security-compliance'] = {
+      //     id: "security-compliance",
+      //     name: "Security Compliance",
+      //     group: "OPERATE",
+      //     parent: "governance",
+      //     icon: "Shield",
+      //     redirectTab: true,
+      //     order: 10
+      //   };
+      // }
       return config;
     } catch (error) {
       console.error('Error parsing REACT_APP_MENU_CONFIG:', error);
@@ -242,6 +267,12 @@ useEffect(() => {
   useEffect(() => {
     if (clickedNavItem === 'Bud vs Act' || clickedNavItem === 'Budget Unit') {
       setOpenKeys(['budget']);
+    }
+  }, [clickedNavItem]);
+
+  useEffect(() => {
+    if (clickedNavItem === 'Cost Compliance' || clickedNavItem === 'Security Compliance') {
+      setOpenKeys(['governance']);
     }
   }, [clickedNavItem]);
 
@@ -326,7 +357,7 @@ useEffect(() => {
   const renderMenuItem = (key: string, item: MenuItemConfig) => {
     const isSelected = clickedNavItem === item.name;
     
-    if (item.parent === 'budget') {
+    if (item.parent === 'budget' || item.parent === 'governance') {
       return (
         <Menu.Item
           key={key}
@@ -394,7 +425,7 @@ useEffect(() => {
             )}
             {isFirstInGroup ? (
               <Menu.ItemGroup title={item.group} >
-                {renderMenuItem(item.key, item)}
+                {item.parent === 'budget' || item.parent === 'governance' ? null : renderMenuItem(item.key, item)}
                 {/* Add budget submenu if we're in OPERATE group */}
                 {item.group === 'OPERATE' && (
                   <Menu.SubMenu
@@ -416,9 +447,29 @@ useEffect(() => {
                     }
                   </Menu.SubMenu>
                 )}
+                {item.group === 'OPERATE' && (
+                  <Menu.SubMenu
+                    key="governance"
+                    icon={getIcon('Building2', 
+                      (clickedNavItem === 'Cost Compliance' || clickedNavItem === 'Security Compliance') && collapsed
+                    )}
+                    title={<span style={{ color: '#fff' }}>{collapsed ? '' : 'Governance'}</span>}
+                    className={`budget-submenu ${
+                      (clickedNavItem === 'Cost Compliance' || clickedNavItem === 'Security Compliance') && collapsed 
+                        ? 'budget-submenu-selected' 
+                        : ''
+                    }${!collapsed ? 'custom-sidebar-budget' : ''}`}
+                  >
+                    {Object.entries(menuConfig)
+                      .filter(([, menuItem]) => menuItem.parent === 'governance')
+                      .sort(([, itemA], [, itemB]) => itemA.order - itemB.order)
+                      .map(([key, menuItem]) => renderMenuItem(key, menuItem))
+                    }
+                  </Menu.SubMenu>
+                )}
               </Menu.ItemGroup>
             ) : (
-              renderMenuItem(item.key, item)
+              item.parent === 'budget' || item.parent === 'governance' ? null : renderMenuItem(item.key, item)
             )}
           </React.Fragment>
         );
@@ -482,7 +533,7 @@ useEffect(() => {
           trigger={null}
           collapsible
           collapsed={collapsed}
-          width={200}
+          width={240}
           collapsedWidth={80}
           className="app-sidebar stable-menu"
         >

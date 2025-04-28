@@ -237,6 +237,27 @@ export const extractFiltersForNavItem = async (clickedNavItem, mergedFilters) =>
       "region": "filter_resource_region",
       "instance name": "filter_instance_name",
       "instance type": "filter_instance_type"
+    },
+    "governance": {
+      "date": "filter_datekey",
+      "service provider": "filter_cloud_provider",
+      "account": "filter_billing_account_name",
+      "region": "filter_resource_region",
+      "resource": "filter_resource_name"
+    },
+    "cost-compliance": {
+      "date": "filter_datekey",
+      "service provider": "filter_cloud_provider",
+      "account": "filter_billing_account_name",
+      "region": "filter_resource_region",
+      "resource": "filter_resource_name"
+    },
+    "security-compliance": {
+      "date": "filter_datekey",
+      "service provider": "filter_cloud_provider",
+      "account": "filter_billing_account_name",
+      "region": "filter_resource_region",
+      "resource": "filter_resource_name"
     }
   };
 
@@ -264,7 +285,9 @@ export const extractFiltersForNavItem = async (clickedNavItem, mergedFilters) =>
     "Observability": "observability",
     "Anomaly": "anomaly",
     "Recommendations": "recommendations",
-    "Governance": "governance",
+    // "Governance": "governance",
+    "Cost Compliance": "governance",
+    "Security Compliance": "security-compliance",
     "Bud vs Act": "bud vs act",
     "GreenOps": "greenops",
     "OnPrem": "onnprem"
@@ -477,6 +500,8 @@ const ChatBot = () => {
       'Observability': 'cost',
       'Anomaly': 'cost',
       'Governance': 'cost',
+      'Cost Compliance': 'cost',
+      'Security Compliance': 'cost',
       'OnPrem': 'cost'
     }
     if(pageName[clickedNavItem]){
