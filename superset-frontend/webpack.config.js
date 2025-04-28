@@ -223,15 +223,6 @@ const plugins = [
         redirectTab: true,
         order: 9
       },
-      'security-compliance': {
-        id: "security-compliance",
-        name: "Security Compliance",
-        group: "OPERATE",
-        parent: "governance",
-        icon: "Shield",
-        redirectTab: true,
-        order: 10
-      },
       'bud-vs-act': {
         id: "bud-vs-act",
         name: "Bud vs Act",

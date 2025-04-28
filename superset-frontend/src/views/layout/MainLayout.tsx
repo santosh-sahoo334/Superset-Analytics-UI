@@ -1,6 +1,6 @@
 /* eslint-disable */
 // @ts-nocheck
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useMemo } from 'react'
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -146,11 +146,12 @@ useEffect(() => {
   }
   }, [dashboardLayout]);
 
-  const menuConfig: Record<string, MenuItemConfig> = (() => {
+  const menuConfig: Record<string, MenuItemConfig> = useMemo(() => {
     try {
       const config = typeof process.env.REACT_APP_MENU_CONFIG === 'string' 
         ? JSON.parse(process.env.REACT_APP_MENU_CONFIG)
         : process.env.REACT_APP_MENU_CONFIG || {};
+
       if (isFeatureEnabled(FeatureFlag.CsightOnpremFlag)) {
         // Ungrouped items at the end
         config.onprem = {
@@ -163,37 +164,25 @@ useEffect(() => {
           showLine: true
         };
       }
-      // if (isFeatureEnabled(FeatureFlag.CsightCostComplianceFlag)) {
-      //   // Ungrouped items at the end
-      //   config['cost-compliance'] = {
-      //     id: "cost-compliance",
-      //     name: "Cost Compliance",
-      //     replaceName: "Governance",
-      //     group: "OPERATE",
-      //     parent: "governance",
-      //     icon: "Building2",
-      //     redirectTab: true,
-      //     order: 9
-      //   }
-      // }
-      // if (isFeatureEnabled(FeatureFlag.CsightSecurityComplianceFlag)) {
-      //   // Ungrouped items at the end
-      //   config['security-compliance'] = {
-      //     id: "security-compliance",
-      //     name: "Security Compliance",
-      //     group: "OPERATE",
-      //     parent: "governance",
-      //     icon: "Shield",
-      //     redirectTab: true,
-      //     order: 10
-      //   };
-      // }
+
+      if (isFeatureEnabled(FeatureFlag.CsightSecurityComplianceFlag)) {
+        // Ungrouped items at the end
+        config['security-compliance'] = {
+          id: "security-compliance",
+          name: "Security Compliance",
+          group: "OPERATE",
+          parent: "governance",
+          icon: "Shield",
+          redirectTab: true,
+          order: 10
+        };
+      }
       return config;
     } catch (error) {
       console.error('Error parsing REACT_APP_MENU_CONFIG:', error);
       return {};
     }
-  })();
+  }, []);
 
   const tabRedirectionDetails = Object.values(menuConfig)
     .filter(item => item.redirectTab)
@@ -390,7 +379,8 @@ useEffect(() => {
     );
   };
 
-  const sidebarContent = (
+  const sidebarContent = () => {
+    return (
     <Menu
       theme="dark"
       mode="inline"
@@ -425,7 +415,7 @@ useEffect(() => {
             )}
             {isFirstInGroup ? (
               <Menu.ItemGroup title={item.group} >
-                {item.parent === 'budget' || item.parent === 'governance' ? null : renderMenuItem(item.key, item)}
+                {/* {item.parent === 'budget' || item.parent === 'governance' ? null : renderMenuItem(item.key, item)} */}
                 {/* Add budget submenu if we're in OPERATE group */}
                 {item.group === 'OPERATE' && (
                   <Menu.SubMenu
@@ -474,8 +464,9 @@ useEffect(() => {
           </React.Fragment>
         );
       })}
-    </Menu>
-  )
+      </Menu>
+    )
+  }
 
   const { logout } = useAuth();
 
@@ -553,7 +544,7 @@ useEffect(() => {
             onClick={() => setCollapsed(!collapsed)}
             className="sidebar-trigger"
           /> */}
-          {sidebarContent}
+          {sidebarContent()}
         </AntSider>
       ) : (
         <Drawer
@@ -566,7 +557,7 @@ useEffect(() => {
           maskClosable={false}
           closeIcon={<CloseOutlined style={{ color: '#fff' }} />}  // Add this line to set close icon color
         >
-          {sidebarContent}
+          {sidebarContent()}
         </Drawer>
       )}
 

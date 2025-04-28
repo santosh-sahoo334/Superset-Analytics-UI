@@ -29,7 +29,6 @@ export enum FeatureFlag {
   ChartPluginsExperimental = 'CHART_PLUGINS_EXPERIMENTAL',
   ConfirmDashboardDiff = 'CONFIRM_DASHBOARD_DIFF',
   CsightOnpremFlag = 'CSIGHT_ONPREM_FLAG',
-  CsightCostComplianceFlag = 'CSIGHT_COST_COMPLIANCE_FLAG',
   CsightSecurityComplianceFlag = 'CSIGHT_SECURITY_COMPLIANCE_FLAG',
   CsightChatbot = 'CSIGHT_CINDY_FLAG',
   /** @deprecated */
