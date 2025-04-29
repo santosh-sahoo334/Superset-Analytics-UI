@@ -134,7 +134,15 @@ const listNavItems = [{
 },{
   key: 'governance',
   navItem: 'Executive Report',
-  selectItem: 'Governance'
+  selectItem: 'Cost Compliance'
+},{
+  key: 'security-compliance',
+  navItem: 'Executive Report',
+  selectItem: 'Security Compliance'
+},{
+  key: 'cost-compliance',
+  navItem: 'Cost Compliance',
+  selectItem: 'Cost Compliance'
 },{
   key: 'green ops',
   navItem: 'GreenOps',

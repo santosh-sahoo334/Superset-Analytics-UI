@@ -735,11 +735,11 @@
 
 /* Layout Styles */
 .site-layout {
-  margin-left: 200px;
+  margin-left: 240px;
   margin-top: 64px;
   transition: all 0.2s;
   min-height: calc(100vh - 64px);
-  width: calc(100% - 200px);
+  width: calc(100% - 240px);
 }
 
 .site-layout.collapsed {
@@ -888,6 +888,7 @@
 
 .ant-menu-submenu.ant-menu-submenu-popup {
   left: 52px !important;
+  min-width: 240px !important;
   /* margin-left: 52px !important; */
 }
 /* For when the menu is expanded */
@@ -1209,6 +1210,7 @@
 /* Popup menu styles */
 .ant-menu-submenu-popup > .ant-menu {
   background: #18279A !important;
+  /* min-width: 200px !important; */
 }
 
 .budget-popup-item {
@@ -1219,6 +1221,7 @@
 .budget-popup-item .anticon,
 .budget-popup-item .ant-menu-title-content {
   color: #fff !important;
+  min-width: 240px !important;
 }
 
 /* Hover styles */
