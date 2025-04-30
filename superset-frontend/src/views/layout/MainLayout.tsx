@@ -151,6 +151,7 @@ useEffect(() => {
       const config = typeof process.env.REACT_APP_MENU_CONFIG === 'string' 
         ? JSON.parse(process.env.REACT_APP_MENU_CONFIG)
         : process.env.REACT_APP_MENU_CONFIG || {};
+
       if (isFeatureEnabled(FeatureFlag.CsightOnpremFlag)) {
         // Ungrouped items at the end
         config.onprem = {
@@ -413,8 +414,10 @@ useEffect(() => {
               }} />
             )}
             {isFirstInGroup ? (
-              <Menu.ItemGroup title={item.group} >
-                {/* {item.parent === 'budget' || item.parent === 'governance' ? null : renderMenuItem(item.key, item)} */}
+              <Menu.ItemGroup title={item.group}>
+                {/* Show the first item itself */}
+                {item.parent !== 'governance' ? renderMenuItem(item.key, item) : null}
+                
                 {/* Add budget submenu if we're in OPERATE group */}
                 {item.group === 'OPERATE' && (
                   <Menu.SubMenu
