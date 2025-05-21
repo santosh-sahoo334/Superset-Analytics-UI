@@ -169,6 +169,14 @@ const plugins = [
         redirectTab: true,
         order: 3
       },
+      observability: {
+        id: "observability",
+        name: "Observability",
+        group: "OBSERVE",
+        icon: "Eye",
+        redirectTab: true,
+        order: 4
+      },
       billing: {
         id: "billing",
         name: "Billing",
@@ -176,7 +184,7 @@ const plugins = [
         group: "OBSERVE",
         icon: "FileText",
         redirectTab: true,
-        order: 4
+        order: 5
       },
       tags: {
         id: "tags",
@@ -184,17 +192,9 @@ const plugins = [
         group: "OBSERVE",
         icon: "Tag",
         redirectTab: true,
-        order: 5
-      },
-      // OPTIMIZE group
-      observability: {
-        id: "observability",
-        name: "Observability",
-        group: "OPTIMIZE",
-        icon: "Eye",
-        redirectTab: true,
         order: 6
       },
+      // OPTIMIZE group
       anomaly: {
         id: "anomaly",
         name: "Anomaly",

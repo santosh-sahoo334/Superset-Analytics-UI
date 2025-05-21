@@ -24,6 +24,7 @@ import React, {
   useCallback,
   createContext,
   useRef,
+  useContext,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -61,7 +62,10 @@ import ActionButtons from './ActionButtons';
 import Horizontal from './Horizontal';
 import Vertical from './Vertical';
 import { useSelectFiltersInScope } from '../state';
-
+import Icons from 'src/components/Icons';
+import html2canvas from 'html2canvas';
+import { LayoutContext } from 'src/layout/context/layoutcontext';
+import jsPDF from 'jspdf';
 // FilterBar is just being hidden as it must still
 // render fully due to encapsulated logics
 const HiddenFilterBar = styled.div`
@@ -146,6 +150,7 @@ const FilterBar: React.FC<FiltersBarProps> = ({
   const dashboardId = useSelector<any, number>(
     ({ dashboardInfo }) => dashboardInfo?.id,
   );
+  const { activeNavItem } = useContext(LayoutContext);
   const previousDashboardId = usePrevious(dashboardId);
   const canEdit = useSelector<RootState, boolean>(
     ({ dashboardInfo }) => dashboardInfo.dash_edit_perm,
@@ -312,10 +317,123 @@ const FilterBar: React.FC<FiltersBarProps> = ({
       />
     ) : null;
 
-  return hidden ? (
+  const handleDownloadPDF = useCallback((activeNavItem: string) => {
+    const dashboardElement = document.getElementById('dashboard-page');
+    if (!dashboardElement) {
+      // Show an error or notification if element not found
+      return;
+    }
+
+    // Show loading indicator or notification
+    const loadingToast = {
+      id: 'pdf-download',
+      message: 'Generating PDF...',
+      status: 'info',
+    };
+    dispatch({ type: 'ADD_TOAST', payload: loadingToast });
+
+    // Use setTimeout to allow the UI to update with the loading message
+    setTimeout(async () => {
+      try {
+        // Get the original height and scroll position
+        const originalHeight = dashboardElement.style.height;
+        const originalOverflow = dashboardElement.style.overflow;
+        const originalScrollTop = document.documentElement.scrollTop;
+        
+        // Temporarily modify the element to capture full content
+        dashboardElement.style.height = 'auto';
+        dashboardElement.style.overflow = 'visible';
+        
+        // Get the full height of the dashboard
+        const fullHeight = dashboardElement.scrollHeight;
+        const fullWidth = dashboardElement.scrollWidth;
+        
+        // Create a canvas with the full dimensions
+        const canvas = await html2canvas(dashboardElement, {
+          scale: 1.5, // Higher scale for better quality
+          useCORS: true, // Enable CORS for images
+          allowTaint: true,
+          logging: false,
+          width: fullWidth,
+          height: fullHeight,
+          windowHeight: fullHeight,
+          windowWidth: fullWidth,
+          scrollY: -window.scrollY, // Adjust for scroll position
+          scrollX: -window.scrollX,
+        });
+        
+        // Restore original styles and scroll position
+        dashboardElement.style.height = originalHeight;
+        dashboardElement.style.overflow = originalOverflow;
+        document.documentElement.scrollTop = originalScrollTop;
+        
+        // Generate PDF from the canvas
+        const imgData = canvas.toDataURL('image/png');
+        
+        // Create PDF with appropriate dimensions
+        const orientation = canvas.width > canvas.height ? 'landscape' : 'portrait';
+        const pdf = new jsPDF({
+          orientation,
+          unit: 'px',
+          format: [canvas.width, canvas.height],
+        });
+        
+        // Calculate dimensions to fit the canvas in the PDF
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        
+        // If the dashboard is very large, we might need to scale it down
+        const ratio = Math.min(pdfWidth / canvas.width, pdfHeight / canvas.height);
+        const canvasWidth = canvas.width * ratio;
+        const canvasHeight = canvas.height * ratio;
+        const marginX = (pdfWidth - canvasWidth) / 2;
+        const marginY = (pdfHeight - canvasHeight) / 2;
+        
+        // Add the image to the PDF
+        pdf.addImage(imgData, 'PNG', marginX, marginY, canvasWidth, canvasHeight);
+        
+        // Save the PDF
+        pdf.save(`dashboard-${activeNavItem}-${dashboardId}-${new Date().toISOString().split('T')[0]}.pdf`);
+        
+        // Remove loading notification and show success
+        dispatch({ type: 'REMOVE_TOAST', payload: 'pdf-download' });
+        dispatch({
+          type: 'ADD_TOAST',
+          payload: {
+            id: 'pdf-download-success',
+            message: 'PDF downloaded successfully',
+            status: 'success',
+            duration: 3000,
+          },
+        });
+      } catch (error) {
+        console.error('Error generating PDF:', error);
+        // Show error notification
+        dispatch({ type: 'REMOVE_TOAST', payload: 'pdf-download' });
+        dispatch({
+          type: 'ADD_TOAST',
+          payload: {
+            id: 'pdf-download-error',
+            message: 'Failed to generate PDF',
+            status: 'error',
+            duration: 3000,
+          },
+        });
+      }
+    }, 100);
+  }, [dashboardId, dispatch]);
+
+  return <div id="filter-bar" className="flex flex-row w-full justify-between bg-white">
+    <div className="flex flex-row w-full justify-between">
+    {hidden ? (
     <HiddenFilterBar>{filterBarComponent}</HiddenFilterBar>
   ) : (
     filterBarComponent
-  );
+  )}
+  </div>
+  <div className="text-black p-2 rounded-md mr-2 border border-gray-300 bg-white cursor-pointer" onClick={()=>{handleDownloadPDF(activeNavItem)}}>
+    <Icons.DownloadOutlined className="text-black text-lg cursor-pointer" style={{ color: '#000', marginTop: '15px'}} />
+  </div>
+  </div>;
 };
 export default React.memo(FilterBar);
