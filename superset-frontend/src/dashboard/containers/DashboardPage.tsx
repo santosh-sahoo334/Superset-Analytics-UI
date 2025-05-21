@@ -329,8 +329,7 @@ export const DashboardPage: FC<PageProps> = ({ idOrSlug,className }: PageProps) 
   if (!readyToRender || !hasDashboardInfoInitiated) return <Loading />;
 
   return (
-    <div className={`dashboard-page ${className}`}>
-   
+    <div className={`dashboard-page ${className}`} id="dashboard-page">
       <Global
         styles={[
           filterCardPopoverStyle(theme),
