@@ -431,9 +431,14 @@ const FilterBar: React.FC<FiltersBarProps> = ({
     filterBarComponent
   )}
   </div>
-  <div className="text-black p-2 rounded-md mr-2 border border-gray-300 bg-white cursor-pointer" onClick={()=>{handleDownloadPDF(activeNavItem)}}>
-    <Icons.DownloadOutlined className="text-black text-lg cursor-pointer" style={{ color: '#000', marginTop: '15px'}} />
-  </div>
+  {
+    (activeNavItem === 'Cost Compliance' || activeNavItem === 'cost-compliance' 
+      || activeNavItem === 'Governance' || activeNavItem === 'governance') && (
+      <div className="text-black p-2 rounded-md mr-2 border border-gray-300 bg-white cursor-pointer" onClick={()=>{handleDownloadPDF(activeNavItem)}}>
+        <Icons.DownloadOutlined className="text-black text-lg cursor-pointer" style={{ color: '#000', marginTop: '15px'}} />
+      </div>
+    )
+  }
   </div>;
 };
 export default React.memo(FilterBar);
