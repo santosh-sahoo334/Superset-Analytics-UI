@@ -194,7 +194,7 @@ const CurrencyExchangeRateBudget: React.FC<CurrencyExchangeRateBudgetProps> = ({
     };
 
     const exchangeRateBodyTemplate = (rowData: CurrencyRate) => {
-        return rowData?.exchange_rate?.toFixed(2) || 0;
+        return rowData?.exchange_rate?.toFixed(4) || 0;
     };
 
     const formatDate = (date: Date): string => {

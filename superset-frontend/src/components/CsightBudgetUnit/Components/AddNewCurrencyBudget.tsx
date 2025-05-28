@@ -32,7 +32,7 @@ const AddNewCurrencyBudget: React.FC<AddNewCurrencyBudgetProps> = ({
     destination_currency: 'INR',
     exchange_rate: '',
     start_date: new Date(),
-    end_date: null, // Tomorrow
+    end_date: new Date(), // Tomorrow
   });
 
   const [loading, setLoading] = useState(false);
@@ -190,7 +190,6 @@ const AddNewCurrencyBudget: React.FC<AddNewCurrencyBudgetProps> = ({
       };
 
       const url = editId ? `/currency_exchange_rates/${editId}` : '/currency_exchange_rates/';
-      const method = editId ? 'PUT' : 'POST';
 
       let response;
       if (editId) {
@@ -214,7 +213,7 @@ const AddNewCurrencyBudget: React.FC<AddNewCurrencyBudgetProps> = ({
         toast.current?.show({
           severity: 'error',
           summary: 'Error',
-          detail: response.data.message || 'Failed to save currency rate',
+          detail: response?.message || response?.data?.message || 'Failed to save currency rate',
         });
       }
     } catch (error) {
@@ -222,7 +221,7 @@ const AddNewCurrencyBudget: React.FC<AddNewCurrencyBudgetProps> = ({
       toast.current?.show({
         severity: 'error',
         summary: 'Error',
-        detail: 'Failed to save currency rate',
+        detail: error?.response?.data?.message || 'Failed to save currency rate',
       });
     } finally {
       setLoading(false);
