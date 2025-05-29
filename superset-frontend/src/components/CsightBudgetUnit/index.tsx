@@ -12,9 +12,12 @@ import CreateViewBudgetPage from "./view/[budgetid]/create/page";
 import { HomeOutlined, RightOutlined } from "@ant-design/icons";
 import CreateBudgetUnitUpdatedPage from "./Components/newCreateForm";
 import EditBudgetUnitFormUpdatePage from "./Components/EditBudgetUnitForm";
+import AddNewCurrencyBudget from "./Components/AddNewCurrencyBudget";
+import CurrencyExchangeRateBudget from "./Components/CurrencyExchangeRateBudget";
 
 const CsightBudgetUnit = () => {
   const [visibleRight,setVisibleRight] = useState(false);
+  const [currencyRateCreate,setCurrencyRateCreate] = useState(false);
   const { 
     budgetUnitSteps, setBudgetUnitSteps, 
     budgetUnitCreate, setBudgetUnitCreate, 
@@ -40,15 +43,26 @@ const CsightBudgetUnit = () => {
       {!budgetUnitView && !budgetEditView && !createNewBudget && <div className="px-2 pb-4 pt-2 w-full  custom-table no-data dashboard-table">
         <div className="flex align-items-center justify-content-between w-full mb-2 horizontal-border pb-2">
           <h3 className="text-2xl custom-text-grey">Budget Unit</h3>
+          <div className="flex gap-2 flex-row">
+          <Button
+            label="Currency Exchange Rate"
+            className="custom-bg-light-blue"
+            icon="pi pi-dollar"
+            onClick={() => { 
+              setCurrencyRateCreate(true) 
+            }}
+          />
           <Button
             label="Budget Unit"
             className="custom-bg-light-blue"
             icon="pi pi-plus"
             onClick={() => { 
+              setCurrencyRateCreate(false)
               setBudgetUnitCreate(true) 
               setBudgetUnitSteps(1)
             }}
           />
+          </div>
         </div>
         <BudgetUnitPageC />
       </div>
@@ -58,9 +72,9 @@ const CsightBudgetUnit = () => {
       {budgetUnitView && !createNewBudget && !budgetEditView && !budgetUnitCreate && !editBudgetUnit && <ViewBudgetPage />}
       {budgetEditView && !createNewBudget && budgetData && <EditBudgetFormPage />}
       {createNewBudget && budgetUnitData && <CreateViewBudgetPage />}
+      {currencyRateCreate && <CurrencyExchangeRateBudget visible={currencyRateCreate} onHide={() => setCurrencyRateCreate(false)} />}    
     </div>
     </div>
   );
 };
 export default CsightBudgetUnit;
-
