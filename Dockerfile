@@ -200,4 +200,4 @@ COPY ./superset/custom_login/session_clear.py /usr/local/lib/python3.9/site-pack
 # CSight Auth
 COPY ./superset/custom_login/views.py /usr/local/lib/python3.9/site-packages/flask_appbuilder/security/views.py
 # CSRF Debug
-COPY ./superset/custom_login/csrf.py /usr/local/lib/python3.9/site-packages/flask_wtf/csrf.py
+# COPY ./superset/custom_login/csrf.py /usr/local/lib/python3.9/site-packages/flask_wtf/csrf.py
