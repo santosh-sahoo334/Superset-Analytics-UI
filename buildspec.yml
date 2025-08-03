@@ -8,6 +8,7 @@ env:
     IMAGE_TAG: IMAGE_TAG
     NODE_OPTIONS: "--max-old-space-size=8192"
     BABEL_DISABLE_CACHE: "1"
+    NPM_CONFIG_LOGLEVEL: verbose
 
 phases:
   pre_build:
@@ -24,6 +25,7 @@ phases:
       
       - if [ -z "$IMAGE_TAG" ]; then IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7); fi
       - echo "Resolved Image Tag - $IMAGE_TAG"
+      - npm config set registry https://registry.npmmirror.com
 
   build:
     commands:
@@ -39,6 +41,12 @@ phases:
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
       - echo "Build and push completed successfully"
 
+cache:
+  paths:
+    - '/root/.npm/**/*'
+    - '/root/.cache/pip/**/*'
+    - 'superset-frontend/node_modules/**/*'
+    
 artifacts:
   files:
     - '**/*'
