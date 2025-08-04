@@ -123,22 +123,22 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
             # Add the Ghost Cookie to Blacklisted
             black_list_ghost_cookie()
         
-        @app.before_request
-        def validate_next():
-            """
-            Validates the `next` parameter value to ensure it is safe.
-            """
-            if not 'next' in request.args:
-                return
-            next_value = request.args.get('next')
-            if len(next_value) <= 0:
-                return
-            # Allowed URL Pattern to avoid XSS attack
-            # Change it to http in case of local test
-            pattern = r'^(https://[a-zA-Z0-9._~:/?#\[\]@!$&\'()*+,;=%-]+|/[a-zA-Z0-9/_\-.:]*(\?[a-zA-Z0-9&=_%.-]*)?)$'
+        # @app.before_request
+        # def validate_next():
+        #     """
+        #     Validates the `next` parameter value to ensure it is safe.
+        #     """
+        #     if not 'next' in request.args:
+        #         return
+        #     next_value = request.args.get('next')
+        #     if len(next_value) <= 0:
+        #         return
+        #     # Allowed URL Pattern to avoid XSS attack
+        #     # Change it to http in case of local test
+        #     pattern = r'^(https://[a-zA-Z0-9._~:/?#\[\]@!$&\'()*+,;=%-]+|/[a-zA-Z0-9/_\-.:]*(\?[a-zA-Z0-9&=_%.-]*)?)$'
 
-            if not re.match(pattern, next_value):
-                abort(400,"Operation not allowed")
+        #     if not re.match(pattern, next_value):
+        #         abort(400,"Operation not allowed")
 
         # TekSecur Custom Code to prevent penetration attack [2024-11-30] -- Begins
         @app.before_request
