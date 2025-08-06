@@ -671,4 +671,5 @@ class SupersetAppInitializer:  # pylint: disable=too-many-public-methods
 class SupersetIndexView(IndexView):
     @expose("/")
     def index(self) -> FlaskResponse:
-        return redirect("/dashboard/list/")
+        # return redirect("/dashboard/list/")
+        return redirect("/dworks/welcome/")

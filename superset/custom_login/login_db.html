@@ -22,59 +22,58 @@
     background-position: center;
     background-size: cover;
     width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   ">
-  <div id="loginbox" style="display: flex; justify-content: center; align-items: center; margin-top: 80px">
-    <div style="background: #fff; padding: 40px; border-radius: 4px; min-width: 200px; max-width: 500px; box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1)">
-      <div class="text-center mb-5">
-        <img src="/static/assets/images/superset-logo-horiz.png" alt="Image" height="85" style="margin-bottom: 20px" />
-        <div style="margin-bottom: 20px; font-size: 25px; font-weight: 600">Refuel Analytics</div>
+  <div id="loginbox" style="display: flex; justify-content: center; align-items: center;">
+    <div style="background: #fff; padding: 30px 30px 20px 30px; border-radius: 4px; min-width: 280px; max-width: 450px; box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1)">
+      <div class="text-center mb-4">
+        <img src="/static/assets/images/superset-logo-horiz.png" alt="Image" height="60" style="margin-bottom: 10px" />
+        <div style="margin-bottom: 10px; font-size: 20px; font-weight: 600">Refuel Analytics</div>
       </div>
 
-      <div style="margin-top: 50px">
-        <form class="form" action="" method="post" name="login">
-          {{form.hidden_tag()}}
-          <div class="control-group{% if form.errors.openid is defined %} error{% endif %}">
-            <label class="control-label" for="username" style="color:rgb(33,33,33); font-weight:500; font-size: 14px; text-transform: none;">User Name</label>
+      <form class="form" action="" method="post" name="login">
+        {{form.hidden_tag()}}
+        <div class="control-group{% if form.errors.openid is defined %} error{% endif %}">
+          <label class="control-label" for="username" style="color:rgb(33,33,33); font-weight:500; font-size: 14px;">User Name</label>
+          <div class="controls">
+            <div class="input-group" style="position:relative">
+              <i class="fa fa-user" style="position: absolute;top: 9px;left: 11px;z-index: 22;"></i>
+              {{ form.username(size = 80, class = "form-control", autofocus = true, style="padding-left: 30px") }}
+            </div>
+            {% for error in form.errors.get('openid', []) %}
+            <span class="help-inline">[{{error}}]</span><br />
+            {% endfor %}
 
-            <div class="controls">
-              <div class="input-group" style="position:relative">
-                <i class="fa fa-user" style="position: absolute;top: 9px;left: 11px;z-index: 22;"></i>
-                {{ form.username(size = 80, class = "form-control", autofocus = true, style="padding-left: 30px") }}
-              </div>
-              {% for error in form.errors.get('openid', []) %}
-              <span class="help-inline">[{{error}}]</span><br />
-              {% endfor %}
-              <label class="control-label" for="password" style="color:rgb(33,33,33); font-weight:500; font-size: 14px; margin-top: 17px; text-transform: none;">{{_("Password")}}</label>
+            <label class="control-label" for="password" style="color:rgb(33,33,33); font-weight:500; font-size: 14px; margin-top: 12px;">{{_("Password")}}</label>
+            <div class="input-group" style="position:relative">
+              <i class="fa fa-key" style="position: absolute;top: 9px;left: 11px;z-index: 22;"></i>
+              {{ form.password(size = 80, class = "form-control", style="padding-left: 30px") }}
+            </div>
+            {% for error in form.errors.get('openid', []) %}
+            <span class="help-inline">[{{error}}]</span><br />
+            {% endfor %}
+          </div>
+        </div>
 
-              <div class="input-group" style="position:relative">
-                <i class="fa fa-key" style="position: absolute;top: 9px;left: 11px;z-index: 22;"></i>
-                {{ form.password(size = 80, class = "form-control", style="padding-left: 30px") }}
-              </div>
-              {% for error in form.errors.get('openid', []) %}
-              <span class="help-inline">[{{error}}]</span><br />
-              {% endfor %}
+        <div class="control-group" style="margin-top: 15px">
+          <div class="controls">
+            <div>
+              <button class="btn btn-primary btn-block" type="submit" style="background:#1b71c7; width: 122px; margin: auto; font-weight: 500; text-transform: none; font-size: 15px; height: 40px;">
+                <div style="display:flex; justify-content:center; align-items:center;">
+                  <i class="fa fa-user"></i><span style="padding-left: 12px;">Log In</span>
+                </div>
+              </button>
+              {% if appbuilder.sm.auth_user_registration %}
+              <a href="{{appbuilder.sm.get_url_for_registeruser}}" class="btn btn-block btn-primary" data-toggle="tooltip" rel="tooltip" title="{{_('If you are not already a user, please register')}}">
+                {{_('Register')}}
+              </a>
+              {% endif %}
             </div>
           </div>
-
-          <div class="control-group" style="margin-top: 20px">
-            <div class="controls">
-              <br />
-              <div>
-                <button class="btn btn-primary btn-block" type="submit" style="background:#1b71c7; width: 122px;margin: auto;background: #1b71c7;font-weight: 500;text-transform: none;font-size: 15px;height: 40px;">
-                  <div style="display:flex; justify-content:center; align-items:center;">
-                    <i class="fa fa-user"></i><span style="padding-left: 12px; text-transform: none">Log In</span>
-                  </div>
-                </button>
-                {% if appbuilder.sm.auth_user_registration %}
-                <a href="{{appbuilder.sm.get_url_for_registeruser}}" class="btn btn-block btn-primary" data-toggle="tooltip" rel="tooltip" title="{{_('If you are not already a user, please register')}}">
-                  {{_('Register')}}
-                </a>
-                {% endif %}
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
+        </div>
+      </form>
     </div>
   </div>
 </div>
