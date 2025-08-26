@@ -41,6 +41,7 @@ def get_host():
     ]  
     for header in headers:
         host = request.headers.get(header)
+        print(f"Host inside get_host from request.headers.get for header : {header} --> {host}")
         if host:
             return host
     
@@ -147,7 +148,9 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
         @app.before_request
         def validate_host():
             host = get_host()
+            print(f"Inside validate_host host derived from get_host --> {host}")
             origin = request.headers.get('Origin')
+            print(f"origin from  request.headers.get --> {origin}")
 
             # Check the Request Origin
             user_agent = request.headers.get('User-Agent', '')
