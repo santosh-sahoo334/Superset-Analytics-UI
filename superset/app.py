@@ -151,7 +151,7 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
 
             # Check the Request Origin
             user_agent = request.headers.get('User-Agent', '')
-            if user_agent.startswith('kube-probe/'):
+            if user_agent.startswith('kube-probe/') or user_agent.startswith('ELB-HealthChecker'):
                 return  # Allow Kubernetes health probes
 
             ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
