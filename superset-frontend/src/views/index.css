@@ -71,6 +71,52 @@ body {
   font-family: Calibri, sans-serif, primeicons !important;
 }
 
+/* Fix for Ace Editor and text input boxes - override with monospace fonts */
+.ace_editor,
+.ace_editor *,
+.ace_text-layer,
+.ace_cursor,
+.ace_content,
+.ace_gutter,
+.ace_gutter-cell,
+.ace_line,
+.ace_scroller,
+.ace_editor input,
+.ace_editor textarea,
+.ace_editor select,
+.ace_editor button,
+.ace_editor .ace_text-input,
+.ace_editor .ace_text-layer,
+.ace_editor .ace_cursor,
+.ace_editor .ace_content,
+.ace_editor .ace_gutter,
+.ace_editor .ace_gutter-cell,
+.ace_editor .ace_line,
+.ace_editor .ace_scroller {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace !important;
+}
+
+/* Also fix for regular text inputs and textareas */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+textarea,
+select {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace !important;
+}
+
+/* Fix for SQL expression textareas */
+.datasource-sql-expression input,
+.datasource-sql-expression textarea,
+.editable-title.datasource-sql-expression input,
+.editable-title.datasource-sql-expression textarea {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace !important;
+}
+
 /* Hide main menu */
 /* #main-menu {
   display: none;
