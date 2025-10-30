@@ -31,6 +31,8 @@ from superset.reports.notifications.base import BaseNotification
 from superset.reports.notifications.exceptions import NotificationError
 from superset.utils.core import HeaderDataType, send_email_smtp
 from superset.utils.decorators import statsd_gauge
+from datetime import datetime, timedelta
+import re
 
 logger = logging.getLogger(__name__)
 
@@ -118,6 +120,98 @@ class EmailNotification(BaseNotification):  # pylint: disable=too-few-public-met
         # Strip malicious HTML from embedded data, allowing only table elements
         if self._content.embedded_data is not None:
             df = self._content.embedded_data
+            
+            # ========== ADD THIS BLOCK - START ==========
+            # Dynamic column renaming based on date columns
+            logger.info(f"Original DataFrame columns: {df.columns.tolist()}")
+            column_mapping = {}
+            date_column_value = None
+            alert_type = None  # Will be 'daily', 'weekly', or 'monthly'
+            # Step 1: Identify alert type and extract the date from the date column
+            for col in df.columns:
+                col_lower = col.lower()
+        
+                # Check for Daily Alert - look for "Date" column
+                if col_lower == 'date' and not df.empty:
+                    alert_type = 'daily'
+                    date_column_value = str(df[col].iloc[0])  # Get first row's date value
+                    logger.info(f"Detected Daily Alert with date: {date_column_value}")
+                    break
+        
+                # Check for Weekly Alert - look for "Week" column
+                elif col_lower == 'week' and not df.empty:
+                    alert_type = 'weekly'
+                    date_column_value = str(df[col].iloc[0])  # Get first row's week value
+                    logger.info(f"Detected Weekly Alert with week: {date_column_value}")
+                    break
+        
+                # Check for Monthly Alert - look for "Month" column
+                elif col_lower == 'month' and not df.empty:
+                    alert_type = 'monthly'
+                    date_column_value = str(df[col].iloc[0])  # Get first row's month value
+                    logger.info(f"Detected Monthly Alert with month: {date_column_value}")
+                    break
+            
+            # Step 2: Calculate previous date based on alert type
+            if date_column_value and alert_type:
+                try:
+                    current_date_obj = datetime.strptime(date_column_value, '%Y-%m-%d')
+                    if alert_type == 'daily':
+                        current_date_str = current_date_obj.strftime('%Y-%m-%d')
+                        previous_date_str = (current_date_obj - timedelta(days=1)).strftime('%Y-%m-%d')
+
+                        # Define column mappings for Daily Alert
+                        for col in df.columns:
+                            if 'cost on date' in col.lower():
+                                column_mapping[col] = f'Cost on {current_date_str}'
+                            elif 'prev. day cost' in col.lower():
+                                column_mapping[col] = f'Cost on {previous_date_str}'
+                    
+                    elif alert_type == 'weekly':
+                        current_date_str = current_date_obj.strftime('%Y-%m-%d')
+                        previous_date_str = (current_date_obj - timedelta(weeks=1)).strftime('%Y-%m-%d')
+                
+                        # Define column mappings for Weekly Alert
+                        for col in df.columns:
+                            if 'cost on week' in col.lower():
+                                column_mapping[col] = f'Cost on Week {current_date_str}'
+                            elif 'prev. week cost' in col.lower():
+                                column_mapping[col] = f'Cost on Week {previous_date_str}'
+                    
+                    elif alert_type == 'monthly':
+                        # Format: "July 2025" instead of "2025-07-01"
+                        current_month_str = current_date_obj.strftime('%B %Y')  # e.g., "October 2025"
+                        # Calculate previous month (handle year boundary)
+                        if current_date_obj.month == 1:
+                            previous_month_obj = current_date_obj.replace(
+                                year=current_date_obj.year - 1, 
+                                month=12
+                            )
+                        else:
+                            previous_month_obj = current_date_obj.replace(
+                                month=current_date_obj.month - 1
+                            )
+                        previous_month_str = previous_month_obj.strftime('%B %Y')  # e.g., "September 2025"
+
+                        # Define column mappings for Monthly Alert
+                        for col in df.columns:
+                            if '$ current month' in col.lower():
+                                column_mapping[col] = f'Monthly Cost - {current_month_str}'
+                            elif '$ prev. month' in col.lower():
+                                column_mapping[col] = f'Monthly Cost - {previous_month_str}'
+                    logger.info(f"Column mapping to apply: {column_mapping}")
+                except ValueError as e:
+                    logger.error(f"Error parsing date from column: {e}")
+            
+            # Step 3: Apply the renaming
+            if column_mapping:
+                df = df.rename(columns=column_mapping)
+                logger.info(f"Renamed columns successfully. New columns: {df.columns.tolist()}")
+            else:
+                logger.warning("No columns were renamed. Check if column names match expected patterns.")
+            
+            # ========== ADD THIS BLOCK - END ==========
+
             # pylint: disable=no-member
             html_table = nh3.clean(
                 df.to_html(na_rep="", index=True, escape=True),
