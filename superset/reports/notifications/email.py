@@ -206,6 +206,11 @@ class EmailNotification(BaseNotification):  # pylint: disable=too-few-public-met
             # Step 3: Apply the renaming
             if column_mapping:
                 df = df.rename(columns=column_mapping)
+                # Drop the date/week/month columns
+                columns_to_drop = [col for col in df.columns if col.lower() in ['date', 'week', 'month']]
+                if columns_to_drop:
+                    df = df.drop(columns=columns_to_drop)
+                    logger.info(f"Dropped columns: {columns_to_drop}")
                 logger.info(f"Renamed columns successfully. New columns: {df.columns.tolist()}")
             else:
                 logger.warning("No columns were renamed. Check if column names match expected patterns.")
