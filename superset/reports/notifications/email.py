@@ -218,6 +218,9 @@ class EmailNotification(BaseNotification):  # pylint: disable=too-few-public-met
             # ========== ADD THIS BLOCK - END ==========
 
             # pylint: disable=no-member
+            # Reset index to start from 1
+            df.index = range(1, len(df) + 1)
+            
             html_table = nh3.clean(
                 df.to_html(na_rep="", index=True, escape=True),
                 # pandas will escape the HTML in cells already, so passing
