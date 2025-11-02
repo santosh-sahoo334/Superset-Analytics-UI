@@ -122,6 +122,9 @@ class EmailNotification(BaseNotification):  # pylint: disable=too-few-public-met
             df = self._content.embedded_data
             
             # ========== ADD THIS BLOCK - START ==========
+            # Flatten tuple column names to strings
+            if df.columns.nlevels > 1 or isinstance(df.columns[0], tuple):
+                df.columns = [col[0] if isinstance(col, tuple) else col for col in df.columns]
             # Dynamic column renaming based on date columns
             logger.info(f"Original DataFrame columns: {df.columns.tolist()}")
             column_mapping = {}
