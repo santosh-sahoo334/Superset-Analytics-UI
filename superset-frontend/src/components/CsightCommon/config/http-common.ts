@@ -33,23 +33,23 @@ const setCookies = (access, refresh) => {
   });
 };
 
-// const deleteCookies = async () => {
-//   Cookies.remove(REFRESH_TOKEN, { path: "/", domain: ".teksecur.com" });
-//   Cookies.remove(REFRESH_TOKEN, { path: "/" });
-//   Cookies.remove(SLUG, { path: "/", domain: ".teksecur.com" });
-//   Cookies.remove(SLUG, { path: "/" });
-//   Cookies.remove(SESSION, { path: "/", domain: ".teksecur.com" });
-//   Cookies.remove(SESSION, { path: "/" });
-// };
-
 const deleteCookies = async () => {
-  Cookies.remove(REFRESH_TOKEN, { path: "/", domain: ".peerislands.io" });
+  Cookies.remove(REFRESH_TOKEN, { path: "/", domain: ".teksecur.com" });
   Cookies.remove(REFRESH_TOKEN, { path: "/" });
-  Cookies.remove(SLUG, { path: "/", domain: ".peerislands.io" });
+  Cookies.remove(SLUG, { path: "/", domain: ".teksecur.com" });
   Cookies.remove(SLUG, { path: "/" });
-  Cookies.remove(SESSION, { path: "/", domain: ".peerislands.io" });
+  Cookies.remove(SESSION, { path: "/", domain: ".teksecur.com" });
   Cookies.remove(SESSION, { path: "/" });
 };
+
+// const deleteCookies = async () => {
+//   Cookies.remove(REFRESH_TOKEN, { path: "/", domain: ".peerislands.io" });
+//   Cookies.remove(REFRESH_TOKEN, { path: "/" });
+//   Cookies.remove(SLUG, { path: "/", domain: ".peerislands.io" });
+//   Cookies.remove(SLUG, { path: "/" });
+//   Cookies.remove(SESSION, { path: "/", domain: ".peerislands.io" });
+//   Cookies.remove(SESSION, { path: "/" });
+// };
 
 const hasTokenExpired = (token) => {
   try {
