@@ -29,9 +29,9 @@ phases:
       - echo "Fetching parameters from AWS SSM Parameter Store"
 
       # Fetch ADMIN_EMAIL parameter from Parameter Store
-      - REACT_APP_SUPERSET_BASE_URL=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_SUPERSET_BASE_URL" --with-decryption --query "Parameter.Value" --output text)
+      - REACT_APP_SUPERSET_BASE_URL=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_SUPERSET_BASE_URL_DMART" --with-decryption --query "Parameter.Value" --output text)
       - echo "REACT_APP_SUPERSET_BASE_URL - $REACT_APP_SUPERSET_BASE_URL"
-      - ADMIN_EMAIL=$(aws ssm get-parameter --name "/csight/frontend/ADMIN_EMAIL" --with-decryption --query "Parameter.Value" --output text)
+      - ADMIN_EMAIL=$(aws ssm get-parameter --name "/csight/frontend/ADMIN_EMAIL_DMART" --with-decryption --query "Parameter.Value" --output text)
       - echo "ADMIN_EMAIL - $ADMIN_EMAIL"
       - REACT_APP_LOGO_TEXT=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_LOGO_TEXT" --with-decryption --query "Parameter.Value" --output text)
       - echo "REACT_APP_LOGO_TEXT - $REACT_APP_LOGO_TEXT"
