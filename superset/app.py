@@ -147,6 +147,7 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
         @app.before_request
         def validate_host():
             host = get_host()
+            print(f"****** Host Received from validate_host :: {host}")
             origin = request.headers.get('Origin')
 
             # Check the Request Origin
