@@ -63,6 +63,7 @@ import SyncDashboardState, {
 import { LayoutContext } from 'src/layout/context/layoutcontext';
 import CsightDashboard from 'src/components/CsightDashboard';
 import CsightBudgetUnit from 'src/components/CsightBudgetUnit';
+import CsightUserManagement from 'src/components/CsightUserManagement';
 import getBootstrapData from 'src/utils/getBootstrapData';
 import UserInformation from 'src/components/UserInformation';
 import React from 'react';
@@ -179,6 +180,9 @@ export const DashboardPage: FC<PageProps> = ({ idOrSlug,className }: PageProps) 
   },{
     component: <CsightBudgetUnit/>,
     tabName: 'Budget Unit'
+  },{
+    component: <CsightUserManagement/>,
+    tabName: 'User Management'
   },{
     component: <UserInformation userInfo={{
       userName: bootstrapData?.user?.username,

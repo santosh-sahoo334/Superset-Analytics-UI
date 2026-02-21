@@ -30,6 +30,7 @@ export enum FeatureFlag {
   ConfirmDashboardDiff = 'CONFIRM_DASHBOARD_DIFF',
   CsightOnpremFlag = 'CSIGHT_ONPREM_FLAG',
   CsightSecurityComplianceFlag = 'CSIGHT_SECURITY_COMPLIANCE_FLAG',
+  CsightUserManagementFlag = 'CSIGHT_USER_MANAGEMENT_FLAG',
   CsightChatbot = 'CSIGHT_CINDY_FLAG',
   /** @deprecated */
   DashboardCrossFilters = 'DASHBOARD_CROSS_FILTERS',

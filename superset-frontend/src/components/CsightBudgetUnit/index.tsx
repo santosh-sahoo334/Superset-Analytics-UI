@@ -45,7 +45,7 @@ const CsightBudgetUnit = () => {
           <h3 className="text-2xl custom-text-grey">Budget Unit</h3>
           <div className="flex gap-2 flex-row">
           <Button
-            label="Currency Rate"
+            label="Currency Exchange Rate"
             className="custom-bg-light-blue"
             icon="pi pi-dollar"
             onClick={() => { 
@@ -78,4 +78,3 @@ const CsightBudgetUnit = () => {
   );
 };
 export default CsightBudgetUnit;
-

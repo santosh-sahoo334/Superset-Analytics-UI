@@ -177,6 +177,7 @@ useEffect(() => {
           order: 10
         };
       }
+
       return config;
     } catch (error) {
       console.error('Error parsing REACT_APP_MENU_CONFIG:', error);
@@ -511,6 +512,16 @@ useEffect(() => {
               }}>
                 Profile
               </Menu.Item>
+              {isFeatureEnabled(FeatureFlag.CsightUserManagementFlag) && (
+                <Menu.Item key="user-management" icon={<UserOutlined />} onClick={() => {
+                    setActiveNavItem('User Management');
+                    setClickedNavItem('User Management');
+                    setPreviousNavItem(null);
+                }}>
+                  User Management
+                </Menu.Item>
+              )}
+              <Menu.Divider />
               <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={() => logout()}>
                 Logout
               </Menu.Item>
