@@ -8,8 +8,7 @@ import { Dialog } from "primereact/dialog";
 import { Tag } from "primereact/tag";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { InputText } from "primereact/inputtext";
-import { DWORKS_HTTP } from "../../CsightCommon/config/http-common";
-import { useAuth } from "../../CsightCommon/context/AuthContext";
+import { HTTP } from "../../CsightCommon/config/http-common";
 import { useToast } from "../../CsightCommon/context/ToastContext";
 
 interface User {
@@ -35,15 +34,12 @@ const UserListPage: React.FC<UserListPageProps> = ({ onCreateUser, onEditUser })
   const [showDeactivateDialog, setShowDeactivateDialog] = useState<boolean>(false);
   const [showResetPasswordDialog, setShowResetPasswordDialog] = useState<boolean>(false);
   const [tempPassword, setTempPassword] = useState<string>("");
-  const { accessToken } = useAuth();
   const { showToast } = useToast();
 
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const resp = await DWORKS_HTTP.get("usermgmt/users", {
-        headers: { Authorization: accessToken },
-      });
+      const resp = await HTTP.get("usermgmt/users");
       setUsers(resp.data?.users || []);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -65,9 +61,7 @@ const UserListPage: React.FC<UserListPageProps> = ({ onCreateUser, onEditUser })
     if (!selectedUser) return;
     try {
       setLoading(true);
-      const resp = await DWORKS_HTTP.delete(`usermgmt/users/${selectedUser.id}`, {
-        headers: { Authorization: accessToken },
-      });
+      const resp = await HTTP.delete(`usermgmt/users/${selectedUser.id}`);
       if (resp.status === 200) {
         showToast("User deactivated successfully", "success", "Success");
         fetchUsers();
@@ -89,10 +83,9 @@ const UserListPage: React.FC<UserListPageProps> = ({ onCreateUser, onEditUser })
     if (!selectedUser || !tempPassword) return;
     try {
       setLoading(true);
-      const resp = await DWORKS_HTTP.post(
+      const resp = await HTTP.post(
         `usermgmt/users/${selectedUser.id}/reset-password`,
-        { temp_password: tempPassword },
-        { headers: { Authorization: accessToken } }
+        { temp_password: tempPassword }
       );
       if (resp.status === 200) {
         showToast("Password reset successfully", "success", "Success");
@@ -114,10 +107,9 @@ const UserListPage: React.FC<UserListPageProps> = ({ onCreateUser, onEditUser })
   const handleToggleStatus = async (user: User) => {
     try {
       setLoading(true);
-      const resp = await DWORKS_HTTP.put(
+      const resp = await HTTP.put(
         `usermgmt/users/${user.id}`,
-        { enabled: !user.enabled },
-        { headers: { Authorization: accessToken } }
+        { enabled: !user.enabled }
       );
       if (resp.status === 200) {
         showToast(

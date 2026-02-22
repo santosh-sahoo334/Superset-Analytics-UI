@@ -4,8 +4,7 @@ import React, { useState } from "react";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import { DWORKS_HTTP } from "../../CsightCommon/config/http-common";
-import { useAuth } from "../../CsightCommon/context/AuthContext";
+import { HTTP } from "../../CsightCommon/config/http-common";
 import { useToast } from "../../CsightCommon/context/ToastContext";
 
 interface CreateUserFormProps {
@@ -21,7 +20,6 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({ visible, onHide, onSucc
   const [tempPassword, setTempPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const { accessToken } = useAuth();
   const { showToast } = useToast();
 
   const resetForm = () => {
@@ -64,9 +62,7 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({ visible, onHide, onSucc
         payload.temp_password = tempPassword;
       }
 
-      const resp = await DWORKS_HTTP.post("usermgmt/users", payload, {
-        headers: { Authorization: accessToken },
-      });
+      const resp = await HTTP.post("usermgmt/users", payload);
 
       if (resp.status === 201) {
         showToast("User created successfully", "success", "Success");

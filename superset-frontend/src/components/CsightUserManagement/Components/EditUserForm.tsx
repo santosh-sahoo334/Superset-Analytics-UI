@@ -5,8 +5,7 @@ import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { InputSwitch } from "primereact/inputswitch";
-import { DWORKS_HTTP } from "../../CsightCommon/config/http-common";
-import { useAuth } from "../../CsightCommon/context/AuthContext";
+import { HTTP } from "../../CsightCommon/config/http-common";
 import { useToast } from "../../CsightCommon/context/ToastContext";
 
 interface User {
@@ -30,7 +29,6 @@ const EditUserForm: React.FC<EditUserFormProps> = ({ visible, user, onHide, onSu
   const [enabled, setEnabled] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const { accessToken } = useAuth();
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -61,9 +59,7 @@ const EditUserForm: React.FC<EditUserFormProps> = ({ visible, user, onHide, onSu
         enabled: enabled,
       };
 
-      const resp = await DWORKS_HTTP.put(`usermgmt/users/${user.id}`, payload, {
-        headers: { Authorization: accessToken },
-      });
+      const resp = await HTTP.put(`usermgmt/users/${user.id}`, payload);
 
       if (resp.status === 200) {
         showToast("User updated successfully", "success", "Success");
