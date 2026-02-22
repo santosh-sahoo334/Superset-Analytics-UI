@@ -122,7 +122,7 @@ const plugins = [
     
     // Ensure these environment variables are defined correctly
     'process.env.REACT_APP_SUPERSET_GUEST_TOKEN_URL': JSON.stringify(process.env.REACT_APP_SUPERSET_GUEST_TOKEN_URL || ''),
-    'process.env.REACT_APP_SUPERSET_BASE_URL': JSON.stringify(process.env.REACT_APP_SUPERSET_BASE_URL || ''),
+    'process.env.REACT_APP_CSIGHT_API_URL': JSON.stringify(process.env.REACT_APP_CSIGHT_API_URL || ''),
     'process.env.REACT_APP_SUPERSET_DASHBOARD_ID': JSON.stringify(process.env.REACT_APP_SUPERSET_DASHBOARD_ID || ''),
     'process.env.REACT_APP_SUPERSET_ID': JSON.stringify(process.env.REACT_APP_SUPERSET_ID || ''),
     'process.env.REACT_APP_SUPERSET_DOMAIN': JSON.stringify(process.env.REACT_APP_SUPERSET_DOMAIN || ''),
@@ -136,7 +136,7 @@ const plugins = [
     'process.env.REACT_APP_CINDY_AUTH_TOKEN': JSON.stringify(process.env.REACT_APP_CINDY_AUTH_TOKEN || ''),
     'process.env.ADMIN_EMAIL': JSON.stringify(process.env.ADMIN_EMAIL) || '[]',
     'process.env.REACT_APP_LOGO_TEXT': JSON.stringify(process.env.REACT_APP_LOGO_TEXT) || 'Multi-Cloud FinOps',
-    'process.env.REACT_APP_DWORKS_BASE_URL': JSON.stringify(process.env.REACT_APP_DWORKS_BASE_URL || ''),
+    'process.env.REACT_APP_DWORKS_BASE_URL': JSON.stringify(process.env.REACT_APP_CSIGHT_API_URL || ''),
     'process.env.REACT_APP_DWORKS_API_KEY': JSON.stringify(process.env.REACT_APP_DWORKS_API_KEY || ''),
     'process.env.REACT_APP_INFO_MONTHLY_COST': JSON.stringify(process.env.REACT_APP_INFO_MONTHLY_COST || ''),
     'process.env.REACT_APP_INFO_POTENTIAL_SAVINGS': JSON.stringify(process.env.REACT_APP_INFO_POTENTIAL_SAVINGS || ''),

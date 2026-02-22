@@ -129,7 +129,7 @@ const AuthState = () => {
       
 
       const loginResponse = await fetch(
-        `${process.env.REACT_APP_SUPERSET_BASE_URL}/api/v1/security/login`,
+        `${process.env.REACT_APP_CSIGHT_API_URL}/api/v1/security/login`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

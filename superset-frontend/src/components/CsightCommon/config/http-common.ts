@@ -83,7 +83,7 @@ const refreshAccessToken = async () => {
 
   try {
     const response = await axios.post(
-      `${process.env.REACT_APP_SUPERSET_BASE_URL}/api/v1/security/refresh`,
+      `${process.env.REACT_APP_CSIGHT_API_URL}/api/v1/security/refresh`,
       { refresh },
       {
         headers: {
@@ -109,11 +109,11 @@ const refreshAccessToken = async () => {
 };
 
 const RAG_HTTP = axios.create({
-  baseURL: `${process.env.REACT_APP_SUPERSET_BASE_URL}`,
+  baseURL: `${process.env.REACT_APP_CSIGHT_API_URL}`,
 });
 
 const HTTP = axios.create({
-  baseURL: `${process.env.REACT_APP_SUPERSET_BASE_URL}/api/v1`,
+  baseURL: `${process.env.REACT_APP_CSIGHT_API_URL}/api/v1`,
 });
 
 HTTP.interceptors.request.use(
