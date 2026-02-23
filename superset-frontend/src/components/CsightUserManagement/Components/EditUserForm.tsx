@@ -14,6 +14,7 @@ interface User {
   first_name: string;
   last_name: string;
   enabled: boolean;
+  is_federated: boolean;
 }
 
 interface EditUserFormProps {
@@ -125,8 +126,10 @@ const EditUserForm: React.FC<EditUserFormProps> = ({ visible, user, onHide, onSu
               onChange={(e) => setFirstName(e.target.value)}
               placeholder="Enter first name"
               className={errors.firstName ? "p-invalid" : ""}
+              disabled={user.is_federated}
             />
             {errors.firstName && <small className="p-error">{errors.firstName}</small>}
+            {user.is_federated && <small className="text-color-secondary">Name is managed by Active Directory.</small>}
           </div>
 
           <div className="flex flex-column gap-2">
@@ -137,20 +140,9 @@ const EditUserForm: React.FC<EditUserFormProps> = ({ visible, user, onHide, onSu
               onChange={(e) => setLastName(e.target.value)}
               placeholder="Enter last name"
               className={errors.lastName ? "p-invalid" : ""}
+              disabled={user.is_federated}
             />
             {errors.lastName && <small className="p-error">{errors.lastName}</small>}
-          </div>
-
-          <div className="flex align-items-center gap-3">
-            <label htmlFor="editEnabled">Active</label>
-            <InputSwitch
-              id="editEnabled"
-              checked={enabled}
-              onChange={(e) => setEnabled(e.value)}
-            />
-            <span className={enabled ? "text-green-600" : "text-red-600"}>
-              {enabled ? "Active" : "Inactive"}
-            </span>
           </div>
         </div>
       )}

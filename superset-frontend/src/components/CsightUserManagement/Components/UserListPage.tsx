@@ -1,6 +1,6 @@
 /* eslint-disable */
 // @ts-nocheck
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
@@ -8,7 +8,7 @@ import { Dialog } from "primereact/dialog";
 import { Tag } from "primereact/tag";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { InputText } from "primereact/inputtext";
-import { HTTP } from "../../CsightCommon/config/http-common";
+import { HTTP, isCustomerAdmin, parseJWT, Cookies, REFRESH_TOKEN } from "../../CsightCommon/config/http-common";
 import { useToast } from "../../CsightCommon/context/ToastContext";
 
 interface User {
@@ -20,6 +20,7 @@ interface User {
   created_on: number | null;
   username: string;
   is_admin: boolean;
+  is_federated: boolean;
 }
 
 interface UserListPageProps {
@@ -37,6 +38,20 @@ const UserListPage: React.FC<UserListPageProps> = ({ onCreateUser, onEditUser })
   const [tempPassword, setTempPassword] = useState<string>("");
   const [promotingUserId, setPromotingUserId] = useState<string | null>(null);
   const { showToast } = useToast();
+
+  // Get current logged-in user's email from JWT
+  const currentUserEmail = useMemo(() => {
+    try {
+      const token = Cookies.get(REFRESH_TOKEN);
+      if (!token) return "";
+      const payload = parseJWT(token);
+      return payload.email || "";
+    } catch {
+      return "";
+    }
+  }, []);
+
+  const viewerIsAdmin = useMemo(() => isCustomerAdmin(), []);
 
   const fetchUsers = async () => {
     try {
@@ -192,41 +207,65 @@ const UserListPage: React.FC<UserListPageProps> = ({ onCreateUser, onEditUser })
     );
   };
 
+  const loginTypeBodyTemplate = (rowData: User) => {
+    return (
+      <Tag
+        value={rowData.is_federated ? "AD" : "DB"}
+        severity={rowData.is_federated ? "info" : null}
+      />
+    );
+  };
+
   const actionBodyTemplate = (rowData: User) => {
+    const isSelf = currentUserEmail && rowData.email === currentUserEmail;
+    const isDbUser = !rowData.is_federated;
+
     return (
       <div className="flex gap-2">
-        <Button
-          icon="pi pi-pencil"
-          className="p-button-rounded p-button-text p-button-sm"
-          tooltip="Edit"
-          tooltipOptions={{ position: "top" }}
-          onClick={() => onEditUser(rowData)}
-        />
-        <Button
-          icon={rowData.is_admin ? "pi pi-arrow-down" : "pi pi-arrow-up"}
-          className={`p-button-rounded p-button-text p-button-sm ${rowData.is_admin ? "p-button-danger" : "p-button-info"}`}
-          tooltip={rowData.is_admin ? "Demote from Admin" : "Promote to Admin"}
-          tooltipOptions={{ position: "top" }}
-          loading={promotingUserId === rowData.id}
-          onClick={() => rowData.is_admin ? handleDemoteAdmin(rowData) : handlePromoteAdmin(rowData)}
-        />
-        <Button
-          icon={rowData.enabled ? "pi pi-ban" : "pi pi-check-circle"}
-          className={`p-button-rounded p-button-text p-button-sm ${rowData.enabled ? "p-button-warning" : "p-button-success"}`}
-          tooltip={rowData.enabled ? "Deactivate" : "Activate"}
-          tooltipOptions={{ position: "top" }}
-          onClick={() => handleToggleStatus(rowData)}
-        />
-        <Button
-          icon="pi pi-key"
-          className="p-button-rounded p-button-text p-button-sm"
-          tooltip="Reset Password"
-          tooltipOptions={{ position: "top" }}
-          onClick={() => {
-            setSelectedUser(rowData);
-            setShowResetPasswordDialog(true);
-          }}
-        />
+        {/* Edit: Admin can edit DB users, or self if DB user */}
+        {isDbUser && (viewerIsAdmin || isSelf) && (
+          <Button
+            icon="pi pi-pencil"
+            className="p-button-rounded p-button-text p-button-sm"
+            tooltip="Edit"
+            tooltipOptions={{ position: "top" }}
+            onClick={() => onEditUser(rowData)}
+          />
+        )}
+        {/* Promote/Demote: Admin only, not for self */}
+        {viewerIsAdmin && !isSelf && (
+          <Button
+            icon={rowData.is_admin ? "pi pi-arrow-down" : "pi pi-arrow-up"}
+            className={`p-button-rounded p-button-text p-button-sm ${rowData.is_admin ? "p-button-danger" : "p-button-info"}`}
+            tooltip={rowData.is_admin ? "Demote from Admin" : "Promote to Admin"}
+            tooltipOptions={{ position: "top" }}
+            loading={promotingUserId === rowData.id}
+            onClick={() => rowData.is_admin ? handleDemoteAdmin(rowData) : handlePromoteAdmin(rowData)}
+          />
+        )}
+        {/* Activate/Deactivate: Admin only, not for self */}
+        {viewerIsAdmin && !isSelf && (
+          <Button
+            icon={rowData.enabled ? "pi pi-ban" : "pi pi-check-circle"}
+            className={`p-button-rounded p-button-text p-button-sm ${rowData.enabled ? "p-button-warning" : "p-button-success"}`}
+            tooltip={rowData.enabled ? "Deactivate" : "Activate"}
+            tooltipOptions={{ position: "top" }}
+            onClick={() => handleToggleStatus(rowData)}
+          />
+        )}
+        {/* Reset Password: DB users only */}
+        {isDbUser && (
+          <Button
+            icon="pi pi-key"
+            className="p-button-rounded p-button-text p-button-sm"
+            tooltip="Reset Password"
+            tooltipOptions={{ position: "top" }}
+            onClick={() => {
+              setSelectedUser(rowData);
+              setShowResetPasswordDialog(true);
+            }}
+          />
+        )}
       </div>
     );
   };
@@ -270,6 +309,7 @@ const UserListPage: React.FC<UserListPageProps> = ({ onCreateUser, onEditUser })
       >
         <Column field="first_name" header="Name" body={nameBodyTemplate} sortable />
         <Column field="email" header="Email" sortable />
+        <Column field="is_federated" header="Login" body={loginTypeBodyTemplate} sortable style={{ width: "80px" }} />
         <Column field="is_admin" header="Role" body={roleBodyTemplate} sortable style={{ width: "100px" }} />
         <Column field="enabled" header="Status" body={statusBodyTemplate} sortable style={{ width: "120px" }} />
         <Column header="Actions" body={actionBodyTemplate} style={{ width: "220px" }} />
