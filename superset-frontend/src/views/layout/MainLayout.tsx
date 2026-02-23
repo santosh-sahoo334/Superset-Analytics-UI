@@ -36,6 +36,7 @@ import { RootState } from 'src/dashboard/reducers/types'
 import { useSelector } from 'react-redux'
 import AppBreadCrumb from 'src/layout/AppBreadCrumb'
 import { useAuth } from 'src/components/CsightCommon/context/AuthContext'
+import { isCustomerAdmin } from 'src/components/CsightCommon/config/http-common'
 import ChatBot from "src/components/CsightChatbot";
 import { useAIBotContext } from "src/components/CsightChatbot/Context";
 import { LayoutDashboard, CircleDollarSign, LayoutList, FileText, Tag, Eye, ChartNetwork, ThumbsUp, Building2, FileSpreadsheet, Boxes, Combine, Leaf, LayoutPanelTop } from 'lucide-react';
@@ -94,6 +95,7 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
   const navigate = useHistory();
 
   const { setPrompts } = useAIBotContext();
+  const userIsCustomerAdmin = useMemo(() => isCustomerAdmin(), []);
 
   const dashboardLayout = useSelector<RootState, DashboardLayout>(
     state => state.dashboardLayout.present,
@@ -512,7 +514,7 @@ useEffect(() => {
               }}>
                 Profile
               </Menu.Item>
-              {isFeatureEnabled(FeatureFlag.CsightUserManagementFlag) && (
+              {isFeatureEnabled(FeatureFlag.CsightUserManagementFlag) && userIsCustomerAdmin && (
                 <Menu.Item key="user-management" icon={<UserOutlined />} onClick={() => {
                     setActiveNavItem('User Management');
                     setClickedNavItem('User Management');

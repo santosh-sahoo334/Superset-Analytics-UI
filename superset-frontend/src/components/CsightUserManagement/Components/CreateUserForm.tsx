@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
+import { Checkbox } from "primereact/checkbox";
 import { HTTP } from "../../CsightCommon/config/http-common";
 import { useToast } from "../../CsightCommon/context/ToastContext";
 
@@ -18,6 +19,7 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({ visible, onHide, onSucc
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [tempPassword, setTempPassword] = useState("");
+  const [makeAdmin, setMakeAdmin] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { showToast } = useToast();
@@ -27,6 +29,7 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({ visible, onHide, onSucc
     setLastName("");
     setEmail("");
     setTempPassword("");
+    setMakeAdmin(false);
     setErrors({});
   };
 
@@ -57,6 +60,7 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({ visible, onHide, onSucc
         email: email.trim(),
         first_name: firstName.trim(),
         last_name: lastName.trim(),
+        make_admin: makeAdmin,
       };
       if (tempPassword) {
         payload.temp_password = tempPassword;
@@ -175,6 +179,18 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({ visible, onHide, onSucc
             If set, user must change this password on first login.
           </small>
         </div>
+
+        <div className="flex align-items-center gap-3 mt-2">
+          <Checkbox
+            inputId="makeAdmin"
+            checked={makeAdmin}
+            onChange={(e) => setMakeAdmin(e.checked)}
+          />
+          <label htmlFor="makeAdmin">Make this user a Customer Admin</label>
+        </div>
+        <small className="text-color-secondary">
+          Customer Admins can manage users and promote/demote other admins.
+        </small>
       </div>
     </Dialog>
   );

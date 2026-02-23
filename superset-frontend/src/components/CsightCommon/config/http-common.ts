@@ -61,6 +61,17 @@ const hasTokenExpired = (token) => {
   }
 };
 
+const isCustomerAdmin = (): boolean => {
+  try {
+    const refreshToken = Cookies.get(REFRESH_TOKEN);
+    if (!refreshToken) return false;
+    const payload = parseJWT(refreshToken);
+    return Array.isArray(payload.role_keys) && payload.role_keys.includes('CustomerAdmin');
+  } catch {
+    return false;
+  }
+};
+
 const onAccessTokenRefreshed = (token) => {
   refreshSubscribers.forEach((callback) => callback(token));
   refreshSubscribers = [];
@@ -182,4 +193,5 @@ export {
   parseJWT,
   refreshAccessToken,
   hasTokenExpired,
+  isCustomerAdmin,
 };

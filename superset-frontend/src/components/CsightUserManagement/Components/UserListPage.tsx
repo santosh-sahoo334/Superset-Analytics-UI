@@ -19,6 +19,7 @@ interface User {
   enabled: boolean;
   created_on: number | null;
   username: string;
+  is_admin: boolean;
 }
 
 interface UserListPageProps {
@@ -34,6 +35,7 @@ const UserListPage: React.FC<UserListPageProps> = ({ onCreateUser, onEditUser })
   const [showDeactivateDialog, setShowDeactivateDialog] = useState<boolean>(false);
   const [showResetPasswordDialog, setShowResetPasswordDialog] = useState<boolean>(false);
   const [tempPassword, setTempPassword] = useState<string>("");
+  const [promotingUserId, setPromotingUserId] = useState<string | null>(null);
   const { showToast } = useToast();
 
   const fetchUsers = async () => {
@@ -130,6 +132,44 @@ const UserListPage: React.FC<UserListPageProps> = ({ onCreateUser, onEditUser })
     }
   };
 
+  const handlePromoteAdmin = async (user: User) => {
+    try {
+      setPromotingUserId(user.id);
+      const resp = await HTTP.post(`usermgmt/users/${user.id}/promote-admin`);
+      if (resp.status === 200) {
+        showToast("User promoted to admin", "success", "Success");
+        fetchUsers();
+      }
+    } catch (error) {
+      showToast(
+        error?.response?.data?.error || "Failed to promote user",
+        "error",
+        "Error"
+      );
+    } finally {
+      setPromotingUserId(null);
+    }
+  };
+
+  const handleDemoteAdmin = async (user: User) => {
+    try {
+      setPromotingUserId(user.id);
+      const resp = await HTTP.post(`usermgmt/users/${user.id}/demote-admin`);
+      if (resp.status === 200) {
+        showToast("User demoted from admin", "success", "Success");
+        fetchUsers();
+      }
+    } catch (error) {
+      showToast(
+        error?.response?.data?.error || "Failed to demote user",
+        "error",
+        "Error"
+      );
+    } finally {
+      setPromotingUserId(null);
+    }
+  };
+
   const nameBodyTemplate = (rowData: User) => {
     return <span>{rowData.first_name} {rowData.last_name}</span>;
   };
@@ -143,6 +183,15 @@ const UserListPage: React.FC<UserListPageProps> = ({ onCreateUser, onEditUser })
     );
   };
 
+  const roleBodyTemplate = (rowData: User) => {
+    return (
+      <Tag
+        value={rowData.is_admin ? "Admin" : "User"}
+        severity={rowData.is_admin ? "warning" : "info"}
+      />
+    );
+  };
+
   const actionBodyTemplate = (rowData: User) => {
     return (
       <div className="flex gap-2">
@@ -152,6 +201,14 @@ const UserListPage: React.FC<UserListPageProps> = ({ onCreateUser, onEditUser })
           tooltip="Edit"
           tooltipOptions={{ position: "top" }}
           onClick={() => onEditUser(rowData)}
+        />
+        <Button
+          icon={rowData.is_admin ? "pi pi-arrow-down" : "pi pi-arrow-up"}
+          className={`p-button-rounded p-button-text p-button-sm ${rowData.is_admin ? "p-button-danger" : "p-button-info"}`}
+          tooltip={rowData.is_admin ? "Demote from Admin" : "Promote to Admin"}
+          tooltipOptions={{ position: "top" }}
+          loading={promotingUserId === rowData.id}
+          onClick={() => rowData.is_admin ? handleDemoteAdmin(rowData) : handlePromoteAdmin(rowData)}
         />
         <Button
           icon={rowData.enabled ? "pi pi-ban" : "pi pi-check-circle"}
@@ -212,8 +269,9 @@ const UserListPage: React.FC<UserListPageProps> = ({ onCreateUser, onEditUser })
       >
         <Column field="first_name" header="Name" body={nameBodyTemplate} sortable />
         <Column field="email" header="Email" sortable />
+        <Column field="is_admin" header="Role" body={roleBodyTemplate} sortable style={{ width: "100px" }} />
         <Column field="enabled" header="Status" body={statusBodyTemplate} sortable style={{ width: "120px" }} />
-        <Column header="Actions" body={actionBodyTemplate} style={{ width: "180px" }} />
+        <Column header="Actions" body={actionBodyTemplate} style={{ width: "220px" }} />
       </DataTable>
 
       {/* Reset Password Dialog */}

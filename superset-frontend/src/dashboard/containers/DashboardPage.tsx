@@ -66,6 +66,7 @@ import CsightBudgetUnit from 'src/components/CsightBudgetUnit';
 import CsightUserManagement from 'src/components/CsightUserManagement';
 import getBootstrapData from 'src/utils/getBootstrapData';
 import UserInformation from 'src/components/UserInformation';
+import { isCustomerAdmin } from 'src/components/CsightCommon/config/http-common';
 import React from 'react';
 import { RootState } from '../reducers/types';
 
@@ -313,6 +314,11 @@ export const DashboardPage: FC<PageProps> = ({ idOrSlug,className }: PageProps) 
     const isAdmin = adminList.includes(userEmail);
     // If user is admin, only show DashboardBuilder
     if (isAdmin) {
+      return <DashboardBuilder />;
+    }
+
+    // Guard: prevent non-CustomerAdmin from rendering User Management
+    if (activeNavItem === 'User Management' && !isCustomerAdmin()) {
       return <DashboardBuilder />;
     }
 
