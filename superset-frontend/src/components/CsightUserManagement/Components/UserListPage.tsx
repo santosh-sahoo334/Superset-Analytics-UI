@@ -234,12 +234,13 @@ const UserListPage: React.FC<UserListPageProps> = ({ onCreateUser, onEditUser })
   const header = (
     <div className="flex align-items-center justify-content-between">
       <span className="p-input-icon-left">
-        <i className="pi pi-search" />
+        <i className="pi pi-search" style={{ paddingLeft: "0.75rem" }} />
         <InputText
           value={globalFilter}
           onChange={(e) => setGlobalFilter(e.target.value)}
           placeholder="Search users..."
           className="p-inputtext-sm"
+          style={{ paddingLeft: "2.5rem" }}
         />
       </span>
     </div>
@@ -261,7 +262,7 @@ const UserListPage: React.FC<UserListPageProps> = ({ onCreateUser, onEditUser })
         rows={10}
         rowsPerPageOptions={[5, 10, 25]}
         globalFilter={globalFilter}
-        header={header}
+        header={users.length > 0 ? header : null}
         emptyMessage="No users found."
         loading={loading}
         stripedRows
