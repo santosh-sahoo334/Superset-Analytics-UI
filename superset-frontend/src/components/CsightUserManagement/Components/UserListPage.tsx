@@ -207,15 +207,6 @@ const UserListPage: React.FC<UserListPageProps> = ({ onCreateUser, onEditUser })
     );
   };
 
-  const loginTypeBodyTemplate = (rowData: User) => {
-    return (
-      <Tag
-        value={rowData.is_federated ? "AD" : "DB"}
-        severity={rowData.is_federated ? "info" : null}
-      />
-    );
-  };
-
   const actionBodyTemplate = (rowData: User) => {
     const isSelf = currentUserEmail && rowData.email === currentUserEmail;
     const isDbUser = !rowData.is_federated;
@@ -309,7 +300,6 @@ const UserListPage: React.FC<UserListPageProps> = ({ onCreateUser, onEditUser })
       >
         <Column field="first_name" header="Name" body={nameBodyTemplate} sortable />
         <Column field="email" header="Email" sortable />
-        <Column field="is_federated" header="Login" body={loginTypeBodyTemplate} sortable style={{ width: "80px" }} />
         <Column field="is_admin" header="Role" body={roleBodyTemplate} sortable style={{ width: "100px" }} />
         <Column field="enabled" header="Status" body={statusBodyTemplate} sortable style={{ width: "120px" }} />
         <Column header="Actions" body={actionBodyTemplate} style={{ width: "220px" }} />
