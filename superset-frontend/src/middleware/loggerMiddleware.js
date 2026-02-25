@@ -48,6 +48,12 @@ const sendBeacon = events => {
       // if we have a guest token, we need to send it for auth via the form
       formData.append('guest_token', SupersetClient.getGuestToken());
     }
+    // sendBeacon cannot set custom headers (X-CSRFToken), so include the
+    // CSRF token in the form data where Flask-WTF also checks for it.
+    const csrfNode = document.querySelector('#csrf_token');
+    if (csrfNode) {
+      formData.append('csrf_token', csrfNode.value);
+    }
     navigator.sendBeacon(endpoint, formData);
   } else {
     SupersetClient.post({
