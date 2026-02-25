@@ -504,6 +504,7 @@ class AuthView(BaseView):
             self._get_logout_redirect_url()
         ))
         response.delete_cookie('session')  # Remove the session cookie
+        response.delete_cookie('kc_id_token', path='/', domain='.teksecur.com')  # Clean up id_token cookie
         # Prevent caching of the logout redirect
         response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
         response.headers['Pragma'] = 'no-cache'
@@ -516,17 +517,22 @@ class AuthView(BaseView):
         oidc_server_url = self.appbuilder.app.config.get("OIDC_SERVER_URL")
         realm = request.args.get('realm') or request.cookies.get('slug') or 'teksecur'
         client_id = self.appbuilder.app.config.get("OIDC_CLIENT_ID", "teksecur-csight")
+        id_token_hint = request.cookies.get('kc_id_token')
         post_logout_uri = self.appbuilder.app.config.get(
             "LOGOUT_REDIRECT_URL", self.appbuilder.get_url_for_index
         )
 
         if oidc_server_url:
-            return (
+            logout_url = (
                 f"{oidc_server_url.rstrip('/')}/realms/{realm}"
                 f"/protocol/openid-connect/logout"
                 f"?client_id={quote(client_id)}"
                 f"&post_logout_redirect_uri={quote(post_logout_uri)}"
             )
+            # id_token_hint skips the Keycloak logout confirmation page
+            if id_token_hint:
+                logout_url += f"&id_token_hint={quote(id_token_hint)}"
+            return logout_url
         # Fallback if Keycloak URL not configured
         return post_logout_uri
 
