@@ -99,6 +99,20 @@ const AuthState = () => {
 
   const isAuthenticated = !!accessToken;
 
+  // Detect bfcache restoration (back-button after logout) and redirect if not authenticated
+  useEffect(() => {
+    const handlePageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) {
+        const refreshToken = Cookies.get(REFRESH_TOKEN);
+        if (!refreshToken) {
+          window.location.href = "/logout/";
+        }
+      }
+    };
+    window.addEventListener('pageshow', handlePageShow);
+    return () => window.removeEventListener('pageshow', handlePageShow);
+  }, []);
+
   const computeExpirationDays = (issueTime, expTime) =>
     (expTime - issueTime) / (60 * 60 * 24);
 
@@ -190,12 +204,8 @@ const AuthState = () => {
   const logout = () => {
     setAccessToken(null);
     deleteCookies();
-    setTimeout(()=>{
-      window.location.href = "/logout/";
-      // history.replace('/logout/');
-      // window.location.reload();
-    },1000);
-
+    // replace() removes this page from history stack — back button cannot return here
+    window.location.replace("/logout/");
   };
 
   // const autoRefreshToken = () => {

@@ -196,6 +196,14 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
             response.headers['X-Frame-Options'] = 'DENY'
             # Prevent MIME sniffing
             response.headers['X-Content-Type-Options'] = 'nosniff'
+
+            # Prevent browser from caching authenticated HTML pages (back-button security)
+            content_type = response.content_type or ''
+            if 'text/html' in content_type:
+                response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+                response.headers['Pragma'] = 'no-cache'
+                response.headers['Expires'] = '0'
+
             return response
         return app
 
