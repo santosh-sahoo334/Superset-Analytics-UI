@@ -202,10 +202,12 @@ const AuthState = () => {
   // };
 
   const logout = () => {
+    // Read realm before deleting cookies (needed for Keycloak SSO logout)
+    const realm = Cookies.get(SLUG) || 'teksecur';
     setAccessToken(null);
     deleteCookies();
     // replace() removes this page from history stack — back button cannot return here
-    window.location.replace("/logout/");
+    window.location.replace(`/logout/?realm=${encodeURIComponent(realm)}`);
   };
 
   // const autoRefreshToken = () => {

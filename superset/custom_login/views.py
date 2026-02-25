@@ -2,6 +2,7 @@ import datetime
 import logging
 import re
 from typing import Any, List, Optional
+from urllib.parse import quote
 
 from flask import abort, current_app, flash, g, redirect, request, session, url_for, make_response
 from flask_appbuilder._compat import as_unicode
@@ -500,11 +501,8 @@ class AuthView(BaseView):
         logout_user()
         # TekSecur modified code begin
         response = make_response(redirect(
-            self.appbuilder.app.config.get(
-                "LOGOUT_REDIRECT_URL", self.appbuilder.get_url_for_index
-            )
-        )
-        )
+            self._get_logout_redirect_url()
+        ))
         response.delete_cookie('session')  # Remove the session cookie
         # Prevent caching of the logout redirect
         response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
@@ -512,11 +510,25 @@ class AuthView(BaseView):
         response.headers['Expires'] = '0'
         return response
         # TekSecur modified code Ends
-        # return redirect(
-        #     self.appbuilder.app.config.get(
-        #         "LOGOUT_REDIRECT_URL", self.appbuilder.get_url_for_index
-        #     )
-        # )
+
+    def _get_logout_redirect_url(self):
+        """Build Keycloak OIDC logout URL to invalidate SSO session."""
+        oidc_server_url = self.appbuilder.app.config.get("OIDC_SERVER_URL")
+        realm = request.args.get('realm') or request.cookies.get('slug') or 'teksecur'
+        client_id = self.appbuilder.app.config.get("OIDC_CLIENT_ID", "teksecur-csight")
+        post_logout_uri = self.appbuilder.app.config.get(
+            "LOGOUT_REDIRECT_URL", self.appbuilder.get_url_for_index
+        )
+
+        if oidc_server_url:
+            return (
+                f"{oidc_server_url.rstrip('/')}/realms/{realm}"
+                f"/protocol/openid-connect/logout"
+                f"?client_id={quote(client_id)}"
+                f"&post_logout_redirect_uri={quote(post_logout_uri)}"
+            )
+        # Fallback if Keycloak URL not configured
+        return post_logout_uri
 
 
 class AuthDBView(AuthView):
