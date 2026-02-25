@@ -307,36 +307,23 @@ export const DashboardPage: FC<PageProps> = ({ idOrSlug,className }: PageProps) 
     }
   }, [addDangerToast, datasets, datasetsApiError, dispatch]);
 
-  const getActiveComponent = () => {
-    const bootstrapData = getBootstrapData();
-    const userEmail:any = bootstrapData?.user?.username || null;
-    const adminList = process.env.ADMIN_EMAIL || [];
-    const isAdmin = adminList.includes(userEmail);
-    // If user is admin, only show DashboardBuilder
-    if (isAdmin) {
-      return <DashboardBuilder />;
-    }
+  // Determine if the active view is a custom page (independent of dashboard data)
+  const userEmail: any = bootstrapData?.user?.username || null;
+  const adminList = process.env.ADMIN_EMAIL || [];
+  const isAdmin = adminList.includes(userEmail);
 
-    // Guard: prevent non-CustomerAdmin from rendering User Management
-    if (activeNavItem === 'User Management' && !isCustomerAdmin()) {
-      return <DashboardBuilder />;
-    }
+  const customPageNames = ['Dashboard', 'Budget Unit', 'User Management', 'Profile'];
+  const isCustomPage = customPageNames.includes(activeNavItem) && !isAdmin;
 
-    // Find matching component from componentPages array based on activeNavItem
-    const activeComponent = componentPages.find(
-      page => page.tabName === activeNavItem
-    )?.component;
-
-    // If no matching component found, show UnderConstruction
-    if (!activeComponent) {
-      return <DashboardBuilder />;
-    }
-
-    return activeComponent;
+  // Resolve the custom component (if applicable)
+  const getCustomComponent = () => {
+    if (activeNavItem === 'User Management' && !isCustomerAdmin()) return null;
+    return componentPages.find(p => p.tabName === activeNavItem)?.component || null;
   };
 
   if (error) throw error; // caught in error boundary
-  if (!readyToRender || !hasDashboardInfoInitiated) return <Loading />;
+
+  const customComponent = isCustomPage ? getCustomComponent() : null;
 
   return (
     <div className={`dashboard-page ${className}`} id="dashboard-page">
@@ -347,13 +334,27 @@ export const DashboardPage: FC<PageProps> = ({ idOrSlug,className }: PageProps) 
           chartContextMenuStyles(theme),
         ]}
       />
-      <SyncDashboardState dashboardPageId={dashboardPageId} />
-      <DashboardPageIdContext.Provider value={dashboardPageId}>
-        <DashboardContainer>
-          {getActiveComponent()}
-        </DashboardContainer>
-      </DashboardPageIdContext.Provider>
 
+      {/* Custom pages: render immediately, no dashboard loading gate */}
+      {customComponent && (
+        <div style={{ display: isCustomPage ? 'block' : 'none' }}>
+          {customComponent}
+        </div>
+      )}
+
+      {/* Superset Dashboard: render after data ready, hide when custom page active */}
+      {(!readyToRender || !hasDashboardInfoInitiated) ? (
+        !isCustomPage ? <Loading /> : null
+      ) : (
+        <div style={{ display: isCustomPage ? 'none' : 'block' }}>
+          <SyncDashboardState dashboardPageId={dashboardPageId} />
+          <DashboardPageIdContext.Provider value={dashboardPageId}>
+            <DashboardContainer>
+              <DashboardBuilder />
+            </DashboardContainer>
+          </DashboardPageIdContext.Provider>
+        </div>
+      )}
     </div>
   );
 };

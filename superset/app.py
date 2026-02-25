@@ -23,7 +23,6 @@ from flask_limiter.util import get_remote_address
 from flask_cors import CORS
 from flask import request, abort, redirect, session
 import urllib.parse
-import redis
 
 from flask import Flask
 
@@ -62,30 +61,6 @@ def is_valid_origin(origin, allowed_hosts):
     except Exception:
         return False
 
-# Check if the session key is blacklisted
-def black_list_ghost_cookie():
-    request_referrer = os.environ.get("REQUEST_REFERRER", "").split(",")
-    reqRef = request.headers.get("Referer")
-    # print(f"Referrer from Reqeust --> {reqRef}")
-    if reqRef and reqRef in request_referrer:
-        reqPath = request.path
-        # print(f"request -path -> {reqPath}")  
-        if reqPath and reqPath.lower() == '/dashboard/list/':
-            redis_url = f"redis://:{os.getenv('REDIS_PASSWORD')}@{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT')}/0"
-            redis_client = redis.StrictRedis.from_url(redis_url, decode_responses=True)
-            session_key = request.cookies.get('session')
-            if session_key:
-                session_key = session_key + '$$$GHOSTCOOKIE$$$' 
-                # print(f"Ghost Session Key ---> {session_key}")
-                redis_client.set(f'blacklist:{session_key}', 'blacklisted')
-
-def is_session_blacklisted(session_key):
-    redis_url = f"redis://:{os.getenv('REDIS_PASSWORD')}@{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT')}/0"
-    redis_client = redis.StrictRedis.from_url(redis_url, decode_responses=True)
-    if redis_client.exists(f'blacklist:{session_key + "$$$GHOSTCOOKIE$$$"}'):
-        return True
-    return redis_client.exists(f'blacklist:{session_key}')
-
 def create_app(superset_config_module: Optional[str] = None) -> Flask:
     app = SupersetApp(__name__)
     
@@ -106,25 +81,19 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
 
         @app.before_request
         def check_blacklist():
-            session_key = request.cookies.get('session')  # Or however your session ID is retrieved
-            if session_key:
-                session_key = session_key[:-34]
-                # print(f"Existing Session Key from Request Cookie (Inside check blacklist app py) --> {session_key}")
-                if is_session_blacklisted(session_key):
-                    print("Found a Session to be blacklisted")
-                    # Clear the session and redirect to /login
-                    session.clear()  # Clear the session
-                    print(f"Session after clear: {session}")
+            """Block reuse of sessions that were explicitly logged out.
+            Uses session['_id'] (unique per session, set by Flask-Login)
+            checked against Redis with automatic TTL expiry."""
+            session_id = session.get("_id")
+            if session_id:
+                from superset.utils.redis_blacklist import is_blacklisted
+                if is_blacklisted(session_id):
+                    session.clear()
                     response = redirect("/login")
-                    response.set_cookie("session", "", expires=0)  # Expire the session cookie
-                    response.set_cookie("refresh_token", "", expires=0)  # Expire the refresh_token
-                    response.set_cookie("slug", "", expires=0)  # Expire the slug
+                    response.set_cookie("session", "", expires=0)
+                    response.set_cookie("refresh_token", "", expires=0)
+                    response.set_cookie("slug", "", expires=0)
                     return response
-                    # return redirect("/login")
-                    # abort(403, "Not a Valid Session")
-                
-            # Add the Ghost Cookie to Blacklisted
-            black_list_ghost_cookie()
         
         @app.before_request
         def validate_next():

@@ -19,7 +19,6 @@ from .config import EXEMPT_METHODS
 from .signals import user_logged_in
 from .signals import user_logged_out
 from .signals import user_login_confirmed
-import redis, os
 
 #: A proxy for the current user. If no user is logged in, this will be an
 #: anonymous user
@@ -210,15 +209,13 @@ def logout_user():
     Logs a user out. (You do not need to pass the actual user.) This will
     also clean up the remember me cookie if it exists.
     """
-    # Mark the Session as BlackListed post logout.
-    session_key = request.cookies.get('session') # session is for Superset
-    if session_key:
-        session_key = session_key[:-34]
-
-    # print(f"Existing Session Key from Request Cookie (Inside logout_user) --> {session_key}")
-    redis_url = f"redis://:{os.getenv('REDIS_PASSWORD')}@{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT')}/0"
-    redis_client = redis.StrictRedis.from_url(redis_url, decode_responses=True)
-    redis_client.set(f'blacklist:{session_key}', 'blacklisted')
+    # Blacklist the session's unique identifier so back-button reuse is blocked.
+    # Uses session["_id"] (set by Flask-Login in login_user) — stable and unique,
+    # unlike the old cookie-truncation approach which caused false-positive collisions.
+    from superset.utils.redis_blacklist import blacklist_session
+    session_id = session.get("_id")
+    if session_id:
+        blacklist_session(session_id)
 
     user = _get_user()
 

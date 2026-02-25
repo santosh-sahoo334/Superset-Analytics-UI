@@ -511,6 +511,7 @@ useEffect(() => {
                   setActiveNavItem('Profile');
                   setClickedNavItem('Profile');
                   setPreviousNavItem(null);
+                  setOpenKeys([]);
               }}>
                 Profile
               </Menu.Item>
@@ -519,6 +520,7 @@ useEffect(() => {
                     setActiveNavItem('User Management');
                     setClickedNavItem('User Management');
                     setPreviousNavItem(null);
+                    setOpenKeys([]);
                 }}>
                   User Management
                 </Menu.Item>
