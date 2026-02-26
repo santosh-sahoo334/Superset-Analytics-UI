@@ -119,11 +119,11 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
             if "/dworks/" not in path and "/login" not in path and "/oauth" not in path:
                 return
             from flask import g
-            from superset.custom_login.session_clear import current_user
             try:
-                is_authed = current_user.is_authenticated
-                user_str = str(current_user) if is_authed else "anonymous"
-                roles = [r.name for r in current_user.roles] if is_authed else []
+                user = getattr(g, "user", None)
+                is_authed = user is not None and getattr(user, "is_authenticated", False)
+                user_str = str(user) if is_authed else "anonymous"
+                roles = [r.name for r in user.roles] if is_authed and hasattr(user, "roles") else []
                 logger.debug(
                     "[auth_state] %s %s | authenticated=%s user=%s roles=%s",
                     request.method, path, is_authed, user_str, roles,
