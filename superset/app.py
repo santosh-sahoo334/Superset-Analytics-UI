@@ -197,6 +197,36 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
                 abort(413, description="Request size exceeds 10 KB limit.")
 
         @app.after_request
+        def strip_anonymous_session_cookie(response):
+            """Prevent Flask from setting a new anonymous session cookie on
+            API / sendBeacon responses.  With client-side sessions
+            (SESSION_SERVER_SIDE=False) and SESSION_REFRESH_EACH_REQUEST=True,
+            every response writes a Set-Cookie: session=… header.  When the
+            request arrived WITHOUT an authenticated session, this creates an
+            anonymous session cookie that OVERWRITES the authenticated cookie
+            the browser already held from a prior login.  This is the root
+            cause of the post-login reload loop.
+
+            Fix: if the request had no _user_id in the session and the path
+            is not a login / OAuth callback, delete the Set-Cookie header so
+            the browser keeps its existing (authenticated) cookie untouched.
+            """
+            # Only strip for requests that arrived without auth
+            if "_user_id" not in session:
+                path = request.path
+                # Allow login/OAuth/callback routes to set session cookies
+                # (they need to establish the authenticated session)
+                allow = (
+                    "/login" in path
+                    or "/logout" in path
+                    or "/oauth" in path
+                )
+                if not allow:
+                    response.headers.pop("Set-Cookie", None)
+
+            return response
+
+        @app.after_request
         def apply_security_headers(response):
             # Enforce HTTPS
             response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'

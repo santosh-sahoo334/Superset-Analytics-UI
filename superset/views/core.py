@@ -851,11 +851,15 @@ class Superset(BaseSupersetView):
             url = f"{url}#{hash_}"
         return redirect(url)
 
-    @api
-    @has_access
     @event_logger.log_this
     @expose("/log/", methods=("POST",))
     def log(self) -> FlaskResponse:
+        # Accept anonymous POSTs silently.  navigator.sendBeacon() fires
+        # this endpoint and cannot handle redirects.  If the server returns
+        # 302 → /login the browser follows the redirect and the /login
+        # response sets Set-Cookie: session=<anonymous>, overwriting any
+        # authenticated session cookie the browser held.  Returning 200
+        # unconditionally prevents that cascade.
         return Response(status=200)
 
     @expose("/theme/")

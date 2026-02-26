@@ -8,6 +8,12 @@ const SESSION = "session";
 let isRefreshing = false;
 let refreshSubscribers: Array<(token: string) => void> = [];
 
+// Derive root cookie domain from hostname (e.g. csight.teksecur.com → .teksecur.com)
+const getCookieDomain = (): string => {
+  const parts = window.location.hostname.split(".");
+  return parts.length >= 2 ? "." + parts.slice(-2).join(".") : "";
+};
+
 
 
 const computeExpirationDays = (issueTime, expTime) =>
@@ -34,23 +40,16 @@ const setCookies = (access, refresh) => {
 };
 
 const deleteCookies = async () => {
-  Cookies.remove(REFRESH_TOKEN, { path: "/", domain: ".teksecur.com" });
+  const domain = getCookieDomain();
+  Cookies.remove(REFRESH_TOKEN, { path: "/", domain });
   Cookies.remove(REFRESH_TOKEN, { path: "/" });
-  Cookies.remove(SLUG, { path: "/", domain: ".teksecur.com" });
+  Cookies.remove(SLUG, { path: "/", domain });
   Cookies.remove(SLUG, { path: "/" });
   // NOTE: Do NOT remove the "session" cookie here. That cookie belongs to
   // Superset's Flask backend (HttpOnly, server-managed). Removing it destroys
   // the Superset authentication and triggers a reload loop via SSO re-auth.
 };
 
-// const deleteCookies = async () => {
-//   Cookies.remove(REFRESH_TOKEN, { path: "/", domain: ".peerislands.io" });
-//   Cookies.remove(REFRESH_TOKEN, { path: "/" });
-//   Cookies.remove(SLUG, { path: "/", domain: ".peerislands.io" });
-//   Cookies.remove(SLUG, { path: "/" });
-//   Cookies.remove(SESSION, { path: "/", domain: ".peerislands.io" });
-//   Cookies.remove(SESSION, { path: "/" });
-// };
 
 const hasTokenExpired = (token) => {
   try {

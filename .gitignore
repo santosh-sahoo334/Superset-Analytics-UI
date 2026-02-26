@@ -119,3 +119,6 @@ cache/
 python_geohash-0.8.5-cp39-cp39-win_amd64.whl
 sasl-0.3.1-cp39-cp39-win_amd64.whl
 python_ldap-3.4.3-cp39-cp39-win_amd64.whl
+
+# Claude
+CLAUDE.md
