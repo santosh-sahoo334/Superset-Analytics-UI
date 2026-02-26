@@ -21,12 +21,36 @@ from typing import Optional
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_cors import CORS
-from flask import request, abort, redirect, session
+from flask import request, abort, session
 import urllib.parse
 
 from flask import Flask
+from flask.sessions import SecureCookieSessionInterface
 
 from superset.initialization import SupersetAppInitializer
+
+
+class SkipAnonymousSessionInterface(SecureCookieSessionInterface):
+    """Prevent Flask from writing a session cookie for anonymous requests.
+
+    With client-side sessions (SESSION_SERVER_SIDE=False) and
+    SESSION_REFRESH_EACH_REQUEST=True, every response calls save_session()
+    which adds a Set-Cookie header.  When the request arrived WITHOUT an
+    authenticated session, this creates an anonymous session cookie that
+    OVERWRITES the authenticated cookie the browser already held.
+
+    Fix: skip save_session entirely for anonymous requests on paths that
+    are NOT part of the login / OAuth flow (those paths need the cookie to
+    carry the CSRF token for the login form and to establish the session).
+    """
+
+    def save_session(self, app, session, response):
+        if "_user_id" not in session:
+            path = request.path
+            # Allow login/OAuth/logout paths — they need the cookie
+            if "/login" not in path and "/logout" not in path and "/oauth" not in path:
+                return  # Don't set any session cookie
+        return super().save_session(app, session, response)
 
 logger = logging.getLogger(__name__)
 
@@ -63,7 +87,8 @@ def is_valid_origin(origin, allowed_hosts):
 
 def create_app(superset_config_module: Optional[str] = None) -> Flask:
     app = SupersetApp(__name__)
-    
+    app.session_interface = SkipAnonymousSessionInterface()
+
     # Initialize Flask-Limiter
     limiter = Limiter(get_remote_address,
                       default_limits=["100 per minute"],
@@ -78,61 +103,6 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
 
         app_initializer = app.config.get("APP_INITIALIZER", SupersetAppInitializer)(app)
         app_initializer.init_app()
-
-        @app.before_request
-        def check_blacklist():
-            """Block reuse of sessions that were explicitly logged out.
-            Uses session['_blacklist_id'] — a random UUID set once per login,
-            separate from Flask-Login's deterministic session['_id'].
-            This prevents false-positive blacklisting when a user logs out
-            and back in from the same browser (which produces the same _id)."""
-            blacklist_id = session.get("_blacklist_id")
-            path = request.path
-            # --- DEBUG: trace every request through check_blacklist ---
-            has_user_id = "_user_id" in session
-            has_id = "_id" in session
-            bid_short = blacklist_id[:8] if blacklist_id else "None"
-            logger.warning(
-                "[check_blacklist] %s %s | _blacklist_id=%s _user_id=%s _id=%s",
-                request.method, path, bid_short, has_user_id, has_id,
-            )
-            if blacklist_id:
-                from superset.utils.redis_blacklist import is_blacklisted
-                hit = is_blacklisted(blacklist_id)
-                if hit:
-                    logger.warning(
-                        "[check_blacklist] BLACKLISTED — clearing session for %s %s (bid=%s)",
-                        request.method, path, bid_short,
-                    )
-                    session.clear()
-                    response = redirect("/login")
-                    response.set_cookie("session", "", expires=0)
-                    response.set_cookie("refresh_token", "", expires=0)
-                    response.set_cookie("slug", "", expires=0)
-                    return response
-
-        @app.before_request
-        def debug_auth_state():
-            """Temporary debug hook — log authentication state on dashboard routes."""
-            path = request.path
-            # Only log for dashboard and login routes to avoid noise
-            if "/dworks/" not in path and "/login" not in path and "/oauth" not in path:
-                return
-            from flask import g
-            try:
-                user = getattr(g, "user", None)
-                is_authed = user is not None and getattr(user, "is_authenticated", False)
-                user_str = str(user) if is_authed else "anonymous"
-                roles = [r.name for r in user.roles] if is_authed and hasattr(user, "roles") else []
-                logger.warning(
-                    "[auth_state] %s %s | authenticated=%s user=%s roles=%s",
-                    request.method, path, is_authed, user_str, roles,
-                )
-            except Exception as e:
-                logger.warning(
-                    "[auth_state] %s %s | ERROR loading user: %s",
-                    request.method, path, e,
-                )
 
         @app.before_request
         def validate_next():
@@ -195,36 +165,6 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
 
             if content_length > max_length_normal:
                 abort(413, description="Request size exceeds 10 KB limit.")
-
-        @app.after_request
-        def strip_anonymous_session_cookie(response):
-            """Prevent Flask from setting a new anonymous session cookie on
-            API / sendBeacon responses.  With client-side sessions
-            (SESSION_SERVER_SIDE=False) and SESSION_REFRESH_EACH_REQUEST=True,
-            every response writes a Set-Cookie: session=… header.  When the
-            request arrived WITHOUT an authenticated session, this creates an
-            anonymous session cookie that OVERWRITES the authenticated cookie
-            the browser already held from a prior login.  This is the root
-            cause of the post-login reload loop.
-
-            Fix: if the request had no _user_id in the session and the path
-            is not a login / OAuth callback, delete the Set-Cookie header so
-            the browser keeps its existing (authenticated) cookie untouched.
-            """
-            # Only strip for requests that arrived without auth
-            if "_user_id" not in session:
-                path = request.path
-                # Allow login/OAuth/callback routes to set session cookies
-                # (they need to establish the authenticated session)
-                allow = (
-                    "/login" in path
-                    or "/logout" in path
-                    or "/oauth" in path
-                )
-                if not allow:
-                    response.headers.pop("Set-Cookie", None)
-
-            return response
 
         @app.after_request
         def apply_security_headers(response):

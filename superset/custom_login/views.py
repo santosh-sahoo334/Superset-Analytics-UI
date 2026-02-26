@@ -498,11 +498,7 @@ class AuthView(BaseView):
 
     @expose("/logout/")
     def logout(self):
-        bid = session.get("_blacklist_id", "")[:8] if session.get("_blacklist_id") else "None"
-        uid = session.get("_user_id")
-        log.warning("[logout] BEFORE logout_user: _user_id=%s _blacklist_id=%s..", uid, bid)
         logout_user()
-        log.warning("[logout] AFTER logout_user: session keys=%s", list(session.keys()))
         # TekSecur modified code begin
         response = make_response(redirect(
             self._get_logout_redirect_url()
@@ -785,15 +781,7 @@ class AuthOAuthView(AuthView):
 
             login_user(user)
 
-            bid = session.get("_blacklist_id", "")[:8]
-            uid = session.get("_user_id")
-            log.warning(
-                "[oauth_callback] AFTER login_user: _user_id=%s _blacklist_id=%s.. _id=%s",
-                uid, bid, ("present" if "_id" in session else "missing"),
-            )
-
             next_url = '/dworks/dashboard/'+ dashboard_slug
-            log.warning("[oauth_callback] redirecting to %s", next_url)
             return redirect(next_url)
         except jwt.ExpiredSignatureError:
             return redirect(f"https://{host}/login/")

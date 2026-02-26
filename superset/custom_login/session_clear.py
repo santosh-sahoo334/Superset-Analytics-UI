@@ -1,5 +1,4 @@
 import hmac
-import uuid
 from functools import wraps
 from hashlib import sha512
 from urllib.parse import parse_qs
@@ -185,9 +184,6 @@ def login_user(user, remember=False, duration=None, force=False, fresh=True):
     session["_user_id"] = user_id
     session["_fresh"] = fresh
     session["_id"] = current_app.login_manager._session_identifier_generator()
-    # Unique per-session ID for blacklisting, separate from _id which is
-    # deterministic (sha512 of IP+UA) and reused across logins.
-    session["_blacklist_id"] = str(uuid.uuid4())
 
     if remember:
         session["_remember"] = "set"
@@ -213,15 +209,6 @@ def logout_user():
     Logs a user out. (You do not need to pass the actual user.) This will
     also clean up the remember me cookie if it exists.
     """
-    # Blacklist using _blacklist_id (a random UUID set once per login).
-    # Unlike _id (deterministic sha512 of IP+UA), _blacklist_id is unique
-    # per session, so logging out doesn't block subsequent logins from the
-    # same browser.
-    from superset.utils.redis_blacklist import blacklist_session
-    blacklist_id = session.get("_blacklist_id")
-    if blacklist_id:
-        blacklist_session(blacklist_id)
-
     user = _get_user()
 
     if "_user_id" in session:
@@ -232,9 +219,6 @@ def logout_user():
 
     if "_id" in session:
         session.pop("_id")
-
-    if "_blacklist_id" in session:
-        session.pop("_blacklist_id")
 
     cookie_name = current_app.config.get("REMEMBER_COOKIE_NAME", COOKIE_NAME)
     if cookie_name in request.cookies:
