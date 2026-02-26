@@ -92,7 +92,7 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
             has_user_id = "_user_id" in session
             has_id = "_id" in session
             bid_short = blacklist_id[:8] if blacklist_id else "None"
-            logger.debug(
+            logger.warning(
                 "[check_blacklist] %s %s | _blacklist_id=%s _user_id=%s _id=%s",
                 request.method, path, bid_short, has_user_id, has_id,
             )
@@ -124,12 +124,12 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
                 is_authed = user is not None and getattr(user, "is_authenticated", False)
                 user_str = str(user) if is_authed else "anonymous"
                 roles = [r.name for r in user.roles] if is_authed and hasattr(user, "roles") else []
-                logger.debug(
+                logger.warning(
                     "[auth_state] %s %s | authenticated=%s user=%s roles=%s",
                     request.method, path, is_authed, user_str, roles,
                 )
             except Exception as e:
-                logger.debug(
+                logger.warning(
                     "[auth_state] %s %s | ERROR loading user: %s",
                     request.method, path, e,
                 )
