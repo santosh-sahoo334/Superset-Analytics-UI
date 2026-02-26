@@ -498,7 +498,11 @@ class AuthView(BaseView):
 
     @expose("/logout/")
     def logout(self):
+        bid = session.get("_blacklist_id", "")[:8] if session.get("_blacklist_id") else "None"
+        uid = session.get("_user_id")
+        log.debug("[logout] BEFORE logout_user: _user_id=%s _blacklist_id=%s..", uid, bid)
         logout_user()
+        log.debug("[logout] AFTER logout_user: session keys=%s", list(session.keys()))
         # TekSecur modified code begin
         response = make_response(redirect(
             self._get_logout_redirect_url()
@@ -638,9 +642,18 @@ class AuthOAuthView(AuthView):
     @expose("/login/<provider>")
     @expose("/login/<provider>/<register>")
     def login(self, provider: Optional[str] = None) -> WerkzeugResponse:
-        log.debug("Provider: {0}".format(provider))
+        next_arg = request.args.get("next", "")
+        log.debug(
+            "[login_view] provider=%s next=%s g.user=%s is_auth=%s",
+            provider, next_arg,
+            g.user if g.user else "None",
+            g.user.is_authenticated if g.user else False,
+        )
         if g.user is not None and g.user.is_authenticated:
-            log.debug("Already authenticated {0}".format(g.user))
+            log.debug(
+                "[login_view] Already authenticated user=%s — redirecting to index (ignoring next=%s)",
+                g.user, next_arg,
+            )
             return redirect(self.appbuilder.get_url_for_index)
 
         if provider is None:
@@ -760,18 +773,27 @@ class AuthOAuthView(AuthView):
                 "user_name" : decoded_token.get('user_name'),
                 "role_keys" : decoded_token.get("role_keys", [])
             }
-            print(f"User Info :: {userinfo}")
+            log.debug("[oauth_callback] userinfo: %s", userinfo)
             user = self.appbuilder.sm.auth_user_oauth(userinfo)
-            print(f"user :: {user}")
-            print(f"URL for login :: {self.appbuilder.get_url_for_login}")
+            log.debug("[oauth_callback] auth_user_oauth returned: %s", user)
             if user is None:
                 flash(as_unicode(self.invalid_login_message), "warning")
                 return redirect(f"https://{host}/login/")
-            
+
+            roles_before = [r.name for r in user.roles] if user.roles else []
+            log.debug("[oauth_callback] user.roles BEFORE login_user: %s", roles_before)
+
             login_user(user)
-            
-            # next_url = "/dashboard/list"
+
+            bid = session.get("_blacklist_id", "")[:8]
+            uid = session.get("_user_id")
+            log.debug(
+                "[oauth_callback] AFTER login_user: _user_id=%s _blacklist_id=%s.. _id=%s",
+                uid, bid, ("present" if "_id" in session else "missing"),
+            )
+
             next_url = '/dworks/dashboard/'+ dashboard_slug
+            log.debug("[oauth_callback] redirecting to %s", next_url)
             return redirect(next_url)
         except jwt.ExpiredSignatureError:
             return redirect(f"https://{host}/login/")

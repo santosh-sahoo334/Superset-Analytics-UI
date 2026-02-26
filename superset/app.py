@@ -82,19 +82,58 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
         @app.before_request
         def check_blacklist():
             """Block reuse of sessions that were explicitly logged out.
-            Uses session['_id'] (unique per session, set by Flask-Login)
-            checked against Redis with automatic TTL expiry."""
-            session_id = session.get("_id")
-            if session_id:
+            Uses session['_blacklist_id'] — a random UUID set once per login,
+            separate from Flask-Login's deterministic session['_id'].
+            This prevents false-positive blacklisting when a user logs out
+            and back in from the same browser (which produces the same _id)."""
+            blacklist_id = session.get("_blacklist_id")
+            path = request.path
+            # --- DEBUG: trace every request through check_blacklist ---
+            has_user_id = "_user_id" in session
+            has_id = "_id" in session
+            bid_short = blacklist_id[:8] if blacklist_id else "None"
+            logger.debug(
+                "[check_blacklist] %s %s | _blacklist_id=%s _user_id=%s _id=%s",
+                request.method, path, bid_short, has_user_id, has_id,
+            )
+            if blacklist_id:
                 from superset.utils.redis_blacklist import is_blacklisted
-                if is_blacklisted(session_id):
+                hit = is_blacklisted(blacklist_id)
+                if hit:
+                    logger.warning(
+                        "[check_blacklist] BLACKLISTED — clearing session for %s %s (bid=%s)",
+                        request.method, path, bid_short,
+                    )
                     session.clear()
                     response = redirect("/login")
                     response.set_cookie("session", "", expires=0)
                     response.set_cookie("refresh_token", "", expires=0)
                     response.set_cookie("slug", "", expires=0)
                     return response
-        
+
+        @app.before_request
+        def debug_auth_state():
+            """Temporary debug hook — log authentication state on dashboard routes."""
+            path = request.path
+            # Only log for dashboard and login routes to avoid noise
+            if "/dworks/" not in path and "/login" not in path and "/oauth" not in path:
+                return
+            from flask import g
+            from superset.custom_login.session_clear import current_user
+            try:
+                is_authed = current_user.is_authenticated
+                user_str = str(current_user) if is_authed else "anonymous"
+                roles = [r.name for r in current_user.roles] if is_authed else []
+                logger.debug(
+                    "[auth_state] %s %s | authenticated=%s user=%s roles=%s",
+                    request.method, path, is_authed, user_str, roles,
+                )
+            except Exception as e:
+                logger.debug(
+                    "[auth_state] %s %s | ERROR loading user: %s",
+                    request.method, path, e,
+                )
+
         @app.before_request
         def validate_next():
             """
