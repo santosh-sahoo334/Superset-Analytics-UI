@@ -89,6 +89,7 @@ export function fetchFaveStar(id) {
   return function fetchFaveStarThunk(dispatch) {
     return SupersetClient.get({
       endpoint: `/api/v1/dashboard/favorite_status/?q=${rison.encode([id])}`,
+      ignoreUnauthorized: true,
     })
       .then(({ json }) => {
         dispatch(toggleFaveStar(!!json?.result?.[0]?.value));
