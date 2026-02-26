@@ -38,8 +38,9 @@ const deleteCookies = async () => {
   Cookies.remove(REFRESH_TOKEN, { path: "/" });
   Cookies.remove(SLUG, { path: "/", domain: ".teksecur.com" });
   Cookies.remove(SLUG, { path: "/" });
-  Cookies.remove(SESSION, { path: "/", domain: ".teksecur.com" });
-  Cookies.remove(SESSION, { path: "/" });
+  // NOTE: Do NOT remove the "session" cookie here. That cookie belongs to
+  // Superset's Flask backend (HttpOnly, server-managed). Removing it destroys
+  // the Superset authentication and triggers a reload loop via SSO re-auth.
 };
 
 // const deleteCookies = async () => {
@@ -84,11 +85,10 @@ const addRefreshSubscriber = (callback) => {
 const refreshAccessToken = async () => {
   const refresh = Cookies.get(REFRESH_TOKEN);
   if (!refresh) {
+    // No Budget API refresh token — clear only Budget API cookies.
+    // Do NOT redirect to /logout/ as that destroys the Superset session
+    // and triggers a full-page reload loop via SSO re-auth.
     deleteCookies();
-    setTimeout(()=>{
-      window.location.href = "/logout/";
-      // window.location.reload();
-    },1000);
     return null;
   }
 
@@ -102,17 +102,15 @@ const refreshAccessToken = async () => {
         },
       }
     );
-    
+
     const newAccessToken = response.data.access_token;
     setCookies(newAccessToken, refresh);
     onAccessTokenRefreshed(newAccessToken);
     return newAccessToken;
   } catch (error) {
+    // Budget API refresh failed — clear only Budget API cookies.
+    // Do NOT redirect; let the calling code handle the failure gracefully.
     deleteCookies();
-    setTimeout(()=>{
-      window.location.href = "/logout/";
-      // window.location.reload();
-    },1000);
     return null;
   } finally {
     isRefreshing = false;

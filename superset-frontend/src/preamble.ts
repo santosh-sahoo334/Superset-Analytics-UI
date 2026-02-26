@@ -24,7 +24,7 @@ import moment from 'moment';
 // eslint-disable-next-line no-restricted-imports
 import {
   configure,
-  makeApi,
+  SupersetClient,
   supersetTheme,
   initFeatureFlags,
 } from '@superset-ui/core';
@@ -33,7 +33,6 @@ import setupClient from './setup/setupClient';
 import setupColors from './setup/setupColors';
 import setupFormatters from './setup/setupFormatters';
 import setupDashboardComponents from './setup/setupDashboardComponents';
-import { User } from './types/bootstrapTypes';
 import getBootstrapData from './utils/getBootstrapData';
 
 if (process.env.WEBPACK_MODE === 'development') {
@@ -72,23 +71,21 @@ export const theme = merge(
   bootstrapData.common.theme_overrides ?? {},
 );
 
-const getMe = makeApi<void, User>({
-  method: 'GET',
-  endpoint: '/api/v1/me/',
-});
-
 /**
  * When you re-open the window, we check if you are still logged in.
- * If your session expired or you signed out, we'll redirect to login.
- * If you aren't logged in in the first place (!isActive), then we shouldn't do this.
+ * If your session genuinely expired (30-min timeout), the next user
+ * interaction will naturally redirect to login via SSO.
+ * Using ignoreUnauthorized prevents a 401 race during initial load
+ * from triggering a full-page redirect loop.
  */
 if (bootstrapData.user?.isActive) {
   document.addEventListener('visibilitychange', () => {
     // we only care about the tab becoming visible, not vice versa
     if (document.visibilityState !== 'visible') return;
 
-    getMe().catch(() => {
-      // ignore error, SupersetClient will redirect to login on a 401
-    });
+    SupersetClient.get({
+      endpoint: '/api/v1/me/',
+      ignoreUnauthorized: true,
+    }).catch(() => {});
   });
 }
