@@ -239,84 +239,34 @@
             }
 
             if (oidc_refresh_token) {
-                // Handle token storage
-
-                Cookies.remove("session", {
-                    path: "/"
-                });
-                Cookies.remove("session", {
-                    path: "/",
-                    domain: ".teksecur.com"
-                    // domain: ".peerislands.io"
-                });
-
+                // Store the refresh token as a cookie for the OAuth callback
                 Cookies.set(REFRESH_TOKEN, oidc_refresh_token, {
-                    path: "/",  
+                    path: "/",
                 });
 
-                // Clean up OIDC cookies - remove from both default path and .teksecur.com domain
-                Cookies.remove("oidc_refresh_token", {
-                    path: "/"
-                });
-                Cookies.remove("oidc_refresh_token", {
-                    path: "/",
-                    domain: ".teksecur.com"
-                    //domain: ".peerislands.io"
-                });
-                Cookies.remove("oidc_access_token", {
-                    path: "/"
-                });
-                Cookies.remove("oidc_access_token", {
-                    path: "/",
-                    domain: ".teksecur.com"
-                    //domain: ".peerislands.io"
-                });
+                // Clean up OIDC cookies
+                Cookies.remove("oidc_refresh_token", { path: "/" });
+                Cookies.remove("oidc_refresh_token", { path: "/", domain: ".teksecur.com" });
+                Cookies.remove("oidc_access_token", { path: "/" });
+                Cookies.remove("oidc_access_token", { path: "/", domain: ".teksecur.com" });
             }
-            // Check for refresh token and slug
+
+            // If we have a refresh token and slug, navigate directly to the
+            // OAuth callback.  The server reads the refresh_token from the
+            // cookie, authenticates, and redirects to the dashboard — one
+            // single page load instead of the previous fetch()+replace() which
+            // caused a duplicate load.
             const refreshToken = Cookies.get(REFRESH_TOKEN);
             const storedSlug = Cookies.get(SLUG_KEY);
 
             if (refreshToken && storedSlug) {
-                
-                Cookies.remove("session", {
-                    path: "/"
-                 });
-                Cookies.remove("session", {
-                    path: "/",
-                    domain: ".teksecur.com"
-                    //domain: ".peerislands.io"
-                });
-
-                try {
-                    const response = await fetch(
-                        `${CSIGHT_DOMAIN}/oauth-authorized/csight-auth-success?slug=${storedSlug}`,
-                        {
-                            method: "GET",
-                            credentials: 'include',
-                            headers: {
-                                'refresh_token': refreshToken,
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json'
-                            }
-                        }
-                    );
-
-                    // Handle successful authentication
-                    if (response.ok) {
-                        window.location.replace(`/dworks/dashboard/${storedSlug}`);
-                    }else {
-                        hideLoader();
-                    }
-                } catch (error) {
-                    console.error('Authentication error:', error);
-                    hideLoader();
-                }
-            }else {
-                Cookies.remove("session", {
-                    path: "/"
-                });
-                hideLoader();
+                window.location.replace(
+                    `${CSIGHT_DOMAIN}/oauth-authorized/csight-auth-success?slug=${storedSlug}`
+                );
+                return;
             }
+
+            hideLoader();
         });
 
         // Handle form submission
