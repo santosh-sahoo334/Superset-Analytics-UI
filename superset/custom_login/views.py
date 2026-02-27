@@ -27,6 +27,7 @@ from flask_appbuilder.widgets import ListWidget, ShowWidget
 from flask_babel import lazy_gettext
 from flask_login import login_user, logout_user
 import jwt
+import requests as http_requests
 from werkzeug.security import generate_password_hash
 from werkzeug.wrappers import Response as WerkzeugResponse
 from wtforms import PasswordField, validators
@@ -500,17 +501,56 @@ class AuthView(BaseView):
     def logout(self):
         logout_user()
         # TekSecur modified code begin
-        response = make_response(redirect(
-            self._get_logout_redirect_url()
-        ))
-        response.delete_cookie('session')  # Remove the session cookie
+        # End Keycloak session via back-channel POST (server-side).
+        # A browser redirect (GET) to Keycloak's logout endpoint propagates
+        # upstream to Azure AD, which signs the user out of AD entirely.
+        # A server-side POST ends only the Keycloak session.
+        self._backchannel_keycloak_logout()
+
+        post_logout_uri = self.appbuilder.app.config.get(
+            "LOGOUT_REDIRECT_URL", self.appbuilder.get_url_for_index
+        )
+        response = make_response(redirect(post_logout_uri))
+        response.delete_cookie('session')  # Remove the Superset session cookie
+        response.delete_cookie('budget_session', path='/', domain='.teksecur.com')  # Remove budget backend session cookie
         response.delete_cookie('kc_id_token', path='/', domain='.teksecur.com')  # Clean up id_token cookie
+        response.delete_cookie('refresh_token', path='/')  # Remove budget JWT refresh token
+        response.delete_cookie('refresh_token', path='/', domain='.teksecur.com')
+        response.delete_cookie('slug', path='/')  # Remove realm slug cookie
+        response.delete_cookie('slug', path='/', domain='.teksecur.com')
         # Prevent caching of the logout redirect
         response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
         response.headers['Pragma'] = 'no-cache'
         response.headers['Expires'] = '0'
         return response
         # TekSecur modified code Ends
+
+    def _backchannel_keycloak_logout(self):
+        """End Keycloak session via server-side POST without triggering AD logout."""
+        try:
+            oidc_server_url = self.appbuilder.app.config.get("OIDC_SERVER_URL")
+            if not oidc_server_url:
+                return
+            realm = request.cookies.get('slug') or 'teksecur'
+            client_id = self.appbuilder.app.config.get("OIDC_CLIENT_ID", "teksecur-csight")
+            id_token_hint = request.cookies.get('kc_id_token')
+            if not id_token_hint:
+                return
+
+            logout_url = (
+                f"{oidc_server_url.rstrip('/')}/realms/{realm}"
+                f"/protocol/openid-connect/logout"
+            )
+            http_requests.post(
+                logout_url,
+                data={
+                    "client_id": client_id,
+                    "id_token_hint": id_token_hint,
+                },
+                timeout=5,
+            )
+        except Exception:
+            log.warning("[logout] Back-channel Keycloak logout failed", exc_info=True)
 
     def _get_logout_redirect_url(self):
         """Build Keycloak OIDC logout URL to invalidate SSO session."""
