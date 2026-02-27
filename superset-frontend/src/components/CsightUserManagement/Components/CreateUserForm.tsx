@@ -5,21 +5,30 @@ import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
+import { MultiSelect } from "primereact/multiselect";
 import { HTTP } from "../../CsightCommon/config/http-common";
 import { useToast } from "../../CsightCommon/context/ToastContext";
+
+interface UnitEconConfig {
+  display_name: string;
+  values: string[];
+  role_prefix: string;
+}
 
 interface CreateUserFormProps {
   visible: boolean;
   onHide: () => void;
   onSuccess: () => void;
+  unitEconConfig: UnitEconConfig | null;
 }
 
-const CreateUserForm: React.FC<CreateUserFormProps> = ({ visible, onHide, onSuccess }) => {
+const CreateUserForm: React.FC<CreateUserFormProps> = ({ visible, onHide, onSuccess, unitEconConfig }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [tempPassword, setTempPassword] = useState("");
   const [makeAdmin, setMakeAdmin] = useState(false);
+  const [unitAccess, setUnitAccess] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { showToast } = useToast();
@@ -30,6 +39,7 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({ visible, onHide, onSucc
     setEmail("");
     setTempPassword("");
     setMakeAdmin(false);
+    setUnitAccess([]);
     setErrors({});
   };
 
@@ -61,6 +71,7 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({ visible, onHide, onSucc
         first_name: firstName.trim(),
         last_name: lastName.trim(),
         make_admin: makeAdmin,
+        unit_access: makeAdmin ? [] : unitAccess,
       };
       if (tempPassword) {
         payload.temp_password = tempPassword;
@@ -191,6 +202,33 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({ visible, onHide, onSucc
         <small className="text-color-secondary">
           Customer Admins can manage users and promote/demote other admins.
         </small>
+
+        {unitEconConfig && (
+          <div className="flex flex-column gap-2 mt-2">
+            <label htmlFor="unitAccess">{unitEconConfig.display_name}</label>
+            {makeAdmin ? (
+              <small className="text-color-secondary">
+                Admins have access to all {unitEconConfig.display_name.toLowerCase()} data.
+              </small>
+            ) : (
+              <>
+                <MultiSelect
+                  id="unitAccess"
+                  value={unitAccess}
+                  options={unitEconConfig.values.map((v) => ({ label: v, value: v }))}
+                  onChange={(e) => setUnitAccess(e.value)}
+                  placeholder={`Select ${unitEconConfig.display_name}`}
+                  display="chip"
+                  filter
+                  className="w-full"
+                />
+                <small className="text-color-secondary">
+                  Select which {unitEconConfig.display_name.toLowerCase()} data this user can access.
+                </small>
+              </>
+            )}
+          </div>
+        )}
       </div>
     </Dialog>
   );

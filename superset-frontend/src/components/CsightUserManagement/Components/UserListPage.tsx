@@ -8,7 +8,6 @@ import { Dialog } from "primereact/dialog";
 import { Tag } from "primereact/tag";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { InputText } from "primereact/inputtext";
-import { MultiSelect } from "primereact/multiselect";
 import { HTTP, isCustomerAdmin, parseJWT, Cookies, REFRESH_TOKEN } from "../../CsightCommon/config/http-common";
 import { useToast } from "../../CsightCommon/context/ToastContext";
 
@@ -34,9 +33,10 @@ interface UnitEconConfig {
 interface UserListPageProps {
   onCreateUser: () => void;
   onEditUser: (user: User) => void;
+  unitEconConfig: UnitEconConfig | null;
 }
 
-const UserListPage: React.FC<UserListPageProps> = ({ onCreateUser, onEditUser }) => {
+const UserListPage: React.FC<UserListPageProps> = ({ onCreateUser, onEditUser, unitEconConfig }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [globalFilter, setGlobalFilter] = useState<string>("");
@@ -45,8 +45,6 @@ const UserListPage: React.FC<UserListPageProps> = ({ onCreateUser, onEditUser })
   const [showResetPasswordDialog, setShowResetPasswordDialog] = useState<boolean>(false);
   const [tempPassword, setTempPassword] = useState<string>("");
   const [promotingUserId, setPromotingUserId] = useState<string | null>(null);
-  const [unitEconConfig, setUnitEconConfig] = useState<UnitEconConfig | null>(null);
-  const [updatingAccessUserId, setUpdatingAccessUserId] = useState<string | null>(null);
   const { showToast } = useToast();
 
   // Get current logged-in user's email from JWT
@@ -82,10 +80,6 @@ const UserListPage: React.FC<UserListPageProps> = ({ onCreateUser, onEditUser })
 
   useEffect(() => {
     fetchUsers();
-    // Fetch unit economics config (game studio list) — silently skip if not configured
-    HTTP.get("usermgmt/unit-economics")
-      .then((resp) => setUnitEconConfig(resp.data))
-      .catch(() => setUnitEconConfig(null));
   }, []);
 
   const handleDeactivate = async () => {
@@ -199,27 +193,6 @@ const UserListPage: React.FC<UserListPageProps> = ({ onCreateUser, onEditUser })
     }
   };
 
-  const handleUnitAccessChange = async (user: User, values: string[]) => {
-    try {
-      setUpdatingAccessUserId(user.id);
-      const resp = await HTTP.put(`usermgmt/users/${user.id}/unit-access`, {
-        unit_access: values,
-      });
-      if (resp.status === 200) {
-        showToast("Access updated successfully", "success", "Success");
-        fetchUsers();
-      }
-    } catch (error) {
-      showToast(
-        error?.response?.data?.error || "Failed to update access",
-        "error",
-        "Error"
-      );
-    } finally {
-      setUpdatingAccessUserId(null);
-    }
-  };
-
   const unitAccessBodyTemplate = (rowData: User) => {
     const currentAccess = rowData.unit_access || [];
 
@@ -227,32 +200,15 @@ const UserListPage: React.FC<UserListPageProps> = ({ onCreateUser, onEditUser })
       return null;
     }
 
-    // Non-admin users see read-only tags
-    if (!viewerIsAdmin) {
-      return (
-        <div className="flex gap-1 flex-wrap">
-          {currentAccess.map((v) => (
-            <Tag key={v} value={v} severity="info" />
-          ))}
-          {currentAccess.length === 0 && (
-            <span className="text-color-secondary text-sm">None</span>
-          )}
-        </div>
-      );
-    }
-
-    // Admin users see an editable multi-select dropdown
     return (
-      <MultiSelect
-        value={currentAccess}
-        options={unitEconConfig.values.map((v) => ({ label: v, value: v }))}
-        onChange={(e) => handleUnitAccessChange(rowData, e.value)}
-        placeholder={`Select ${unitEconConfig.display_name}`}
-        display="chip"
-        className="w-full"
-        style={{ maxWidth: "220px" }}
-        disabled={updatingAccessUserId === rowData.id}
-      />
+      <div className="flex gap-1 flex-wrap">
+        {currentAccess.map((v) => (
+          <Tag key={v} value={v} severity="info" />
+        ))}
+        {currentAccess.length === 0 && (
+          <span className="text-color-secondary text-sm">None</span>
+        )}
+      </div>
     );
   };
 

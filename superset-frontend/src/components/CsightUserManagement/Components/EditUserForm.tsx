@@ -5,6 +5,7 @@ import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { InputSwitch } from "primereact/inputswitch";
+import { MultiSelect } from "primereact/multiselect";
 import { HTTP } from "../../CsightCommon/config/http-common";
 import { useToast } from "../../CsightCommon/context/ToastContext";
 
@@ -15,6 +16,14 @@ interface User {
   last_name: string;
   enabled: boolean;
   is_federated: boolean;
+  is_admin: boolean;
+  unit_access?: string[];
+}
+
+interface UnitEconConfig {
+  display_name: string;
+  values: string[];
+  role_prefix: string;
 }
 
 interface EditUserFormProps {
@@ -22,12 +31,14 @@ interface EditUserFormProps {
   user: User | null;
   onHide: () => void;
   onSuccess: () => void;
+  unitEconConfig: UnitEconConfig | null;
 }
 
-const EditUserForm: React.FC<EditUserFormProps> = ({ visible, user, onHide, onSuccess }) => {
+const EditUserForm: React.FC<EditUserFormProps> = ({ visible, user, onHide, onSuccess, unitEconConfig }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [enabled, setEnabled] = useState(true);
+  const [unitAccess, setUnitAccess] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { showToast } = useToast();
@@ -37,6 +48,7 @@ const EditUserForm: React.FC<EditUserFormProps> = ({ visible, user, onHide, onSu
       setFirstName(user.first_name || "");
       setLastName(user.last_name || "");
       setEnabled(user.enabled);
+      setUnitAccess(user.unit_access || []);
       setErrors({});
     }
   }, [user]);
@@ -54,11 +66,16 @@ const EditUserForm: React.FC<EditUserFormProps> = ({ visible, user, onHide, onSu
 
     try {
       setSubmitting(true);
-      const payload = {
+      const payload: any = {
         first_name: firstName.trim(),
         last_name: lastName.trim(),
         enabled: enabled,
       };
+
+      // Include unit_access for non-admin users if config is available
+      if (unitEconConfig && !user.is_admin) {
+        payload.unit_access = unitAccess;
+      }
 
       const resp = await HTTP.put(`usermgmt/users/${user.id}`, payload);
 
@@ -144,6 +161,33 @@ const EditUserForm: React.FC<EditUserFormProps> = ({ visible, user, onHide, onSu
             />
             {errors.lastName && <small className="p-error">{errors.lastName}</small>}
           </div>
+
+          {unitEconConfig && (
+            <div className="flex flex-column gap-2 mt-2">
+              <label htmlFor="editUnitAccess">{unitEconConfig.display_name}</label>
+              {user.is_admin ? (
+                <small className="text-color-secondary">
+                  Admins have access to all {unitEconConfig.display_name.toLowerCase()} data.
+                </small>
+              ) : (
+                <>
+                  <MultiSelect
+                    id="editUnitAccess"
+                    value={unitAccess}
+                    options={unitEconConfig.values.map((v) => ({ label: v, value: v }))}
+                    onChange={(e) => setUnitAccess(e.value)}
+                    placeholder={`Select ${unitEconConfig.display_name}`}
+                    display="chip"
+                    filter
+                    className="w-full"
+                  />
+                  <small className="text-color-secondary">
+                    Select which {unitEconConfig.display_name.toLowerCase()} data this user can access.
+                  </small>
+                </>
+              )}
+            </div>
+          )}
         </div>
       )}
     </Dialog>

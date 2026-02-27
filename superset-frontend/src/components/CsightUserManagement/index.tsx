@@ -1,10 +1,11 @@
 /* eslint-disable */
 // @ts-nocheck
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Button } from "primereact/button";
 import UserListPage from "./Components/UserListPage";
 import CreateUserForm from "./Components/CreateUserForm";
 import EditUserForm from "./Components/EditUserForm";
+import { HTTP } from "../CsightCommon/config/http-common";
 
 interface User {
   id: string;
@@ -14,6 +15,14 @@ interface User {
   enabled: boolean;
   created_on: number | null;
   username: string;
+  is_admin: boolean;
+  unit_access?: string[];
+}
+
+interface UnitEconConfig {
+  display_name: string;
+  values: string[];
+  role_prefix: string;
 }
 
 const CsightUserManagement = () => {
@@ -21,6 +30,13 @@ const CsightUserManagement = () => {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [unitEconConfig, setUnitEconConfig] = useState<UnitEconConfig | null>(null);
+
+  useEffect(() => {
+    HTTP.get("usermgmt/unit-economics")
+      .then((resp) => setUnitEconConfig(resp.data))
+      .catch(() => setUnitEconConfig(null));
+  }, []);
 
   const handleRefresh = useCallback(() => {
     setRefreshKey(prev => prev + 1);
@@ -48,6 +64,7 @@ const CsightUserManagement = () => {
             key={refreshKey}
             onCreateUser={() => setShowCreateDialog(true)}
             onEditUser={handleEditUser}
+            unitEconConfig={unitEconConfig}
           />
         </div>
       </div>
@@ -56,6 +73,7 @@ const CsightUserManagement = () => {
         visible={showCreateDialog}
         onHide={() => setShowCreateDialog(false)}
         onSuccess={handleRefresh}
+        unitEconConfig={unitEconConfig}
       />
 
       <EditUserForm
@@ -66,6 +84,7 @@ const CsightUserManagement = () => {
           setSelectedUser(null);
         }}
         onSuccess={handleRefresh}
+        unitEconConfig={unitEconConfig}
       />
     </div>
   );
