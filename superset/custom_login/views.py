@@ -781,6 +781,11 @@ class AuthOAuthView(AuthView):
 
             login_user(user)
 
+            log.warning(
+                "[oauth_callback] AFTER login_user: _user_id=%s, csrf_token=%s, session_keys=%s",
+                session.get('_user_id'), bool(session.get('csrf_token')), list(session.keys()),
+            )
+
             next_url = '/dworks/dashboard/'+ dashboard_slug
             return redirect(next_url)
         except jwt.ExpiredSignatureError:
