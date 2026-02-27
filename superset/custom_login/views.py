@@ -511,12 +511,17 @@ class AuthView(BaseView):
             "LOGOUT_REDIRECT_URL", self.appbuilder.get_url_for_index
         )
         response = make_response(redirect(post_logout_uri))
-        response.delete_cookie('session')  # Remove the Superset session cookie
-        response.delete_cookie('budget_session', path='/', domain='.teksecur.com')  # Remove budget backend session cookie
-        response.delete_cookie('kc_id_token', path='/', domain='.teksecur.com')  # Clean up id_token cookie
-        response.delete_cookie('refresh_token', path='/')  # Remove budget JWT refresh token
+        # Clear cookies on both exact hostname and parent domain since
+        # delete_cookie must match the domain the cookie was originally set with.
+        response.delete_cookie('session')
+        response.delete_cookie('session', path='/', domain='.teksecur.com')
+        response.delete_cookie('budget_session', path='/')
+        response.delete_cookie('budget_session', path='/', domain='.teksecur.com')
+        response.delete_cookie('kc_id_token', path='/')
+        response.delete_cookie('kc_id_token', path='/', domain='.teksecur.com')
+        response.delete_cookie('refresh_token', path='/')
         response.delete_cookie('refresh_token', path='/', domain='.teksecur.com')
-        response.delete_cookie('slug', path='/')  # Remove realm slug cookie
+        response.delete_cookie('slug', path='/')
         response.delete_cookie('slug', path='/', domain='.teksecur.com')
         # Prevent caching of the logout redirect
         response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
