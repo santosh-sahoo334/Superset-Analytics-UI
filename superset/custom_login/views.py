@@ -507,22 +507,15 @@ class AuthView(BaseView):
         # A server-side POST ends only the Keycloak session.
         self._backchannel_keycloak_logout()
 
-        post_logout_uri = self.appbuilder.app.config.get(
-            "LOGOUT_REDIRECT_URL", self.appbuilder.get_url_for_index
-        )
+        post_logout_uri = f"{request.scheme}://{request.host}/login"
         response = make_response(redirect(post_logout_uri))
         # Clear cookies on both exact hostname and parent domain since
         # delete_cookie must match the domain the cookie was originally set with.
-        response.delete_cookie('session')
-        response.delete_cookie('session', path='/', domain='.teksecur.com')
-        response.delete_cookie('budget_session', path='/')
-        response.delete_cookie('budget_session', path='/', domain='.teksecur.com')
-        response.delete_cookie('kc_id_token', path='/')
-        response.delete_cookie('kc_id_token', path='/', domain='.teksecur.com')
-        response.delete_cookie('refresh_token', path='/')
-        response.delete_cookie('refresh_token', path='/', domain='.teksecur.com')
-        response.delete_cookie('slug', path='/')
-        response.delete_cookie('slug', path='/', domain='.teksecur.com')
+        domain = self._get_cookie_domain()
+        for name in ('session', 'budget_session', 'kc_id_token', 'refresh_token', 'slug'):
+            response.delete_cookie(name, path='/')
+            if domain:
+                response.delete_cookie(name, path='/', domain=domain)
         # Prevent caching of the logout redirect
         response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
         response.headers['Pragma'] = 'no-cache'
@@ -533,19 +526,17 @@ class AuthView(BaseView):
     def _backchannel_keycloak_logout(self):
         """End Keycloak session via server-side POST without triggering AD logout."""
         try:
-            oidc_server_url = self.appbuilder.app.config.get("OIDC_SERVER_URL")
-            if not oidc_server_url:
-                return
-            realm = request.cookies.get('slug') or 'teksecur'
-            client_id = self.appbuilder.app.config.get("OIDC_CLIENT_ID", "teksecur-csight")
             id_token_hint = request.cookies.get('kc_id_token')
             if not id_token_hint:
                 return
+            claims = jwt.decode(id_token_hint, options={"verify_signature": False}, algorithms=["RS256", "HS256"])
+            # iss = "https://sso.example.com/realms/myrealm" → use as logout base
+            issuer = claims.get("iss")
+            client_id = claims.get("azp")
+            if not issuer or not client_id:
+                return
 
-            logout_url = (
-                f"{oidc_server_url.rstrip('/')}/realms/{realm}"
-                f"/protocol/openid-connect/logout"
-            )
+            logout_url = f"{issuer}/protocol/openid-connect/logout"
             http_requests.post(
                 logout_url,
                 data={
@@ -557,28 +548,49 @@ class AuthView(BaseView):
         except Exception:
             log.warning("[logout] Back-channel Keycloak logout failed", exc_info=True)
 
-    def _get_logout_redirect_url(self):
-        """Build Keycloak OIDC logout URL to invalidate SSO session."""
-        oidc_server_url = self.appbuilder.app.config.get("OIDC_SERVER_URL")
-        realm = request.args.get('realm') or request.cookies.get('slug') or 'teksecur'
-        client_id = self.appbuilder.app.config.get("OIDC_CLIENT_ID", "teksecur-csight")
-        id_token_hint = request.cookies.get('kc_id_token')
-        post_logout_uri = self.appbuilder.app.config.get(
-            "LOGOUT_REDIRECT_URL", self.appbuilder.get_url_for_index
-        )
+    @staticmethod
+    def _get_cookie_domain():
+        """Derive root cookie domain for clearing cross-subdomain cookies.
 
-        if oidc_server_url:
-            logout_url = (
-                f"{oidc_server_url.rstrip('/')}/realms/{realm}"
-                f"/protocol/openid-connect/logout"
-                f"?client_id={quote(client_id)}"
-                f"&post_logout_redirect_uri={quote(post_logout_uri)}"
-            )
-            # id_token_hint skips the Keycloak logout confirmation page
-            if id_token_hint:
-                logout_url += f"&id_token_hint={quote(id_token_hint)}"
-            return logout_url
-        # Fallback if Keycloak URL not configured
+        Priority:
+        1. SESSION_COOKIE_DOMAIN config (explicit override)
+        2. Derived from request.host (works behind ALB with ProxyFix)
+           e.g. csight.teksecur.com → .teksecur.com
+        """
+        configured = current_app.config.get("SESSION_COOKIE_DOMAIN")
+        if configured:
+            return configured
+        # Derive from hostname — request.host is set correctly by ProxyFix
+        # when ENABLE_PROXY_FIX=True (reads X-Forwarded-Host from ALB)
+        parts = request.host.split(":")[0].split(".")
+        if len(parts) >= 2:
+            return "." + ".".join(parts[-2:])
+        return None
+
+    def _get_logout_redirect_url(self):
+        """Build Keycloak OIDC logout URL to invalidate SSO session.
+
+        All values (issuer, client_id) are extracted from the kc_id_token JWT
+        so nothing is hardcoded or deployment-specific.
+        """
+        id_token_hint = request.cookies.get('kc_id_token')
+        post_logout_uri = f"{request.scheme}://{request.host}/login"
+
+        if id_token_hint:
+            try:
+                claims = jwt.decode(id_token_hint, options={"verify_signature": False}, algorithms=["RS256", "HS256"])
+                issuer = claims.get("iss")
+                client_id = claims.get("azp")
+                if issuer and client_id:
+                    logout_url = (
+                        f"{issuer}/protocol/openid-connect/logout"
+                        f"?client_id={quote(client_id)}"
+                        f"&post_logout_redirect_uri={quote(post_logout_uri)}"
+                        f"&id_token_hint={quote(id_token_hint)}"
+                    )
+                    return logout_url
+            except Exception:
+                pass
         return post_logout_uri
 
 

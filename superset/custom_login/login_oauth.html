@@ -199,9 +199,9 @@
     <script>
         const REFRESH_TOKEN = 'refresh_token';
         const SLUG_KEY = 'slug';
-        // For Ushur Frontend & Backend URL will change. Below ones for TekSecur Demo Instance
-        const CSIGHT_DOMAIN = '{{ appbuilder.app.config["CSIGHT_DOMAIN"] }}';
-        const backendAPIURL = '{{ appbuilder.app.config["CSIGHT_BACKEND"] }}';
+        // Derived from current URL — no deployment-specific config needed
+        const CSIGHT_DOMAIN = window.location.origin;
+        const backendAPIURL = window.location.origin + '/budget';
 
         function showLoader() {
             document.getElementById('loader').classList.remove('hidden');
@@ -244,11 +244,13 @@
                     path: "/",
                 });
 
-                // Clean up OIDC cookies
+                // Clean up OIDC cookies (derive domain dynamically)
+                const domainParts = window.location.hostname.split('.');
+                const cookieDomain = domainParts.length >= 2 ? '.' + domainParts.slice(-2).join('.') : '';
                 Cookies.remove("oidc_refresh_token", { path: "/" });
-                Cookies.remove("oidc_refresh_token", { path: "/", domain: ".teksecur.com" });
+                if (cookieDomain) Cookies.remove("oidc_refresh_token", { path: "/", domain: cookieDomain });
                 Cookies.remove("oidc_access_token", { path: "/" });
-                Cookies.remove("oidc_access_token", { path: "/", domain: ".teksecur.com" });
+                if (cookieDomain) Cookies.remove("oidc_access_token", { path: "/", domain: cookieDomain });
             }
 
             // If we have a refresh token and slug, navigate directly to the
