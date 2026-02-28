@@ -129,7 +129,7 @@ const App = () => {
           </Route>
         ))}
         <Route path="*">
-          <Redirect to={`/dworks/dashboard/${Cookies.get('slug') || 'teksecur'}`} />
+          <Redirect to={`/dworks/dashboard/${Cookies.get('slug') || 'teksecur'}/`} />
         </Route>
       </Switch>
       {

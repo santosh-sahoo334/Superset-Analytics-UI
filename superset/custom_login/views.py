@@ -843,7 +843,7 @@ class AuthOAuthView(AuthView):
                 session.get('_user_id'), bool(session.get('csrf_token')), list(session.keys()),
             )
 
-            next_url = '/dworks/dashboard/'+ dashboard_slug
+            next_url = '/dworks/dashboard/'+ dashboard_slug + '/'
             return redirect(next_url)
         except jwt.ExpiredSignatureError:
             return redirect(f"https://{host}/login/")
