@@ -24,6 +24,7 @@ const createProps = () => ({
   addDangerToast: jest.fn(),
   pdfMenuItemTitle: 'Export to PDF',
   imageMenuItemTitle: 'Download as Image',
+  excelMenuItemTitle: 'Export to Excel',
   dashboardTitle: 'Test Dashboard',
   logEvent: jest.fn(),
 });
