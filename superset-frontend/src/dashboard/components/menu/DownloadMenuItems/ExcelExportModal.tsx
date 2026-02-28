@@ -97,7 +97,7 @@ export default function ExcelExportModal({
     return tabChartIds
       .filter(
         id =>
-          charts[id]?.chartStatus === 'success' &&
+          ['success', 'rendered'].includes(charts[id]?.chartStatus) &&
           charts[id]?.queriesResponse?.[0]?.data?.length > 0,
       )
       .map(id => ({

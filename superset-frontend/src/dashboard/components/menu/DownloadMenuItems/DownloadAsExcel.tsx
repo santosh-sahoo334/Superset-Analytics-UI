@@ -27,7 +27,7 @@ export default function DownloadAsExcel({
   const handleOpenModal = () => {
     const hasData = sliceIds.some(
       id =>
-        charts[id]?.chartStatus === 'success' &&
+        ['success', 'rendered'].includes(charts[id]?.chartStatus) &&
         charts[id]?.queriesResponse?.[0]?.data?.length > 0,
     );
     if (!hasData) {
