@@ -288,6 +288,7 @@ export class HeaderActionsDropdown extends PureComponent {
           <DownloadMenuItems
             pdfMenuItemTitle={t('Export to PDF')}
             imageMenuItemTitle={t('Download as Image')}
+            excelMenuItemTitle={t('Export to Excel')}
             dashboardTitle={dashboardTitle}
             addDangerToast={addDangerToast}
           />

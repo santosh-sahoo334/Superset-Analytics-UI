@@ -223,13 +223,7 @@
 
             // Check for OIDC tokens
             const oidc_refresh_token = Cookies.get("oidc_refresh_token");
-            console.log("OIDC Refresh Token:", oidc_refresh_token);
             const oidc_access_token = Cookies.get("oidc_access_token");
-            console.log("OIDC Access Token:", oidc_access_token);
-            
-            // print cookies for debugging, specifically looking for 'domain' cookie
-            console.log("All Cookies:", Cookies.get());
-            console.log("Domain Cookie:", Cookies.get('domain'));
             
             
             if (slug) {

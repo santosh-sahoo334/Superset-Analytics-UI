@@ -18,7 +18,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { FC, useEffect,useState, useMemo, useRef, useContext} from 'react';
+import React, { FC, Suspense, useEffect,useState, useMemo, useRef, useContext} from 'react';
 import { Global } from '@emotion/react';
 import { useHistory } from 'react-router-dom';
 import {
@@ -350,7 +350,9 @@ export const DashboardPage: FC<PageProps> = ({ idOrSlug,className }: PageProps) 
           <SyncDashboardState dashboardPageId={dashboardPageId} />
           <DashboardPageIdContext.Provider value={dashboardPageId}>
             <DashboardContainer>
-              <DashboardBuilder />
+              <Suspense fallback={<Loading />}>
+                <DashboardBuilder />
+              </Suspense>
             </DashboardContainer>
           </DashboardPageIdContext.Provider>
         </div>

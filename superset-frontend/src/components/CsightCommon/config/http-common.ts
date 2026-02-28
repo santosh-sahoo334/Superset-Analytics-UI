@@ -7,6 +7,7 @@ const SLUG = "slug";
 const SESSION = "session";
 let isRefreshing = false;
 let refreshSubscribers: Array<(token: string) => void> = [];
+let cachedAccessToken: string | null = null;
 
 // Derive root cookie domain from hostname (e.g. csight.teksecur.com → .teksecur.com)
 const getCookieDomain = (): string => {
@@ -40,6 +41,7 @@ const setCookies = (access, refresh) => {
 };
 
 const deleteCookies = async () => {
+  cachedAccessToken = null;
   const domain = getCookieDomain();
   Cookies.remove(REFRESH_TOKEN, { path: "/", domain });
   Cookies.remove(REFRESH_TOKEN, { path: "/" });
@@ -103,6 +105,7 @@ const refreshAccessToken = async () => {
     );
 
     const newAccessToken = response.data.access_token;
+    cachedAccessToken = newAccessToken;
     setCookies(newAccessToken, refresh);
     onAccessTokenRefreshed(newAccessToken);
     return newAccessToken;
@@ -126,8 +129,8 @@ const HTTP = axios.create({
 
 HTTP.interceptors.request.use(
   async (config) => {
-    const accessToken = config?.headers?.Authorization;
-    // Check and potentially refresh the access token if expired
+    // Use cached access token if valid, otherwise refresh
+    const accessToken = cachedAccessToken || config?.headers?.Authorization;
     if (hasTokenExpired(accessToken)) {
       if (!isRefreshing) {
         isRefreshing = true;
