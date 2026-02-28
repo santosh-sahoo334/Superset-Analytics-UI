@@ -90,6 +90,8 @@ const refreshAccessToken = async () => {
     // Do NOT redirect to /logout/ as that destroys the Superset session
     // and triggers a full-page reload loop via SSO re-auth.
     deleteCookies();
+    isRefreshing = false;
+    refreshSubscribers = [];
     return null;
   }
 

@@ -844,13 +844,7 @@ class AuthOAuthView(AuthView):
             )
 
             next_url = '/dworks/dashboard/'+ dashboard_slug + '/'
-            response = make_response(redirect(next_url))
-            # Delete the .teksecur.com refresh_token set by the Budget callback.
-            # The frontend will re-set its own on csight.teksecur.com via http-common.ts.
-            domain = self._get_cookie_domain()
-            if domain:
-                response.delete_cookie('refresh_token', path='/', domain=domain)
-            return response
+            return redirect(next_url)
         except jwt.ExpiredSignatureError:
             return redirect(f"https://{host}/login/")
         except jwt.InvalidTokenError:

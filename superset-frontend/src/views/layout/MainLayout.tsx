@@ -23,7 +23,8 @@ import {
   CalculatorOutlined,
   DeploymentUnitOutlined,
   ReconciliationOutlined,
-  CloseOutlined
+  CloseOutlined,
+  FileExcelOutlined
 } from '@ant-design/icons'
 import { Layout, Menu, Button, Drawer, Dropdown, Space } from 'antd'
 import { useMediaQuery } from 'react-responsive'
@@ -69,6 +70,7 @@ interface MainLayoutProps {
 
 import { questionsList } from "src/components/CsightChatbot/Component/FlashCard";
 import React from 'react'
+import ExcelExportModal from 'src/dashboard/components/menu/DownloadMenuItems/ExcelExportModal';
 
 // Add interface for menu config
 interface MenuItemConfig {
@@ -90,6 +92,7 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
   const [collapsed, setCollapsed] = useState(true)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [openKeys, setOpenKeys] = useState<string[]>([])
+  const [showExcelModal, setShowExcelModal] = useState(false)
   const isMobile = useMediaQuery({ maxWidth: 768 });
 
   const navigate = useHistory();
@@ -525,6 +528,11 @@ useEffect(() => {
                   User Management
                 </Menu.Item>
               )}
+              {tabRedirectionDetails.includes(activeNavItem) && (
+                <Menu.Item key="multi-chart-export" icon={<FileExcelOutlined />} onClick={() => setShowExcelModal(true)}>
+                  Multi Chart Export
+                </Menu.Item>
+              )}
               <Menu.Divider />
               <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={() => logout()}>
                 Logout
@@ -585,6 +593,10 @@ useEffect(() => {
           {children}
         </AntContent>
       </Layout>
+      <ExcelExportModal
+        show={showExcelModal}
+        onHide={() => setShowExcelModal(false)}
+      />
     </Layout>
   )
 } 
