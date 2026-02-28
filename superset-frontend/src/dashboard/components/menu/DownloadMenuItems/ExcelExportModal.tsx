@@ -32,6 +32,22 @@ function deduplicateSheetNames(names: string[]): string[] {
   });
 }
 
+function getChartIdsInTab(layout: Record<string, any>, tabId: string): number[] {
+  const chartIds: number[] = [];
+  const traverse = (componentId: string) => {
+    const component = layout[componentId];
+    if (!component) return;
+    if (componentId.startsWith('CHART-') && component.meta?.chartId != null) {
+      chartIds.push(component.meta.chartId);
+    }
+    if (Array.isArray(component.children)) {
+      component.children.forEach((childId: string) => traverse(childId));
+    }
+  };
+  traverse(tabId);
+  return chartIds;
+}
+
 interface ExcelExportModalProps {
   show: boolean;
   onHide: () => void;
@@ -50,11 +66,24 @@ export default function ExcelExportModal({
   const charts = useSelector((state: any) => state.charts);
   const sliceEntities = useSelector((state: any) => state.sliceEntities);
   const sliceIds: number[] = useSelector((state: any) => state.dashboardState?.sliceIds || []);
+  const dashboardLayout = useSelector((state: any) => state.dashboardLayout?.present);
+  const directPathToChild: string[] = useSelector(
+    (state: any) => state.dashboardState?.directPathToChild || [],
+  );
 
-  const totalChartCount = sliceIds.length;
+  // Get chart IDs for the active tab only
+  const activeTabChartIds = useMemo(() => {
+    if (!dashboardLayout) return [];
+    const activeTabId = directPathToChild.find(id => id.startsWith('TAB-'));
+    if (!activeTabId) return [];
+    return getChartIdsInTab(dashboardLayout, activeTabId);
+  }, [dashboardLayout, directPathToChild]);
+
+  // Use active tab charts if available, otherwise fall back to all
+  const tabChartIds = activeTabChartIds.length > 0 ? activeTabChartIds : sliceIds;
 
   const availableCharts: ChartItem[] = useMemo(() => {
-    return sliceIds
+    return tabChartIds
       .filter(
         id =>
           charts[id]?.chartStatus === 'success' &&
@@ -64,9 +93,9 @@ export default function ExcelExportModal({
         id,
         name: sliceEntities?.slices?.[id]?.slice_name || `Chart ${id}`,
       }));
-  }, [sliceIds, charts, sliceEntities]);
+  }, [tabChartIds, charts, sliceEntities]);
 
-  const excludedCount = totalChartCount - availableCharts.length;
+  const excludedCount = tabChartIds.length - availableCharts.length;
 
   const toggleChart = (chartId: number) => {
     setSelectedIds(prev => {
@@ -183,7 +212,7 @@ export default function ExcelExportModal({
                 >
                   <Checkbox
                     checked={selectedIds.has(chart.id)}
-                    onChange={() => toggleChart(chart.id)}
+                    onChange={() => {}}
                   />
                   <span style={{ marginLeft: 8 }}>{chart.name}</span>
                 </div>
