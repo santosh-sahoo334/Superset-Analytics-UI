@@ -596,6 +596,7 @@ useEffect(() => {
       <ExcelExportModal
         show={showExcelModal}
         onHide={() => setShowExcelModal(false)}
+        activeTabName={activeNavItem}
       />
     </Layout>
   )

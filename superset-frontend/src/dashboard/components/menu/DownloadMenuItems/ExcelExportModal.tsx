@@ -48,11 +48,21 @@ function getChartIdsInTab(layout: Record<string, any>, tabId: string): number[] 
   return chartIds;
 }
 
+function findTabIdByName(layout: Record<string, any>, tabName: string): string | null {
+  for (const key of Object.keys(layout)) {
+    if (key.startsWith('TAB-') && layout[key]?.meta?.text === tabName) {
+      return key;
+    }
+  }
+  return null;
+}
+
 interface ExcelExportModalProps {
   show: boolean;
   onHide: () => void;
   dashboardTitle?: string;
   addDangerToast?: Function;
+  activeTabName?: string;
 }
 
 export default function ExcelExportModal({
@@ -60,6 +70,7 @@ export default function ExcelExportModal({
   onHide,
   dashboardTitle,
   addDangerToast,
+  activeTabName,
 }: ExcelExportModalProps) {
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
 
@@ -67,19 +78,19 @@ export default function ExcelExportModal({
   const sliceEntities = useSelector((state: any) => state.sliceEntities);
   const sliceIds: number[] = useSelector((state: any) => state.dashboardState?.sliceIds || []);
   const dashboardLayout = useSelector((state: any) => state.dashboardLayout?.present);
-  const directPathToChild: string[] = useSelector(
-    (state: any) => state.dashboardState?.directPathToChild || [],
-  );
 
-  // Get chart IDs for the active tab only
+  // Get chart IDs for the active tab — by name (sidebar nav) with fallback to all
   const activeTabChartIds = useMemo(() => {
     if (!dashboardLayout) return [];
-    const activeTabId = directPathToChild.find(id => id.startsWith('TAB-'));
-    if (!activeTabId) return [];
-    return getChartIdsInTab(dashboardLayout, activeTabId);
-  }, [dashboardLayout, directPathToChild]);
+    // Primary: match tab by name (from sidebar activeNavItem)
+    if (activeTabName) {
+      const tabId = findTabIdByName(dashboardLayout, activeTabName);
+      if (tabId) return getChartIdsInTab(dashboardLayout, tabId);
+    }
+    return [];
+  }, [dashboardLayout, activeTabName]);
 
-  // Use active tab charts if available, otherwise fall back to all
+  // Use active tab charts if found, otherwise show all loaded charts
   const tabChartIds = activeTabChartIds.length > 0 ? activeTabChartIds : sliceIds;
 
   const availableCharts: ChartItem[] = useMemo(() => {
