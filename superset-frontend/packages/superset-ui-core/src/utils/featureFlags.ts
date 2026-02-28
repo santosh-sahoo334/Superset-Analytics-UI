@@ -32,6 +32,7 @@ export enum FeatureFlag {
   CsightSecurityComplianceFlag = 'CSIGHT_SECURITY_COMPLIANCE_FLAG',
   CsightUserManagementFlag = 'CSIGHT_USER_MANAGEMENT_FLAG',
   CsightChatbot = 'CSIGHT_CINDY_FLAG',
+  CsightMultiChartExcelExport = 'CSIGHT_MULTI_CHART_EXCEL_EXPORT',
   /** @deprecated */
   DashboardCrossFilters = 'DASHBOARD_CROSS_FILTERS',
   DashboardVirtualization = 'DASHBOARD_VIRTUALIZATION',

@@ -125,7 +125,7 @@ export default function ExcelExportModal({
     <Modal
       show={show}
       onHide={onHide}
-      title={t('Multi Chart Export')}
+      title={t('Multi Chart Excel Export')}
       width="480px"
       footer={
         <>

@@ -528,9 +528,9 @@ useEffect(() => {
                   User Management
                 </Menu.Item>
               )}
-              {tabRedirectionDetails.includes(activeNavItem) && (
+              {isFeatureEnabled(FeatureFlag.CsightMultiChartExcelExport) && tabRedirectionDetails.includes(activeNavItem) && (
                 <Menu.Item key="multi-chart-export" icon={<FileExcelOutlined />} onClick={() => setShowExcelModal(true)}>
-                  Multi Chart Export
+                  Multi Chart Excel Export
                 </Menu.Item>
               )}
               <Menu.Divider />
