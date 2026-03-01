@@ -78,17 +78,40 @@ export default function ExcelExportModal({
   const sliceEntities = useSelector((state: any) => state.sliceEntities);
   const sliceIds: number[] = useSelector((state: any) => state.dashboardState?.sliceIds || []);
   const dashboardLayout = useSelector((state: any) => state.dashboardLayout?.present);
+  const directPathToChild: string[] = useSelector(
+    (state: any) => state.dashboardState?.directPathToChild || [],
+  );
 
-  // Get chart IDs for the active tab — by name (sidebar nav) with fallback to all
+  // Get chart IDs for the active tab/sub-tab.
+  // 1. Find parent tab by name (from sidebar activeNavItem — reliable)
+  // 2. Within that parent, find the deepest active sub-tab via directPathToChild
+  //    (sub-tab clicks are direct UI interactions, so directPathToChild is accurate)
+  // 3. If a sub-tab is found, show only its charts; otherwise show parent tab charts
   const activeTabChartIds = useMemo(() => {
     if (!dashboardLayout) return [];
-    // Primary: match tab by name (from sidebar activeNavItem)
-    if (activeTabName) {
-      const tabId = findTabIdByName(dashboardLayout, activeTabName);
-      if (tabId) return getChartIdsInTab(dashboardLayout, tabId);
+    if (!activeTabName) return [];
+
+    const parentTabId = findTabIdByName(dashboardLayout, activeTabName);
+    if (!parentTabId) return [];
+
+    // Look for the deepest sub-tab in directPathToChild that is a descendant
+    // of the parent tab. directPathToChild looks like:
+    // ['ROOT_ID', 'GRID_ID', 'TABS-xxx', 'TAB-parent', 'TABS-nested', 'TAB-subtab', ...]
+    const tabsInPath = directPathToChild.filter(id => id.startsWith('TAB-'));
+    // Walk from deepest to shallowest to find the most specific active sub-tab
+    for (let i = tabsInPath.length - 1; i >= 0; i--) {
+      const candidateId = tabsInPath[i];
+      if (candidateId === parentTabId) break; // reached parent, no sub-tab found
+      const component = dashboardLayout[candidateId];
+      if (component?.parents?.includes(parentTabId)) {
+        // This is a sub-tab within the parent — use it
+        return getChartIdsInTab(dashboardLayout, candidateId);
+      }
     }
-    return [];
-  }, [dashboardLayout, activeTabName]);
+
+    // No active sub-tab found — use the parent tab
+    return getChartIdsInTab(dashboardLayout, parentTabId);
+  }, [dashboardLayout, activeTabName, directPathToChild]);
 
   // Use active tab charts if found, otherwise show all loaded charts
   const tabChartIds = activeTabChartIds.length > 0 ? activeTabChartIds : sliceIds;

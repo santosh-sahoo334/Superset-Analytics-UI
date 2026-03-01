@@ -109,23 +109,37 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
         app_initializer = app.config.get("APP_INITIALIZER", SupersetAppInitializer)(app)
         app_initializer.init_app()
 
-        # TekSecur debug hook: log session state for failing endpoints
+        # TekSecur: Force real logout when Flask session expired but SSO cookies remain.
+        # Without this, the login page detects the stale refresh_token cookie and
+        # auto-redirects to the OAuth callback, silently re-authenticating the user
+        # without showing the login form.
         @app.before_request
-        def debug_session_state():
+        def force_logout_on_expired_session():
             path = request.path
-            if 'favorite_status' in path or 'filter_state' in path or 'csrf_token' in path:
-                has_cookie = 'session' in request.cookies
-                cookie_len = len(request.cookies.get('session', ''))
-                has_user_id = '_user_id' in session
-                has_csrf = 'csrf_token' in session
-                session_keys = list(session.keys())
+            # Skip paths that don't require authentication
+            if any(path.startswith(p) for p in (
+                '/login', '/logout', '/oauth', '/static/', '/health',
+            )):
+                return
+            # Skip health probes
+            user_agent = request.headers.get('User-Agent', '')
+            if user_agent.startswith('kube-probe/') or user_agent.startswith('ELB-HealthChecker'):
+                return
+            # If session is valid, pass through
+            if '_user_id' in session:
+                return
+            # Session expired but SSO cookies still present → force real logout
+            has_sso_cookies = (
+                request.cookies.get('kc_id_token')
+                or request.cookies.get('refresh_token')
+            )
+            if has_sso_cookies:
                 logger.warning(
-                    "[debug_session] %s %s | cookie_present=%s cookie_len=%d | "
-                    "_user_id=%s csrf_token=%s session_keys=%s",
+                    "[session_timeout] Expired session with stale SSO cookies — "
+                    "redirecting to /logout/ for %s %s",
                     request.method, path,
-                    has_cookie, cookie_len,
-                    has_user_id, has_csrf, session_keys,
                 )
+                return redirect('/logout/')
 
         @app.before_request
         def validate_next():
