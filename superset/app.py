@@ -21,7 +21,7 @@ from typing import Optional
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_cors import CORS
-from flask import request, abort, session
+from flask import request, abort, session, redirect
 import urllib.parse
 
 from flask import Flask
