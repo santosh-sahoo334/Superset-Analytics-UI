@@ -57,6 +57,48 @@ function findTabIdByName(layout: Record<string, any>, tabName: string): string |
   return null;
 }
 
+/**
+ * Find the deepest active tab starting from a given tab.
+ *
+ * Strategy:
+ * 1. Check directPathToChild for an explicit sub-tab (user clicked one)
+ * 2. If not found, walk down through nested TABS containers following the
+ *    first child tab at each level (the default active sub-tab)
+ * 3. Handles any depth of nesting (tabs → sub-tabs → sub-sub-tabs → ...)
+ */
+function findDeepestActiveTab(
+  layout: Record<string, any>,
+  parentTabId: string,
+  directPath: string[],
+): string {
+  // Try directPathToChild — find deepest sub-tab that is a descendant
+  const tabsInPath = directPath.filter(id => id.startsWith('TAB-'));
+  for (let i = tabsInPath.length - 1; i >= 0; i--) {
+    const candidateId = tabsInPath[i];
+    if (candidateId === parentTabId) break;
+    const component = layout[candidateId];
+    if (component?.parents?.includes(parentTabId)) {
+      return candidateId;
+    }
+  }
+
+  // directPathToChild didn't have a sub-tab — walk down the default path
+  // by following the first child of each nested TABS container
+  let currentTabId = parentTabId;
+  while (true) {
+    const tab = layout[currentTabId];
+    if (!tab?.children) break;
+    // Find a TABS container among this tab's children
+    const nestedTabsId = tab.children.find((id: string) => id.startsWith('TABS-'));
+    if (!nestedTabsId) break;
+    const nestedTabs = layout[nestedTabsId];
+    if (!nestedTabs?.children?.length) break;
+    // Use the first child TAB as the default active sub-tab
+    currentTabId = nestedTabs.children[0];
+  }
+  return currentTabId;
+}
+
 interface ExcelExportModalProps {
   show: boolean;
   onHide: () => void;
@@ -82,35 +124,17 @@ export default function ExcelExportModal({
     (state: any) => state.dashboardState?.directPathToChild || [],
   );
 
-  // Get chart IDs for the active tab/sub-tab.
-  // 1. Find parent tab by name (from sidebar activeNavItem — reliable)
-  // 2. Within that parent, find the deepest active sub-tab via directPathToChild
-  //    (sub-tab clicks are direct UI interactions, so directPathToChild is accurate)
-  // 3. If a sub-tab is found, show only its charts; otherwise show parent tab charts
+  // Get chart IDs for the deepest active tab/sub-tab.
+  // Uses directPathToChild for explicit sub-tab clicks, then falls back to
+  // walking down through nested TABS containers following the default first child.
   const activeTabChartIds = useMemo(() => {
-    if (!dashboardLayout) return [];
-    if (!activeTabName) return [];
+    if (!dashboardLayout || !activeTabName) return [];
 
     const parentTabId = findTabIdByName(dashboardLayout, activeTabName);
     if (!parentTabId) return [];
 
-    // Look for the deepest sub-tab in directPathToChild that is a descendant
-    // of the parent tab. directPathToChild looks like:
-    // ['ROOT_ID', 'GRID_ID', 'TABS-xxx', 'TAB-parent', 'TABS-nested', 'TAB-subtab', ...]
-    const tabsInPath = directPathToChild.filter(id => id.startsWith('TAB-'));
-    // Walk from deepest to shallowest to find the most specific active sub-tab
-    for (let i = tabsInPath.length - 1; i >= 0; i--) {
-      const candidateId = tabsInPath[i];
-      if (candidateId === parentTabId) break; // reached parent, no sub-tab found
-      const component = dashboardLayout[candidateId];
-      if (component?.parents?.includes(parentTabId)) {
-        // This is a sub-tab within the parent — use it
-        return getChartIdsInTab(dashboardLayout, candidateId);
-      }
-    }
-
-    // No active sub-tab found — use the parent tab
-    return getChartIdsInTab(dashboardLayout, parentTabId);
+    const deepestTabId = findDeepestActiveTab(dashboardLayout, parentTabId, directPathToChild);
+    return getChartIdsInTab(dashboardLayout, deepestTabId);
   }, [dashboardLayout, activeTabName, directPathToChild]);
 
   // Use active tab charts if found, otherwise show all loaded charts
