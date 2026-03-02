@@ -200,14 +200,16 @@ const UserListPage: React.FC<UserListPageProps> = ({ onCreateUser, onEditUser, u
       return null;
     }
 
+    // Admins bypass RLS — always show "All"
+    if (rowData.is_admin || currentAccess.length === 0) {
+      return <Tag value="All" severity="success" />;
+    }
+
     return (
       <div className="flex gap-1 flex-wrap">
         {currentAccess.map((v) => (
           <Tag key={v} value={v} severity="info" />
         ))}
-        {currentAccess.length === 0 && (
-          <span className="text-color-secondary text-sm">None</span>
-        )}
       </div>
     );
   };
