@@ -39,10 +39,8 @@ import AppBreadCrumb from 'src/layout/AppBreadCrumb'
 import { useAuth } from 'src/components/CsightCommon/context/AuthContext'
 import { isCustomerAdmin } from 'src/components/CsightCommon/config/http-common'
 import ChatBot from "src/components/CsightChatbot";
-import { useAIBotContext } from "src/components/CsightChatbot/Context";
 import { LayoutDashboard, CircleDollarSign, LayoutList, FileText, Tag, Eye, ChartNetwork, ThumbsUp, Building2, FileSpreadsheet, Boxes, Combine, Leaf, LayoutPanelTop } from 'lucide-react';
 // import hamburgerIcon from '../../../src/assets/images/icons/hamburger.svg'
-import { v4 as uuidv4 } from "uuid";
 import * as LucideIcons from 'lucide-react';
 import { Header, Content, Sider } from 'antd'
 import {
@@ -68,7 +66,6 @@ interface MainLayoutProps {
   children: React.ReactNode
 }
 
-import { questionsList } from "src/components/CsightChatbot/Component/FlashCard";
 import React from 'react'
 import ExcelExportModal from 'src/dashboard/components/menu/DownloadMenuItems/ExcelExportModal';
 
@@ -97,7 +94,6 @@ export default function MainLayoutCsight({ children }: MainLayoutProps) {
 
   const navigate = useHistory();
 
-  const { setPrompts } = useAIBotContext();
   const userIsCustomerAdmin = useMemo(() => isCustomerAdmin(), []);
 
   const dashboardLayout = useSelector<RootState, DashboardLayout>(
