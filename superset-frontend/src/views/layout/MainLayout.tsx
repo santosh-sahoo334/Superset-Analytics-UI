@@ -480,7 +480,7 @@ useEffect(() => {
       <AntHeader className="app-header">
         <div className="header-left">
           <img
-            src="/static/assets/images/layout/images/csight.png"
+            src="/static/assets/images/everyops-logo-for-csight.png"
             alt="Logo"
             className="header-logo"
           />

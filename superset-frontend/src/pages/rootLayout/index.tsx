@@ -46,8 +46,8 @@ export default function RootLayout({
         <meta property="og:ttl" content="604800"></meta>
         <link
           rel="icon"
-          href={`/static/assets/images/csight.png`}
-          type="image/x-icon"
+          href={`/static/assets/images/everyops-favicon.png`}
+          type="image/png"
         ></link>
         {/* <link
           id="theme-link"

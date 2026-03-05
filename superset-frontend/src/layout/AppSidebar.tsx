@@ -94,7 +94,7 @@ const AppSidebar = (
           <Link to="/" className="logo">
             <div className="logo-img">
               <img
-                src="/static/assets/images/csight.png"
+                src="/static/assets/images/everyops-logo-for-csight.png"
                 style={{ width: "90px", height: "74px" }}
                 alt="csight"
               />

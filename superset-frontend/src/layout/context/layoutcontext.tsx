@@ -232,8 +232,8 @@ export const LayoutProvider = (props: ChildContainerProps) => {
           
           <link
             rel="icon"
-            href={`/static/assets/images/csight.png`}
-            type="image/x-icon"
+            href={`/static/assets/images/everyops-favicon.png`}
+            type="image/png"
           ></link>
         </head>
         {props.children}
