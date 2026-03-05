@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <title>CSIGHT</title>
+        <title>EveryOps CSight</title>
         <meta charSet="UTF-8" />
         <meta
           name="description"

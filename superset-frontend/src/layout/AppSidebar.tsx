@@ -101,7 +101,7 @@ const AppSidebar = (
             </div>
           </Link>
           <div className="logo-text">
-            {process.env.REACT_APP_LOGO_TEXT || "Multi-Cloud FinOps"}
+            {process.env.REACT_APP_LOGO_TEXT || "CSight"}
           </div>
         </div>
 

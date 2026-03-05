@@ -485,7 +485,7 @@ useEffect(() => {
             className="header-logo"
           />
           <span className="header-title-csight">
-            {process.env.REACT_APP_LOGO_TEXT || 'Multi-Cloud FinOps'}
+            {process.env.REACT_APP_LOGO_TEXT || 'CSight'}
           </span>
           {isMobile && (
             <Button
