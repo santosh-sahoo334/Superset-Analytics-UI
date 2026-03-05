@@ -267,11 +267,9 @@ export const DashboardPage: FC<PageProps> = ({ idOrSlug,className }: PageProps) 
   }, [readyToRender]);
 
   useEffect(() => {
-    if (dashboard_title) {
-      document.title = dashboard_title;
-    }
+    document.title = 'EveryOps CSight';
     return () => {
-      document.title = originalDocumentTitle;
+      document.title = 'EveryOps CSight';
     };
   }, [dashboard_title]);
 
