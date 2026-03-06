@@ -71,7 +71,7 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({ visible, onHide, onSucc
         first_name: firstName.trim(),
         last_name: lastName.trim(),
         make_admin: makeAdmin,
-        unit_access: makeAdmin ? [] : unitAccess,
+        ...(unitEconConfig ? { unit_access: makeAdmin ? [] : unitAccess } : {}),
       };
       if (tempPassword) {
         payload.temp_password = tempPassword;

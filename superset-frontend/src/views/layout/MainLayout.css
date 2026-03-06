@@ -623,7 +623,7 @@
   position: fixed;
   width: 100%;
   height: 64px;
-  padding: 0 24px;
+  padding: 0 24px 0 0;
   background: #fff;
   display: flex;
   align-items: center;
@@ -646,7 +646,7 @@
 }
 
 .header-title-csight {
-  color: #18279A !important;
+  color: #6B48CC !important;
   font-size: 18px;
   font-weight: 600;
   margin-right: 5px;

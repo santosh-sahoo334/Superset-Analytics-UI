@@ -31,6 +31,7 @@ export enum FeatureFlag {
   CsightOnpremFlag = 'CSIGHT_ONPREM_FLAG',
   CsightSecurityComplianceFlag = 'CSIGHT_SECURITY_COMPLIANCE_FLAG',
   CsightUserManagementFlag = 'CSIGHT_USER_MANAGEMENT_FLAG',
+  CsightRlsFlag = 'CSIGHT_RLS_FLAG',
   CsightChatbot = 'CSIGHT_CINDY_FLAG',
   CsightMultiChartExcelExport = 'CSIGHT_MULTI_CHART_EXCEL_EXPORT',
   /** @deprecated */

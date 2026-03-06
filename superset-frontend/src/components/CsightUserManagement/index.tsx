@@ -6,6 +6,7 @@ import UserListPage from "./Components/UserListPage";
 import CreateUserForm from "./Components/CreateUserForm";
 import EditUserForm from "./Components/EditUserForm";
 import { HTTP } from "../CsightCommon/config/http-common";
+import { FeatureFlag, isFeatureEnabled } from "@superset-ui/core";
 
 interface User {
   id: string;
@@ -33,9 +34,11 @@ const CsightUserManagement = () => {
   const [unitEconConfig, setUnitEconConfig] = useState<UnitEconConfig | null>(null);
 
   useEffect(() => {
-    HTTP.get("usermgmt/unit-economics")
-      .then((resp) => setUnitEconConfig(resp.data))
-      .catch(() => setUnitEconConfig(null));
+    if (isFeatureEnabled(FeatureFlag.CsightRlsFlag)) {
+      HTTP.get("usermgmt/unit-economics")
+        .then((resp) => setUnitEconConfig(resp.data))
+        .catch(() => setUnitEconConfig(null));
+    }
   }, []);
 
   const handleRefresh = useCallback(() => {
