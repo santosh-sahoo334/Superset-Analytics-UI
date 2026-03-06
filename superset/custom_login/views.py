@@ -487,6 +487,34 @@ class RegisterUserModelView(ModelView):
     search_exclude_columns = ["password"]
 
 
+def _forward_backchannel_logout_to_budget(logout_token: str) -> None:
+    """
+    Forward the Keycloak logout_token to the budget backend's backchannel endpoint.
+
+    Keycloak supports only one backchannel logout URL per OIDC client. Superset is
+    registered as that single receiver. This function fans the notification out to the
+    budget backend so it can revoke its own JWTs and clear Cindy KC tokens from Redis.
+
+    Uses the internal K8s service URL (BUDGET_INTERNAL_URL config). Failures are logged
+    but never propagate — we must not break Superset's own 200 response to Keycloak.
+    """
+    budget_url = current_app.config.get("BUDGET_INTERNAL_URL", "").rstrip("/")
+    if not budget_url:
+        log.debug("[backchannel_logout] BUDGET_INTERNAL_URL not configured; skipping fan-out")
+        return
+    try:
+        resp = http_requests.post(
+            f"{budget_url}/auth/backchannel-logout",
+            data={"logout_token": logout_token},
+            timeout=5,
+        )
+        log.info(
+            "[backchannel_logout] Budget fan-out response: %s", resp.status_code
+        )
+    except Exception:
+        log.exception("[backchannel_logout] Failed to forward logout to budget backend")
+
+
 class AuthView(BaseView):
     route_base = ""
     login_template = ""
@@ -566,6 +594,78 @@ class AuthView(BaseView):
         if len(parts) >= 2:
             return "." + ".".join(parts[-2:])
         return None
+
+    @expose("/auth/backchannel-logout", methods=["POST"])
+    def backchannel_logout(self):
+        """
+        OIDC Backchannel Logout endpoint (Keycloak → Superset).
+
+        Keycloak sends a POST with a `logout_token` (JWT) when any user logs out
+        from any OIDC client in the realm. We validate the token, find the Superset
+        user, and revoke their session via Redis so the next request forces re-login.
+
+        This endpoint is intentionally unauthenticated and CSRF-exempt (listed in
+        WTF_CSRF_EXEMPT_LIST in config.py) because Keycloak calls it server-to-server.
+        Per the OIDC Backchannel Logout spec: always return 200 OK.
+        """
+        logout_token = request.form.get("logout_token")
+        if not logout_token:
+            log.warning("[backchannel_logout] Missing logout_token in request")
+            return "", 400
+
+        try:
+            claims = jwt.decode(
+                logout_token,
+                options={"verify_signature": False},
+                algorithms=["RS256", "HS256"],
+            )
+        except Exception:
+            log.warning("[backchannel_logout] Failed to decode logout_token", exc_info=True)
+            return "", 400
+
+        # Validate required claims per OIDC Backchannel Logout spec
+        sub = claims.get("sub")  # Keycloak user ID
+        events = claims.get("events", {})
+        backchannel_event = "http://schemas.openid.net/event/backchannel-logout"
+
+        if not sub or backchannel_event not in events:
+            log.warning(
+                "[backchannel_logout] Missing sub or event claim. sub=%s events=%s",
+                sub, list(events.keys()),
+            )
+            return "", 400
+
+        email = claims.get("email", "")
+
+        # Find Superset user by email (FAB stores email on the User model)
+        user = None
+        if email:
+            from superset.extensions import db as superset_db
+            from flask_appbuilder.security.sqla.models import User as FABUser
+            user = superset_db.session.query(FABUser).filter(FABUser.email == email).first()
+
+        if not user:
+            log.warning(
+                "[backchannel_logout] No Superset user found for sub=%s email=%s", sub, email
+            )
+            return "", 200  # Always 200 per OIDC spec
+
+        try:
+            from superset.utils.redis_blacklist import revoke_user_sessions
+            revoke_user_sessions(user.id)
+            log.info(
+                "[backchannel_logout] Revoked session for user_id=%s email=%s",
+                user.id, user.email,
+            )
+        except Exception:
+            log.exception("[backchannel_logout] Failed to revoke session for user_id=%s", user.id)
+
+        # Fan-out: forward logout_token to budget backend so it can revoke its JWTs too.
+        # Keycloak only supports one backchannel URL per client, so Superset acts as the
+        # single receiver and forwards to budget internally within the K8s cluster.
+        _forward_backchannel_logout_to_budget(logout_token)
+
+        return "", 200  # Always 200 per OIDC spec
 
     def _get_logout_redirect_url(self):
         """Build Keycloak OIDC logout URL to invalidate SSO session.

@@ -114,6 +114,35 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
         # auto-redirects to the OAuth callback, silently re-authenticating the user
         # without showing the login form.
         @app.before_request
+        def check_user_revocation():
+            """
+            Block requests from users whose sessions were revoked via OIDC backchannel logout.
+            Keycloak fires a backchannel logout to /auth/backchannel-logout which sets
+            user_revoked:{user_id} in Redis. This hook reads that flag and forces logout.
+            """
+            path = request.path
+            if any(path.startswith(p) for p in ('/login', '/logout', '/oauth', '/static/', '/health')):
+                return
+            user_agent = request.headers.get('User-Agent', '')
+            if user_agent.startswith('kube-probe/') or user_agent.startswith('ELB-HealthChecker'):
+                return
+            try:
+                from flask_login import current_user
+                if current_user.is_authenticated:
+                    from superset.utils.redis_blacklist import is_user_revoked
+                    if is_user_revoked(current_user.id):
+                        from flask_login import logout_user
+                        logout_user()
+                        session.clear()
+                        logger.info(
+                            "[backchannel_logout] Forced logout for revoked user_id=%s path=%s",
+                            current_user.id, path,
+                        )
+                        return redirect('/logout/')
+            except Exception:
+                logger.exception("[check_user_revocation] Unexpected error; passing through")
+
+        @app.before_request
         def force_logout_on_expired_session():
             path = request.path
             # Skip paths that don't require authentication

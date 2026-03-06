@@ -46,3 +46,37 @@ def is_blacklisted(session_id):
     except Exception as e:
         logger.error("Failed to check session blacklist: %s", e)
         return False
+
+
+# ---------------------------------------------------------------------------
+# User-level revocation (for OIDC Backchannel Logout)
+# ---------------------------------------------------------------------------
+
+USER_REVOKE_PREFIX = "user_revoked:"
+# TTL exceeds max session lifetime so entries auto-clean
+USER_REVOKE_TTL = 86400  # 24 hours
+
+
+def revoke_user_sessions(user_id: int, ttl: int = USER_REVOKE_TTL) -> None:
+    """
+    Revoke all active sessions for a Superset user.
+
+    Stores the current timestamp as the revocation time. The before_request
+    hook `check_user_revocation` in app.py reads this flag and forces logout.
+    Called by the OIDC backchannel logout endpoint when Keycloak notifies us.
+    """
+    import time
+    try:
+        _get_client().setex(f"{USER_REVOKE_PREFIX}{user_id}", ttl, str(time.time()))
+        logger.info("[redis_blacklist] Revoked sessions for user_id=%s", user_id)
+    except Exception as e:
+        logger.error("[redis_blacklist] Failed to revoke sessions for user_id=%s: %s", user_id, e)
+
+
+def is_user_revoked(user_id: int) -> bool:
+    """Return True if the user's sessions have been revoked via backchannel logout."""
+    try:
+        return _get_client().exists(f"{USER_REVOKE_PREFIX}{user_id}") == 1
+    except Exception as e:
+        logger.error("[redis_blacklist] Failed to check user revocation for user_id=%s: %s", user_id, e)
+        return False  # Fail open — don't block legitimate users on Redis errors

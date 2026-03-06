@@ -245,7 +245,15 @@ WTF_CSRF_EXEMPT_LIST = [
     "superset.views.core.explore_json",
     "superset.views.core.Superset.explore_json",
     "superset.charts.data.api.data",
+    # Keycloak calls this server-to-server; no browser session or CSRF token
+    "AuthView.backchannel_logout",
 ]
+
+# Internal URL of the budget backend (K8s service) for backchannel logout fan-out.
+# Keycloak only supports one backchannel logout URL per client; Superset forwards
+# the logout_token to this URL so budget can revoke its own JWTs.
+# Set via BUDGET_INTERNAL_URL env var (e.g., http://budget-flask-backend:6002/budget)
+BUDGET_INTERNAL_URL = os.environ.get("BUDGET_INTERNAL_URL", "")
 
 # Whether to run the web server in debug mode or not
 DEBUG = os.environ.get("FLASK_DEBUG")
