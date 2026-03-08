@@ -33,7 +33,7 @@
 .stable-menu .ant-menu-item.ant-menu-item-selected,
 .stable-menu .ant-menu-submenu .ant-menu-item.ant-menu-item-selected,
 .ant-menu-submenu-popup .ant-menu-item.ant-menu-item-selected {
-  background: #F3E7BF !important;
+  background: #F5A623 !important;
   border-radius: 6px !important;
   margin: 4px 8px !important;
   padding: 0 10px !important;
@@ -48,7 +48,7 @@
 
 /* Selected submenu parent styles when child is selected - only in collapsed mode */
 /* .ant-menu-inline-collapsed .ant-menu-submenu-selected > .ant-menu-submenu-title {
-  background: #F3E7BF !important;
+  background: #F5A623 !important;
   border-radius: 6px !important;
   margin: 4px 8px !important;
   padding: 0 !important;
@@ -204,7 +204,7 @@
 
 /* Hover styles */
 /* .ant-menu-submenu-popup .ant-menu-item:hover {
-  background: #F3E7BF !important;
+  background: #F5A623 !important;
   color: #000 !important;
   border-radius: 6px !important;
   margin: 4px 8px !important;
@@ -218,7 +218,7 @@
 
 /* Selected styles */
 /* .ant-menu-submenu-popup .ant-menu-item.ant-menu-item-selected {
-  background: #F3E7BF !important;
+  background: #F5A623 !important;
   color: #000 !important;
   border-radius: 6px !important;
   margin: 4px 8px !important;
@@ -295,7 +295,7 @@
 }
 
 .mobile-drawer .ant-menu-dark .ant-menu-item-selected {
-  background-color: #F3E7BF !important;
+  background-color: #F5A623 !important;
   color: #FFFFFF !important;
 }
 
@@ -324,7 +324,7 @@
 } */
 
 /* .ant-menu-dark .ant-menu-item-selected {
-  background-color: #F3E7BF !important;
+  background-color: #F5A623 !important;
   color: #FFFFFF !important;
 } */
 
@@ -336,7 +336,7 @@
 
 /* .ant-menu-dark .ant-menu-item:hover,
 .ant-menu-dark .ant-menu-submenu-title:hover {
-  background-color: #F3E7BF !important;
+  background-color: #F5A623 !important;
   color: #000000 !important;
 
     border-radius: 6px !important;
@@ -392,7 +392,7 @@
 
 /* Ensure submenu items follow the same rules */
 /* .ant-menu-dark .ant-menu-sub .ant-menu-item:hover:not(.ant-menu-item-selected) {
-    background-color: #F3E7BF !important;
+    background-color: #F5A623 !important;
     color: #000000 !important;
     border-radius: 6px !important;
     margin: 4px 8px !important;
@@ -542,13 +542,13 @@
 
 /* .custom-sidebar .ant-menu-item:hover,
 .custom-sidebar .ant-menu-submenu-title:hover {
-  background-color: #F3E7BF !important;
+  background-color: #F5A623 !important;
   color: #000 !important;
 }
 
 .custom-sidebar .ant-menu-item:hover .anticon,
 .custom-sidebar .ant-menu-submenu-title:hover .anticon {
-    background-color: #F3E7BF !important;
+    background-color: #F5A623 !important;
     color: #000 !important;
 } */
 
@@ -604,7 +604,7 @@
 }
 
 .mobile-drawer .custom-sidebar .ant-menu-item-selected {
-  background-color: #F3E7BF !important;
+  background-color: #F5A623 !important;
   color: #000000 !important;
 }
 
@@ -614,7 +614,7 @@
 } */
 
 /* .ant-menu-submenu-popup .custom-sidebar .ant-menu-item-selected {
-  background-color: #F3E7BF !important;
+  background-color: #F5A623 !important;
   color: #000000 !important;
 } */
 
@@ -792,7 +792,7 @@
 
 /* Selected state */
 .custom-sidebar .ant-menu-item-selected {
-  background-color: #F3E7BF !important;
+  background-color: #F5A623 !important;
   color: #000 !important;
 }
 
@@ -805,13 +805,13 @@
 /* Hover states */
 /* .custom-sidebar .ant-menu-item:hover,
 .custom-sidebar .ant-menu-submenu-title:hover {
-    background-color: #F3E7BF !important;
+    background-color: #F5A623 !important;
     color: #000 !important;
 }
 
 .custom-sidebar .ant-menu-item:hover .anticon,
 .custom-sidebar .ant-menu-submenu-title:hover .anticon {
-    background-color: #F3E7BF !important;
+    background-color: #F5A623 !important;
     color: #000 !important;
 } */
 
@@ -882,7 +882,7 @@
 }
 
 .budget-submenu-selected {
-  background-color: #F3E7BF !important;
+  background-color: #F5A623 !important;
   color: #000 !important;
   border-radius: 6px !important;
   margin: 8px 8px !important;
@@ -906,7 +906,7 @@
 
 /* Selected state only */
 .custom-menu-item.selected {
-  background-color: #F3E7BF !important;
+  background-color: #F5A623 !important;
   color: #000 !important;
   border-radius: 6px !important;
   margin: 4px 8px !important;
@@ -1008,7 +1008,7 @@
 /* Selected state for all items including submenu items */
 .custom-menu-item.selected,
 .ant-menu-submenu .ant-menu-item.ant-menu-item-selected {
-  background-color: #F3E7BF !important;
+  background-color: #F5A623 !important;
   color: #000 !important;
   border-radius: 6px !important;
   padding-right: 20px !important;
@@ -1084,7 +1084,7 @@
 
 /* Hover styles for budget parent */
 /* .ant-menu-submenu.budget-parent .ant-menu-submenu-title:hover {
-  background: #F3E7BF !important;
+  background: #F5A623 !important;
   color: #000 !important;
 } */
 
@@ -1234,7 +1234,7 @@
 
 /* Hover styles */
 /* .budget-popup-item:hover {
-  background: #F3E7BF !important;
+  background: #F5A623 !important;
   color: #000 !important;
 } */
 
@@ -1245,7 +1245,7 @@
 
 /* Selected styles */
 /* .budget-popup-item.ant-menu-item-selected {
-  background: #F3E7BF !important;
+  background: #F5A623 !important;
   color: #000 !important;
 } */
 
@@ -1278,7 +1278,7 @@
 .ant-menu-submenu-popup .budget-menu-item:hover span,
 .ant-menu-submenu-popup .budget-menu-item:hover .anticon {
   color: #000 !important;
-  background: #F3E7BF !important;
+  background: #F5A623 !important;
 } */
 
 /* Selected state - black text and icons */
@@ -1287,7 +1287,7 @@
 .ant-menu-submenu-popup .budget-menu-item.ant-menu-item-selected span,
 .ant-menu-submenu-popup .budget-menu-item.ant-menu-item-selected .anticon {
   color: #000 !important;
-  background: #F3E7BF !important;
+  background: #F5A623 !important;
 }
 
 /* Override any default ant-design styles */
@@ -1317,7 +1317,7 @@
 .ant-menu-item.budget-popup-item.budget-submenu-item.css-f2v215:hover .ant-menu-title-content,
 .ant-menu-item.budget-popup-item.budget-submenu-item.css-f2v215:hover * {
   color: #000 !important;
-  background: #F3E7BF !important;
+  background: #F5A623 !important;
 } */
 
 /* Selected state */
@@ -1326,7 +1326,7 @@
 .ant-menu-item.budget-popup-item.budget-submenu-item.css-f2v215.ant-menu-item-selected .ant-menu-title-content,
 .ant-menu-item.budget-popup-item.budget-submenu-item.css-f2v215.ant-menu-item-selected * {
   color: #000 !important;
-  background: #F3E7BF !important;
+  background: #F5A623 !important;
 } */
 
 
