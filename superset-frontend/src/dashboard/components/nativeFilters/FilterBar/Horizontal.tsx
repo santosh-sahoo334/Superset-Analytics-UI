@@ -44,6 +44,7 @@ const HorizontalBar = styled.div`
     }px ${theme.gridUnit * 4}px;
     background: ${theme.colors.grayscale.light5};
     box-shadow: inset 0px -2px 2px -1px ${theme.colors.grayscale.light2};
+    width: 100%;
   `}
 `;
 
@@ -55,6 +56,7 @@ const HorizontalBarContent = styled.div`
     align-items: center;
     justify-content: flex-start;
     line-height: 0;
+    width: 100%;
 
     .loading {
       margin: ${theme.gridUnit * 2}px auto ${theme.gridUnit * 2}px;

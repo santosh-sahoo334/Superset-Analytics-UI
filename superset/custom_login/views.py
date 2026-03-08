@@ -624,18 +624,17 @@ class AuthView(BaseView):
             return "", 400
 
         # Validate required claims per OIDC Backchannel Logout spec
-        sub = claims.get("sub")  # Keycloak user ID
+        sub = claims.get("sub", "")  # Keycloak user ID (may be empty for fan-out)
+        email = claims.get("email", "")
         events = claims.get("events", {})
         backchannel_event = "http://schemas.openid.net/event/backchannel-logout"
 
-        if not sub or backchannel_event not in events:
+        if (not sub and not email) or backchannel_event not in events:
             log.warning(
-                "[backchannel_logout] Missing sub or event claim. sub=%s events=%s",
-                sub, list(events.keys()),
+                "[backchannel_logout] Missing identity or event claim. sub=%s email=%s events=%s",
+                sub, email, list(events.keys()),
             )
             return "", 400
-
-        email = claims.get("email", "")
 
         # Find Superset user by email (FAB stores email on the User model)
         user = None
