@@ -423,8 +423,8 @@ const FilterBar: React.FC<FiltersBarProps> = ({
     }, 100);
   }, [dashboardId, dispatch]);
 
-  return <div id="filter-bar" className="flex flex-row w-full justify-between bg-white">
-    <div className="flex flex-row w-full justify-between">
+  return <div id="filter-bar" className="flex flex-row w-full justify-between bg-white" style={{ overflow: 'hidden' }}>
+    <div className="flex flex-row w-full justify-between" style={{ minWidth: 0 }}>
     {hidden ? (
     <HiddenFilterBar>{filterBarComponent}</HiddenFilterBar>
   ) : (

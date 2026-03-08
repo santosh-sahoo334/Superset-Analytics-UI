@@ -197,10 +197,10 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({ visible, onHide, onSucc
             checked={makeAdmin}
             onChange={(e) => setMakeAdmin(e.checked)}
           />
-          <label htmlFor="makeAdmin">Make this user a Customer Admin</label>
+          <label htmlFor="makeAdmin">Make this user as CSight Admin</label>
         </div>
         <small className="text-color-secondary">
-          Customer Admins can manage users and promote/demote other admins.
+          CSight Admins can manage users and promote/demote other admins.
         </small>
 
         {unitEconConfig && (

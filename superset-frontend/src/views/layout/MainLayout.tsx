@@ -479,11 +479,13 @@ useEffect(() => {
     <Layout style={{ minHeight: '100vh' }} className=''>
       <AntHeader className="app-header">
         <div className="header-left">
-          <img
-            src="/static/assets/images/everyops-logo-for-csight.png"
-            alt="Logo"
-            className="header-logo"
-          />
+          <div className="header-logo-wrapper">
+            <img
+              src="/static/assets/images/everyops-logo-for-csight.png"
+              alt="Logo"
+              className="header-logo"
+            />
+          </div>
           <span className="header-title-csight">
             {process.env.REACT_APP_LOGO_TEXT || 'CSight'}
           </span>
