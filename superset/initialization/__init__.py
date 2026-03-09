@@ -430,14 +430,18 @@ class SupersetAppInitializer:  # pylint: disable=too-many-public-methods
 
         self.init_views()
 
-        # Exempt backchannel logout from CSRF by endpoint name.
+        # Exempt backchannel logout from CSRF protection.
         # Must run here (after configure_fab + init_views) because FAB
         # registers auth view endpoints during init_app_in_ctx, which is
         # after configure_wtf() in the init sequence.
+        # Flask-WTF checks `f"{view.__module__}.{view.__name__}"` against
+        # _exempt_views, so we compute the same string from the registered
+        # view function to guarantee a match.
         if self.config["WTF_CSRF_ENABLED"]:
-            for endpoint in self.superset_app.view_functions:
+            for endpoint, view_func in self.superset_app.view_functions.items():
                 if endpoint.endswith("backchannel_logout"):
-                    csrf.exempt(endpoint)
+                    dest = f"{view_func.__module__}.{view_func.__name__}"
+                    csrf.exempt(dest)
 
     def check_secret_key(self) -> None:
         def log_default_secret_key_warning() -> None:
