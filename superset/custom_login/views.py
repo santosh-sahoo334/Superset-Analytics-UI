@@ -495,7 +495,11 @@ def _forward_backchannel_logout_to_cindy(logout_token: str) -> None:
     out to CindyEveryOps so it can invalidate its Redis sessions for the same user.
     Uses CINDY_BACKCHANNEL_URL config. Failures are logged but never propagate.
     """
-    cindy_url = current_app.config.get("CINDY_BACKCHANNEL_URL", "").rstrip("/")
+    import os
+    cindy_url = (
+        current_app.config.get("CINDY_BACKCHANNEL_URL")
+        or os.environ.get("CINDY_BACKCHANNEL_URL", "")
+    ).rstrip("/")
     if not cindy_url:
         log.debug("[backchannel_logout] CINDY_BACKCHANNEL_URL not configured; skipping fan-out")
         return
