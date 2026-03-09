@@ -430,6 +430,15 @@ class SupersetAppInitializer:  # pylint: disable=too-many-public-methods
 
         self.init_views()
 
+        # Exempt backchannel logout from CSRF by endpoint name.
+        # Must run here (after configure_fab + init_views) because FAB
+        # registers auth view endpoints during init_app_in_ctx, which is
+        # after configure_wtf() in the init sequence.
+        if self.config["WTF_CSRF_ENABLED"]:
+            for endpoint in self.superset_app.view_functions:
+                if endpoint.endswith("backchannel_logout"):
+                    csrf.exempt(endpoint)
+
     def check_secret_key(self) -> None:
         def log_default_secret_key_warning() -> None:
             top_banner = 80 * "-" + "\n" + 36 * " " + "WARNING\n" + 80 * "-"
@@ -647,12 +656,9 @@ class SupersetAppInitializer:  # pylint: disable=too-many-public-methods
             csrf_exempt_list = self.config["WTF_CSRF_EXEMPT_LIST"]
             for ex in csrf_exempt_list:
                 csrf.exempt(ex)
-            # Exempt backchannel logout by endpoint name (not view function ref).
-            # Flask-WTF checks `request.endpoint in _exempt_views` directly.
-            # The endpoint is registered by FAB as "{ClassName}.{method_name}".
-            for endpoint in self.superset_app.view_functions:
-                if endpoint.endswith("backchannel_logout"):
-                    csrf.exempt(endpoint)
+            # NOTE: FAB auth view endpoints are registered later in
+            # init_app_in_ctx(), so endpoint-based exemptions are added
+            # there (see end of init_app_in_ctx).
 
     def configure_async_queries(self) -> None:
         if feature_flag_manager.is_feature_enabled("GLOBAL_ASYNC_QUERIES"):
