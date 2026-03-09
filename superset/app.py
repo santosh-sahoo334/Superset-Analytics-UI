@@ -132,11 +132,12 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
                     from superset.utils.redis_blacklist import is_user_revoked
                     if is_user_revoked(current_user.id):
                         from flask_login import logout_user
+                        revoked_id = current_user.id
                         logout_user()
                         session.clear()
                         logger.info(
                             "[backchannel_logout] Forced logout for revoked user_id=%s path=%s",
-                            current_user.id, path,
+                            revoked_id, path,
                         )
                         return redirect('/logout/')
             except Exception:
