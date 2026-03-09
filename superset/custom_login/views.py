@@ -487,6 +487,31 @@ class RegisterUserModelView(ModelView):
     search_exclude_columns = ["password"]
 
 
+def _forward_backchannel_logout_to_cindy(logout_token: str) -> None:
+    """
+    Forward a logout_token to the CindyEveryOps backchannel endpoint.
+
+    When a user logs out from Superset (or Keycloak fires a backchannel), we fan
+    out to CindyEveryOps so it can invalidate its Redis sessions for the same user.
+    Uses CINDY_BACKCHANNEL_URL config. Failures are logged but never propagate.
+    """
+    cindy_url = current_app.config.get("CINDY_BACKCHANNEL_URL", "").rstrip("/")
+    if not cindy_url:
+        log.debug("[backchannel_logout] CINDY_BACKCHANNEL_URL not configured; skipping fan-out")
+        return
+    try:
+        resp = http_requests.post(
+            cindy_url,
+            data={"logout_token": logout_token},
+            timeout=5,
+        )
+        log.info(
+            "[backchannel_logout] Cindy fan-out response: %s", resp.status_code
+        )
+    except Exception:
+        log.exception("[backchannel_logout] Failed to forward logout to CindyEveryOps")
+
+
 def _forward_backchannel_logout_to_budget(logout_token: str) -> None:
     """
     Forward the Keycloak logout_token to the budget backend's backchannel endpoint.
@@ -527,6 +552,17 @@ class AuthView(BaseView):
 
     @expose("/logout/")
     def logout(self):
+        # Extract email from kc_id_token BEFORE logout_user() clears state.
+        # Used to fan out logout to CindyEveryOps.
+        email_for_fanout = None
+        id_token = request.cookies.get('kc_id_token')
+        if id_token:
+            try:
+                claims = jwt.decode(id_token, options={"verify_signature": False}, algorithms=["RS256", "HS256"])
+                email_for_fanout = claims.get("email")
+            except Exception:
+                pass
+
         logout_user()
         # TekSecur modified code begin
         # End Keycloak session via back-channel POST (server-side).
@@ -534,6 +570,21 @@ class AuthView(BaseView):
         # upstream to Azure AD, which signs the user out of AD entirely.
         # A server-side POST ends only the Keycloak session.
         self._backchannel_keycloak_logout()
+
+        # Fan out logout to CindyEveryOps so its Redis sessions are killed too.
+        if email_for_fanout:
+            import time as _time
+            fanout_token = jwt.encode(
+                {
+                    "sub": "",
+                    "email": email_for_fanout,
+                    "events": {"http://schemas.openid.net/event/backchannel-logout": {}},
+                    "iat": int(_time.time()),
+                },
+                "fanout",
+                algorithm="HS256",
+            )
+            _forward_backchannel_logout_to_cindy(fanout_token)
 
         post_logout_uri = f"{request.scheme}://{request.host}/login"
         response = make_response(redirect(post_logout_uri))
@@ -659,10 +710,11 @@ class AuthView(BaseView):
         except Exception:
             log.exception("[backchannel_logout] Failed to revoke session for user_id=%s", user.id)
 
-        # Fan-out: forward logout_token to budget backend so it can revoke its JWTs too.
-        # Keycloak only supports one backchannel URL per client, so Superset acts as the
-        # single receiver and forwards to budget internally within the K8s cluster.
+        # Fan-out: forward logout_token to budget backend and CindyEveryOps so they
+        # can revoke their own sessions. Keycloak only supports one backchannel URL
+        # per client, so Superset acts as the single receiver and forwards internally.
         _forward_backchannel_logout_to_budget(logout_token)
+        _forward_backchannel_logout_to_cindy(logout_token)
 
         return "", 200  # Always 200 per OIDC spec
 
