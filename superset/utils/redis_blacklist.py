@@ -73,6 +73,15 @@ def revoke_user_sessions(user_id: int, ttl: int = USER_REVOKE_TTL) -> None:
         logger.error("[redis_blacklist] Failed to revoke sessions for user_id=%s: %s", user_id, e)
 
 
+def clear_user_revocation(user_id: int) -> None:
+    """Remove the revocation flag so the user can log in again."""
+    try:
+        _get_client().delete(f"{USER_REVOKE_PREFIX}{user_id}")
+        logger.info("[redis_blacklist] Cleared revocation for user_id=%s", user_id)
+    except Exception as e:
+        logger.error("[redis_blacklist] Failed to clear revocation for user_id=%s: %s", user_id, e)
+
+
 def is_user_revoked(user_id: int) -> bool:
     """Return True if the user's sessions have been revoked via backchannel logout."""
     try:

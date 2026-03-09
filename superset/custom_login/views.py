@@ -937,6 +937,14 @@ class AuthOAuthView(AuthView):
 
             login_user(user)
 
+            # Clear any backchannel revocation flag so the fresh login isn't
+            # immediately kicked out by check_user_revocation.
+            try:
+                from superset.utils.redis_blacklist import clear_user_revocation
+                clear_user_revocation(user.id)
+            except Exception:
+                pass
+
             log.warning(
                 "[oauth_callback] AFTER login_user: _user_id=%s, csrf_token=%s, session_keys=%s",
                 session.get('_user_id'), bool(session.get('csrf_token')), list(session.keys()),
