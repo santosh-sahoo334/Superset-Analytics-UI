@@ -53,11 +53,18 @@ def is_blacklisted(session_id):
 # ---------------------------------------------------------------------------
 
 USER_REVOKE_PREFIX = "user_revoked:"
-# TTL exceeds max session lifetime so entries auto-clean
-USER_REVOKE_TTL = 86400  # 24 hours
 
 
-def revoke_user_sessions(user_id: int, ttl: int = USER_REVOKE_TTL) -> None:
+def _get_revocation_ttl() -> int:
+    """Read USER_REVOCATION_TTL from app config, fall back to 35 min."""
+    try:
+        from flask import current_app
+        return current_app.config.get("USER_REVOCATION_TTL", DEFAULT_TTL)
+    except Exception:
+        return DEFAULT_TTL
+
+
+def revoke_user_sessions(user_id: int, ttl: int | None = None) -> None:
     """
     Revoke all active sessions for a Superset user.
 
@@ -66,6 +73,8 @@ def revoke_user_sessions(user_id: int, ttl: int = USER_REVOKE_TTL) -> None:
     Called by the OIDC backchannel logout endpoint when Keycloak notifies us.
     """
     import time
+    if ttl is None:
+        ttl = _get_revocation_ttl()
     try:
         _get_client().setex(f"{USER_REVOKE_PREFIX}{user_id}", ttl, str(time.time()))
         logger.info("[redis_blacklist] Revoked sessions for user_id=%s", user_id)
