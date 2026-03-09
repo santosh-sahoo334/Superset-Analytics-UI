@@ -647,12 +647,12 @@ class SupersetAppInitializer:  # pylint: disable=too-many-public-methods
             csrf_exempt_list = self.config["WTF_CSRF_EXEMPT_LIST"]
             for ex in csrf_exempt_list:
                 csrf.exempt(ex)
-            # Exempt backchannel logout by view function reference.
-            # String-based exemptions require the exact module.qualname which
-            # changes when views.py is copied into the FAB package at build time.
-            for endpoint, view_func in self.superset_app.view_functions.items():
+            # Exempt backchannel logout by endpoint name (not view function ref).
+            # Flask-WTF checks `request.endpoint in _exempt_views` directly.
+            # The endpoint is registered by FAB as "{ClassName}.{method_name}".
+            for endpoint in self.superset_app.view_functions:
                 if endpoint.endswith("backchannel_logout"):
-                    csrf.exempt(view_func)
+                    csrf.exempt(endpoint)
 
     def configure_async_queries(self) -> None:
         if feature_flag_manager.is_feature_enabled("GLOBAL_ASYNC_QUERIES"):
