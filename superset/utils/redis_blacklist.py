@@ -1,5 +1,6 @@
 import logging
 import os
+from typing import Optional
 
 import redis
 
@@ -64,7 +65,7 @@ def _get_revocation_ttl() -> int:
         return DEFAULT_TTL
 
 
-def revoke_user_sessions(user_id: int, ttl: int | None = None) -> None:
+def revoke_user_sessions(user_id: int, ttl: Optional[int] = None) -> None:
     """
     Revoke all active sessions for a Superset user.
 
