@@ -234,7 +234,6 @@ const FilterControls: FC<FilterControlsProps> = ({
         padding: 0 ${theme.gridUnit * 2}px;
         min-width: 0;
         flex: 1;
-        overflow: hidden;
       `}
     >
       <DropdownContainer

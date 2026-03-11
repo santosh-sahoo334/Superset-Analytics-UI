@@ -370,7 +370,7 @@ export default function DateFilterLabel(props: DateFilterControlProps) {
       <Tooltip
         placement="top"
         title={tooltipTitle}
-        getPopupContainer={trigger => trigger.parentElement as HTMLElement}
+        overlayStyle={{ pointerEvents: 'none' }}
       >
         <DateLabel
           label={actualTimeRange}
@@ -388,7 +388,7 @@ export default function DateFilterLabel(props: DateFilterControlProps) {
       <Tooltip
         placement="top"
         title={tooltipTitle}
-        getPopupContainer={trigger => trigger.parentElement as HTMLElement}
+        overlayStyle={{ pointerEvents: 'none' }}
       >
         <DateLabel
           onClick={toggleOverlay}
