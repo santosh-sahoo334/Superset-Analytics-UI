@@ -20,5 +20,5 @@ zope-interface==5.4.0
     # via gevent
 
 # The following packages are considered to be unsafe in a requirements file:
-setuptools==70.0.0
-pip==24.3.1
+setuptools==78.1.1
+pip==25.2
