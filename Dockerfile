@@ -22,7 +22,7 @@ ARG PY_VER=3.9-slim-bookworm
 
 # if BUILDPLATFORM is null, set it to 'amd64' (or leave as is otherwise).
 ARG BUILDPLATFORM=${BUILDPLATFORM:-amd64}
-FROM --platform=${BUILDPLATFORM} node:16-bookworm-slim AS superset-node
+FROM --platform=${BUILDPLATFORM} node:22-bookworm-slim AS superset-node
 
 ARG NPM_BUILD_CMD="build"
 
@@ -63,7 +63,10 @@ ENV LANG=C.UTF-8 \
 
 RUN mkdir -p ${PYTHONPATH} superset/static superset-frontend apache_superset.egg-info requirements \
     && useradd --user-group -d ${SUPERSET_HOME} -m --no-log-init --shell /bin/bash superset \
-    && apt-get update -qq && apt-get install -yqq --no-install-recommends \
+    && apt-get update -qq \
+    # [SECURITY] Upgrade Debian packages with known CVEs
+    && apt-get upgrade -yqq \
+    && apt-get install -yqq --no-install-recommends \
         build-essential \
         default-libmysqlclient-dev \
         # openssl is required for cURL 7.88.0
