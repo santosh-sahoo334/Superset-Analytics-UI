@@ -42,6 +42,8 @@ interface AuthContextType {
   setBudgetEditView: React.Dispatch<SetStateAction<boolean>>;
   createNewBudget: boolean;
   setCreateNewBudget: React.Dispatch<SetStateAction<boolean>>;
+  budgetRefreshKey: number;
+  setBudgetRefreshKey: React.Dispatch<SetStateAction<number>>;
 }
 
 const routesWithoutAuth = ["/login"];
@@ -69,6 +71,8 @@ const AuthContext = createContext<AuthContextType>({
   setBudgetEditView: () => false,
   createNewBudget: false,
   setCreateNewBudget: () => false,
+  budgetRefreshKey: 0,
+  setBudgetRefreshKey: () => 0,
 });
 
 export function useAuthContext(): AuthContextType {
@@ -96,6 +100,7 @@ const AuthState = () => {
   const [budgetData, setBudgetData] = useState<any>(null);
   const [budgetEditView, setBudgetEditView] = useState<boolean>(false);
   const [createNewBudget, setCreateNewBudget] = useState<boolean>(false);
+  const [budgetRefreshKey, setBudgetRefreshKey] = useState<number>(0);
 
   const isAuthenticated = !!accessToken;
 
@@ -297,6 +302,8 @@ const AuthState = () => {
     setBudgetEditView,
     createNewBudget,
     setCreateNewBudget,
+    budgetRefreshKey,
+    setBudgetRefreshKey,
   };
 };
 

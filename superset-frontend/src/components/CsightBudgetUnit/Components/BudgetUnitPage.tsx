@@ -37,7 +37,7 @@ const BudgetUnitPage: React.FunctionComponent = ({}) => {
   };
   const { accessToken } = useAuth();
 
-  const { budgetUnitSteps, setBudgetUnitSteps, budgetUnitCreate, setBudgetUnitCreate, editBudgetUnit, setEditBudgetUnit,setBudgetUnitData:setBudgetUnitDataContext,setBudgetUnitView:setBudgetUnitViewContext } = useAuthContext();
+  const { budgetUnitSteps, setBudgetUnitSteps, budgetUnitCreate, setBudgetUnitCreate, editBudgetUnit, setEditBudgetUnit,setBudgetUnitData:setBudgetUnitDataContext,setBudgetUnitView:setBudgetUnitViewContext, budgetRefreshKey } = useAuthContext();
 
   const getTableData = async () => {
     try {
@@ -63,7 +63,7 @@ const BudgetUnitPage: React.FunctionComponent = ({}) => {
 
   useEffect(() => {
     getTableData();
-  }, [paginationState]);
+  }, [paginationState, budgetRefreshKey]);
 
   const handlePageChange = (event: PaginatorPageChangeEvent) => {
     setPaginationState({

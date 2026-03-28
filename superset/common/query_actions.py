@@ -86,6 +86,14 @@ def _get_query(
 ) -> dict[str, Any]:
     datasource = _get_datasource(query_context, query_obj)
     result = {"language": datasource.query_language}
+    # TekSecur: Only expose raw SQL to admin users.  Non-admins get a
+    # placeholder so the UI doesn't break but table/column/RLS details
+    # are not leaked.
+    from superset.extensions import security_manager
+
+    if not security_manager.is_admin():
+        result["query"] = "-- SQL preview restricted to admin users"
+        return result
     try:
         result["query"] = datasource.get_query_str(query_obj.to_dict())
     except QueryObjectValidationError as err:

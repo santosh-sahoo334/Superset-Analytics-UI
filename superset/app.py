@@ -109,6 +109,40 @@ def create_app(superset_config_module: Optional[str] = None) -> Flask:
         app_initializer = app.config.get("APP_INITIALIZER", SupersetAppInitializer)(app)
         app_initializer.init_app()
 
+        # TekSecur: Reject requests whose session cookie was blacklisted at logout.
+        # Flask client-side sessions are self-contained signed cookies — the server
+        # doesn't track them. Without this hook a captured cookie stays valid until
+        # PERMANENT_SESSION_LIFETIME expires, even after the user logs out.
+        @app.before_request
+        def check_session_blacklist():
+            path = request.path
+            if any(path.startswith(p) for p in ('/login', '/logout', '/oauth', '/static/', '/health')):
+                return
+            user_agent = request.headers.get('User-Agent', '')
+            if user_agent.startswith('kube-probe/') or user_agent.startswith('ELB-HealthChecker'):
+                return
+            sid = session.get("_id")
+            if not sid:
+                return
+            from superset.utils.redis_blacklist import is_blacklisted
+            if is_blacklisted(sid):
+                logger.info("[session_blacklist] Blocked blacklisted session %s on %s %s",
+                            sid[:8], request.method, path)
+                session.clear()
+                # API/AJAX requests: return 401 JSON (a redirect would cause
+                # CSRF-validation cascades and broken XHR handling).
+                if path.startswith('/api/') or 'application/json' in request.headers.get('Accept', ''):
+                    from flask import jsonify
+                    return jsonify({"error": "Session expired"}), 401
+                # Browser navigation: redirect to /logout/ (NOT /login).
+                # /logout/ deletes all cookies from the response. Redirecting
+                # to /login directly would skip cookie deletion and
+                # SkipAnonymousSessionInterface would not overwrite the old
+                # signed cookie (no _user_id → save_session skips), causing
+                # the browser to replay the blacklisted cookie on every
+                # subsequent request.
+                return redirect('/logout/')
+
         # TekSecur: Force real logout when Flask session expired but SSO cookies remain.
         # Without this, the login page detects the stale refresh_token cookie and
         # auto-redirects to the OAuth callback, silently re-authenticating the user

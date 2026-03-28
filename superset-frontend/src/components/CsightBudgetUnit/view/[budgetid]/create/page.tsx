@@ -20,8 +20,8 @@ const CreateViewBudgetPage = () => {
   const { accessToken } = useAuth();
 
 
-  const { 
-    budgetUnitData, setCreateNewBudget
+  const {
+    budgetUnitData, setCreateNewBudget, setBudgetRefreshKey
   } = useAuthContext();
 
 
@@ -85,10 +85,7 @@ const CreateViewBudgetPage = () => {
           freeze: false,
         },
       ]);
-      // if (response?.status === 201) {
-
-      // }
-      // router.goBack();
+      setBudgetRefreshKey(prev => prev + 1);
       setCreateNewBudget(false)
     } catch (error) {
       console.log("Response from budget list post from backend error:", error);

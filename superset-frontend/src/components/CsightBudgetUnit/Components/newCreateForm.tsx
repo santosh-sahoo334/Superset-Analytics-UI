@@ -35,6 +35,7 @@ const CreateBudgetUnitUpdatedPage = ({ visibleRight, setVisibleRight }) => {
     setBudgetUnitCreate,
     editBudgetUnit,
     setEditBudgetUnit,
+    setBudgetRefreshKey,
   } = useAuthContext();
 
   useEffect(() => {
@@ -103,7 +104,7 @@ const CreateBudgetUnitUpdatedPage = ({ visibleRight, setVisibleRight }) => {
         ...prevState,
         budget: true,
       }));
-      // router.push("/budget-unit");
+      setBudgetRefreshKey(prev => prev + 1);
       setBudgetUnitSteps(0);
       setBudgetUnitCreate(false);
     } catch (error) {

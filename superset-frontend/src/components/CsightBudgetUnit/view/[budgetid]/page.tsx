@@ -22,12 +22,12 @@ const ViewBudgetPage = () => {
   const { accessToken } = useAuth();
   const { showToast } = useToast();
 
-  const { budgetUnitSteps, setBudgetUnitSteps, 
-    budgetUnitCreate, setBudgetUnitCreate, 
+  const { budgetUnitSteps, setBudgetUnitSteps,
+    budgetUnitCreate, setBudgetUnitCreate,
     editBudgetUnit, setEditBudgetUnit,
     budgetUnitData,setBudgetUnitData,
     budgetUnitView,setCreateNewBudget,
-    setBudgetUnitView } = useAuthContext();
+    setBudgetUnitView, budgetRefreshKey } = useAuthContext();
 
 
   // get Budget & Budget Unit Data
@@ -58,7 +58,7 @@ const ViewBudgetPage = () => {
       }
     };
     getBudgets();
-  }, [token, budgets]);
+  }, [token, budgets, budgetRefreshKey]);
 
   const { result, list_columns, label_columns } = budgetData;
   const listColumnsFilter = list_columns?.filter(

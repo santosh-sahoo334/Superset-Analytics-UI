@@ -396,8 +396,17 @@ class ChartDataRestApi(ChartRestApi):
             )
 
         if result_format == ChartDataResultFormat.JSON:
+            # TekSecur: Strip raw SQL and stack traces from responses for
+            # non-admin users.  These fields expose table names, column names,
+            # RLS filter predicates, and internal error details.
+            queries = result["queries"]
+            if not security_manager.is_admin():
+                for qr in queries:
+                    qr.pop("query", None)
+                    qr.pop("stacktrace", None)
+
             response_data = simplejson.dumps(
-                {"result": result["queries"]},
+                {"result": queries},
                 default=json_int_dttm_ser,
                 ignore_nan=True,
             )

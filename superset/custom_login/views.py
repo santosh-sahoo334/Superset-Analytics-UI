@@ -567,7 +567,13 @@ class AuthView(BaseView):
             except Exception:
                 pass
 
+        # Blacklist the session ID in Redis BEFORE logout_user() clears it.
+        # This prevents replay of the old signed session cookie.
+        session_id = session.get("_id")
         logout_user()
+        if session_id:
+            from superset.utils.redis_blacklist import blacklist_session
+            blacklist_session(session_id)
         # TekSecur modified code begin
         # End Keycloak session via back-channel POST (server-side).
         # A browser redirect (GET) to Keycloak's logout endpoint propagates
