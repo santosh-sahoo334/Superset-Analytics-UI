@@ -8,6 +8,8 @@ env:
     IMAGE_TAG: IMAGE_TAG
     NODE_OPTIONS: "--max-old-space-size=8192"
     BABEL_DISABLE_CACHE: "1"
+    SNYK_S3_BUCKET: ""
+    SNYK_TOKEN: ""
 
 phases:
   pre_build:
@@ -21,6 +23,15 @@ phases:
       
       - echo "Logging in to Amazon ECR..."
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+
+      # Install Snyk CLI and snyk-to-html for security scanning
+      - echo "Installing Snyk CLI and snyk-to-html..."
+      - curl -Lo /usr/local/bin/snyk https://static.snyk.io/cli/latest/snyk-linux && chmod +x /usr/local/bin/snyk
+      - npm install -g snyk-to-html
+      - snyk auth $SNYK_TOKEN
+      - SCAN_DATE=$(date +%Y-%m-%d)
+      - SNYK_REPORTS_DIR="$CODEBUILD_SRC_DIR/snyk-reports"
+      - mkdir -p $SNYK_REPORTS_DIR
       
       - if [ -z "$IMAGE_TAG" ]; then IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7); fi
       - echo "Resolved Image Tag - $IMAGE_TAG"
@@ -72,15 +83,44 @@ phases:
     commands:
       # Check if the .env file exists before proceeding
       - if [ ! -f "$CODEBUILD_SRC_DIR/superset-frontend/.env" ]; then echo ".env file does not exist. Build will not proceed."; exit 1; fi
+
+      # ====== Snyk Scan 1: Python dependency scan ======
+      - echo "Running Snyk Python dependency scan..."
+      - snyk test --file=requirements/local.txt --package-manager=pip --json > $SNYK_REPORTS_DIR/pip-dep-scan.json || true
+      - cat $SNYK_REPORTS_DIR/pip-dep-scan.json | snyk-to-html -o $SNYK_REPORTS_DIR/pip-dep-scan.html || true
+      - echo "Python dependency scan complete"
+
+      # ====== Docker Build ======
       - echo "Resolved Image Tag in build section - $IMAGE_TAG"
       - echo "Building the Docker image - $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG"
       - DOCKER_BUILDKIT=1 docker build --no-cache --build-arg NODE_OPTIONS="--max-old-space-size=8192" -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG .
+
+      # ====== Snyk Scan 2: Docker image scan ======
+      - echo "Running Snyk Docker image scan..."
+      - snyk container test $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG --json > $SNYK_REPORTS_DIR/docker-image-scan.json || true
+      - cat $SNYK_REPORTS_DIR/docker-image-scan.json | snyk-to-html -o $SNYK_REPORTS_DIR/docker-image-scan.html || true
+      - echo "Docker image scan complete"
 
   post_build:
     commands:
       - echo "Pushing the image to Amazon ECR..."
       - echo "Resolved Image Tag in post_build section - $IMAGE_TAG"
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
+
+      # ====== Upload Snyk reports to S3 ======
+      - echo "Uploading Snyk scan reports to S3..."
+      - |
+        if [ -n "$SNYK_S3_BUCKET" ]; then
+          S3_PATH="s3://${SNYK_S3_BUCKET}/snyk-reports/csight-frontend/${SCAN_DATE}-${IMAGE_TAG}"
+          aws s3 cp $SNYK_REPORTS_DIR/pip-dep-scan.json "${S3_PATH}/pip-dep-scan.json" || true
+          aws s3 cp $SNYK_REPORTS_DIR/pip-dep-scan.html "${S3_PATH}/pip-dep-scan.html" || true
+          aws s3 cp $SNYK_REPORTS_DIR/docker-image-scan.json "${S3_PATH}/docker-image-scan.json" || true
+          aws s3 cp $SNYK_REPORTS_DIR/docker-image-scan.html "${S3_PATH}/docker-image-scan.html" || true
+          echo "Reports uploaded to ${S3_PATH}"
+        else
+          echo "SNYK_S3_BUCKET not set — skipping S3 upload"
+        fi
+
       - echo "Build and push completed successfully"
 
 artifacts:
