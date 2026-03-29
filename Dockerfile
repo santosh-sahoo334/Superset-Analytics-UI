@@ -143,6 +143,8 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -yqq --no-install-recommends nodejs \
     # [SECURITY] Update npm to fix bundled vulnerabilities (tar, minimatch, glob, picomatch, brace-expansion)
     && npm install -g npm@latest \
+    # [SECURITY] Patch remaining npm transitive vulnerabilities (picomatch, brace-expansion)
+    && cd /usr/lib/node_modules/npm && npm install picomatch@4.0.4 brace-expansion@5.0.5 --no-save && cd / \
     && rm -rf /var/lib/apt/lists/* \
     # Remove Playwright's bundled Node binary
     && find /usr/local/lib/python3.9 -path "*/playwright/driver/node" -delete 2>/dev/null || true \
