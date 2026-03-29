@@ -141,10 +141,12 @@ RUN --mount=type=bind,target=./requirements/local.txt,src=./requirements/local.t
 # Install Node 22 LTS via NodeSource and point Playwright to use it.
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -yqq --no-install-recommends nodejs \
+    # [SECURITY] Update npm to fix bundled vulnerabilities (tar, minimatch, glob, picomatch, brace-expansion)
+    && npm install -g npm@latest \
     && rm -rf /var/lib/apt/lists/* \
     # Remove Playwright's bundled Node binary
     && find /usr/local/lib/python3.9 -path "*/playwright/driver/node" -delete 2>/dev/null || true \
-    && node --version
+    && node --version && npm --version
 ENV PLAYWRIGHT_NODEJS_PATH=/usr/bin/node
 
 COPY --chown=superset:superset --from=superset-node /app/superset/static/assets superset/static/assets
