@@ -20,7 +20,7 @@
 ######################################################################
 ARG PY_VER=3.9-slim-bookworm
 
-# if BUILDPLATFORM is null, set it to 'amd64' (or leave as is otherwise).
+# If BUILDPLATFORM is null, set it to 'amd64' (or leave as is otherwise).
 ARG BUILDPLATFORM=${BUILDPLATFORM:-amd64}
 FROM --platform=${BUILDPLATFORM} node:22-bookworm-slim AS superset-node
 
