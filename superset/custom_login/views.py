@@ -79,35 +79,40 @@ class PermissionViewModelView(ModelView):
 
 class ResetMyPasswordView(SimpleFormView):
     """
-    View for resetting own user password
+    View for resetting own user password.
+    DISABLED: Authentication is managed by Keycloak SSO.
+    Password reset through FAB is not permitted (security mitigation).
     """
 
     route_base = "/resetmypassword"
     form = ResetPasswordForm
     form_title = lazy_gettext("Reset Password Form")
     redirect_url = "/"
-    message = lazy_gettext("Password Changed")
+
+    def form_get(self, form: DynamicForm) -> None:
+        abort(403)
 
     def form_post(self, form: DynamicForm) -> None:
-        self.appbuilder.sm.reset_password(g.user.id, form.password.data)
-        flash(as_unicode(self.message), "info")
+        abort(403)
 
 
 class ResetPasswordView(SimpleFormView):
     """
-    View for reseting all users password
+    View for resetting all users password (admin).
+    DISABLED: Authentication is managed by Keycloak SSO.
+    Password reset through FAB is not permitted (security mitigation).
     """
 
     route_base = "/resetpassword"
     form = ResetPasswordForm
     form_title = lazy_gettext("Reset Password Form")
     redirect_url = "/"
-    message = lazy_gettext("Password Changed")
+
+    def form_get(self, form: DynamicForm) -> None:
+        abort(403)
 
     def form_post(self, form: DynamicForm) -> None:
-        pk = request.args.get("pk")
-        self.appbuilder.sm.reset_password(pk, form.password.data)
-        flash(as_unicode(self.message), "info")
+        abort(403)
 
 
 class UserInfoEditView(SimpleFormView):
