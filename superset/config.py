@@ -1220,9 +1220,28 @@ DB_CONNECTION_MUTATOR = None
 # unsafe SQL functions in SQL Lab and Charts. The keys of the dictionary are the engine
 # names, and the values are sets of disallowed functions.
 DISALLOWED_SQL_FUNCTIONS: dict[str, set[str]] = {
-    "postgresql": {"version", "query_to_xml", "inet_server_addr", "inet_client_addr"},
-    "clickhouse": {"url"},
-    "mysql": {"version"},
+    "postgresql": {
+        "version", "database_to_xml", "query_to_xml",
+        "query_to_xml_and_xmlschema", "table_to_xml", "table_to_xml_and_xmlschema",
+        "inet_server_addr", "inet_client_addr",
+        "pg_read_file", "pg_read_binary_file", "pg_ls_dir", "pg_stat_file",
+        "pg_sleep", "lo_import", "lo_export", "dblink",
+        "current_setting", "pg_reload_conf", "pg_rotate_logfile",
+        "pg_backend_pid", "pg_postmaster_start_time",
+    },
+    "clickhouse": {"url", "version"},
+    "mysql": {
+        "version", "database", "schema", "load_file",
+        "sleep", "benchmark",
+    },
+    "awsathena": {
+        "version", "current_catalog", "current_user", "current_schema",
+        "session_user", "system_user", "typeof",
+    },
+    "presto": {
+        "version", "current_catalog", "current_user", "current_schema",
+        "session_user", "system_user", "typeof",
+    },
 }
 
 

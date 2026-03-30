@@ -1077,6 +1077,40 @@ sqlatable_user = Table(
 )
 
 
+_BLOCKED_SQL_IDENTIFIERS = re.compile(
+    r"(?:"
+    # ---- Standard SQL / cross-engine system identifiers ----
+    r"\b(?:"
+    r"current_catalog|current_user|current_schema|current_role|current_database|"
+    r"session_user|system_user|user"
+    r")\b"
+    r"|"
+    # ---- PostgreSQL: system info, file access, time-based blind SQLi ----
+    r"\b(?:"
+    r"inet_server_addr|inet_client_addr|pg_backend_pid|pg_postmaster_start_time|"
+    r"query_to_xml|pg_read_file|pg_read_binary_file|pg_ls_dir|pg_stat_file|"
+    r"pg_sleep|lo_import|lo_export|dblink|current_setting|"
+    r"pg_reload_conf|pg_rotate_logfile"
+    r")\b"
+    r"|"
+    # ---- MySQL: session/global variables, file access, blind SQLi ----
+    r"@@(?:version|hostname|datadir|basedir|server_id|port|"
+    r"global\.\w+|session\.\w+)"
+    r"|"
+    r"\b(?:load_file|sleep|benchmark)\b"
+    r"|"
+    # ---- AWS Athena / Presto hidden columns (reveal S3 paths/buckets) ----
+    r'"\$(?:path|bucket|key|file_size|file_modified_time)"'
+    r"|"
+    r"\$(?:path|bucket|key|file_size|file_modified_time)\b"
+    r"|"
+    # ---- Metadata schemas (info enumeration via subqueries) ----
+    r"\b(?:information_schema|pg_catalog)\b"
+    r")",
+    re.IGNORECASE,
+)
+
+
 def _process_sql_expression(
     expression: str | None,
     database_id: int,
@@ -1086,6 +1120,12 @@ def _process_sql_expression(
     if template_processor and expression:
         expression = template_processor.process_template(expression)
     if expression:
+        # Block system-info keywords that leak server metadata (e.g. AWS account ID).
+        match = _BLOCKED_SQL_IDENTIFIERS.search(expression)
+        if match:
+            raise QueryObjectValidationError(
+                f"SQL expression contains disallowed identifier: {match.group(0)}"
+            )
         try:
             expression = validate_adhoc_subquery(
                 expression,
