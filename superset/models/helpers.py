@@ -1680,6 +1680,12 @@ class ExploreMixin:  # pylint: disable=too-many-public-methods
                             template_processor=template_processor,
                         )
                     else:
+                        # Block system-info identifiers before passing to literal_column
+                        match = self._BLOCKED_SQL_IDENTIFIERS.search(selected)
+                        if match:
+                            raise QueryObjectValidationError(
+                                f"SQL expression contains disallowed identifier: {match.group(0)}"
+                            )
                         selected = validate_adhoc_subquery(
                             selected,
                             self.database_id,
@@ -1705,6 +1711,13 @@ class ExploreMixin:  # pylint: disable=too-many-public-methods
                 elif isinstance(selected, str):
                     _sql = selected
                     _column_label = selected
+
+                # Block system-info identifiers before passing to literal_column
+                match = self._BLOCKED_SQL_IDENTIFIERS.search(_sql)
+                if match:
+                    raise QueryObjectValidationError(
+                        f"SQL expression contains disallowed identifier: {match.group(0)}"
+                    )
 
                 selected = validate_adhoc_subquery(
                     _sql,
