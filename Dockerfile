@@ -161,7 +161,10 @@ COPY --chown=superset:superset superset superset
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install -e . \
     && flask fab babel-compile --target superset/translations \
-    && chown -R superset:superset superset/translations
+    && chown -R superset:superset superset/translations \
+    # [SECURITY] Remove Playwright's bundled Node binary (installed during pip install -e .)
+    # to prevent Snyk from flagging node 24.x CVEs. Runtime uses PLAYWRIGHT_NODEJS_PATH instead.
+    && find /usr/local/lib/python3.9/site-packages/playwright -name "node" -type f -delete 2>/dev/null || true
 
 COPY --chmod=755 ./docker/run-server.sh /usr/bin/
 USER superset
