@@ -5,7 +5,7 @@ import { t } from '@superset-ui/core';
 import Button from 'src/components/Button';
 import Checkbox from 'src/components/Checkbox';
 import Modal from 'src/components/Modal';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 
 interface ChartItem {
   id: number;
@@ -177,8 +177,8 @@ export default function ExcelExportModal({
     }
   };
 
-  const handleExport = () => {
-    const wb = XLSX.utils.book_new();
+  const handleExport = async () => {
+    const wb = new ExcelJS.Workbook();
 
     const selectedCharts = availableCharts.filter(c => selectedIds.has(c.id));
     const rawNames = selectedCharts.map(c => sanitizeSheetName(c.name));
@@ -188,16 +188,23 @@ export default function ExcelExportModal({
       const queryResponse = charts[chart.id].queriesResponse[0];
       const { data, colnames } = queryResponse;
 
-      const wsData = [
-        colnames,
-        ...data.map((row: any) => colnames.map((col: string) => row[col])),
-      ];
-      const ws = XLSX.utils.aoa_to_sheet(wsData);
-      XLSX.utils.book_append_sheet(wb, ws, sheetNames[idx]);
+      const ws = wb.addWorksheet(sheetNames[idx]);
+      ws.addRow(colnames);
+      data.forEach((row: any) => {
+        ws.addRow(colnames.map((col: string) => row[col]));
+      });
     });
 
-    const fileName = `${dashboardTitle || 'Dashboard'}.xlsx`;
-    XLSX.writeFile(wb, fileName);
+    const buffer = await wb.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${dashboardTitle || 'Dashboard'}.xlsx`;
+    a.click();
+    URL.revokeObjectURL(url);
     onHide();
   };
 

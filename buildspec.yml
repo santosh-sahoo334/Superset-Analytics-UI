@@ -25,19 +25,18 @@ phases:
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
 
       # Install Snyk CLI and snyk-to-html for security scanning
-      # TODO: Uncomment to enable Snyk scans in CI pipeline
-      # - echo "Installing Snyk CLI and snyk-to-html..."
-      # - curl -Lo /usr/local/bin/snyk https://static.snyk.io/cli/latest/snyk-linux && chmod +x /usr/local/bin/snyk
-      # - npm install -g snyk-to-html
-      # - |
-      #     if [ -z "$SNYK_TOKEN" ]; then
-      #       echo "WARNING: SNYK_TOKEN is not set. Snyk scans will be skipped."
-      #     else
-      #       snyk auth $SNYK_TOKEN && echo "Snyk authentication successful." || echo "WARNING: Snyk auth failed. Scans may produce errors."
-      #     fi
-      # - SCAN_DATE=$(date +%Y-%m-%d)
-      # - SNYK_REPORTS_DIR="$CODEBUILD_SRC_DIR/snyk-reports"
-      # - mkdir -p $SNYK_REPORTS_DIR
+      - echo "Installing Snyk CLI and snyk-to-html..."
+      - curl -Lo /usr/local/bin/snyk https://static.snyk.io/cli/latest/snyk-linux && chmod +x /usr/local/bin/snyk
+      - npm install -g snyk-to-html
+      - |
+          if [ -z "$SNYK_TOKEN" ]; then
+            echo "WARNING: SNYK_TOKEN is not set. Snyk scans will be skipped."
+          else
+            snyk auth $SNYK_TOKEN && echo "Snyk authentication successful." || echo "WARNING: Snyk auth failed. Scans may produce errors."
+          fi
+      - SCAN_DATE=$(date +%Y-%m-%d)
+      - SNYK_REPORTS_DIR="$CODEBUILD_SRC_DIR/snyk-reports"
+      - mkdir -p $SNYK_REPORTS_DIR
       
       - if [ -z "$IMAGE_TAG" ]; then IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7); fi
       - echo "Resolved Image Tag - $IMAGE_TAG"
@@ -91,37 +90,35 @@ phases:
       - if [ ! -f "$CODEBUILD_SRC_DIR/superset-frontend/.env" ]; then echo ".env file does not exist. Build will not proceed."; exit 1; fi
 
       # ====== Snyk Scan 1: Python dependency scan ======
-      # TODO: Uncomment to enable pip dependency scanning
       # Create a venv and install packages so Snyk can fully resolve the dependency tree
-      # - echo "Running Snyk Python dependency scan..."
-      # - python3 -m venv /tmp/snyk-venv
-      # - /tmp/snyk-venv/bin/pip install --quiet -r requirements/base.txt || true
-      # - |
-      #   cd $CODEBUILD_SRC_DIR
-      #   . /tmp/snyk-venv/bin/activate
-      #   snyk test --file=requirements/base.txt --package-manager=pip --json > $SNYK_REPORTS_DIR/pip-dep-scan.json || true
-      #   deactivate
-      # - |
-      #     if python3 -c "import json,sys; d=json.load(open(sys.argv[1])); sys.exit(1 if d.get('ok')==False and 'error' in d else 0)" $SNYK_REPORTS_DIR/pip-dep-scan.json 2>/dev/null; then
-      #       snyk-to-html -i $SNYK_REPORTS_DIR/pip-dep-scan.json -o $SNYK_REPORTS_DIR/pip-dep-scan.html || true
-      #       echo "Python dependency scan complete"
-      #     else
-      #       echo "WARNING: Pip scan JSON contains errors (auth/API issue). Skipping HTML generation."
-      #       cat $SNYK_REPORTS_DIR/pip-dep-scan.json 2>/dev/null || true
-      #     fi
+      - echo "Running Snyk Python dependency scan..."
+      - python3 -m venv /tmp/snyk-venv
+      - /tmp/snyk-venv/bin/pip install --quiet -r requirements/base.txt || true
+      - |
+        cd $CODEBUILD_SRC_DIR
+        . /tmp/snyk-venv/bin/activate
+        snyk test --file=requirements/base.txt --package-manager=pip --json > $SNYK_REPORTS_DIR/pip-dep-scan.json || true
+        deactivate
+      - |
+          if python3 -c "import json,sys; d=json.load(open(sys.argv[1])); sys.exit(1 if d.get('ok')==False and 'error' in d else 0)" $SNYK_REPORTS_DIR/pip-dep-scan.json 2>/dev/null; then
+            snyk-to-html -i $SNYK_REPORTS_DIR/pip-dep-scan.json -o $SNYK_REPORTS_DIR/pip-dep-scan.html || true
+            echo "Python dependency scan complete"
+          else
+            echo "WARNING: Pip scan JSON contains errors (auth/API issue). Skipping HTML generation."
+            cat $SNYK_REPORTS_DIR/pip-dep-scan.json 2>/dev/null || true
+          fi
 
       # ====== Snyk Scan 2: Frontend npm dependency scan ======
-      # TODO: Uncomment after running `npm install` in superset-frontend to sync package-lock.json (xlsx missing)
-      # - echo "Running Snyk frontend npm dependency scan..."
-      # - snyk test --file=superset-frontend/package-lock.json --json > $SNYK_REPORTS_DIR/npm-dep-scan.json || true
-      # - |
-      #     if python3 -c "import json,sys; d=json.load(open(sys.argv[1])); sys.exit(1 if d.get('ok')==False and 'error' in d else 0)" $SNYK_REPORTS_DIR/npm-dep-scan.json 2>/dev/null; then
-      #       snyk-to-html -i $SNYK_REPORTS_DIR/npm-dep-scan.json -o $SNYK_REPORTS_DIR/npm-dep-scan.html || true
-      #       echo "Frontend npm dependency scan complete"
-      #     else
-      #       echo "WARNING: npm scan JSON contains errors (auth/API issue). Skipping HTML generation."
-      #       cat $SNYK_REPORTS_DIR/npm-dep-scan.json 2>/dev/null || true
-      #     fi
+      - echo "Running Snyk frontend npm dependency scan..."
+      - snyk test --file=superset-frontend/package-lock.json --json > $SNYK_REPORTS_DIR/npm-dep-scan.json || true
+      - |
+          if python3 -c "import json,sys; d=json.load(open(sys.argv[1])); sys.exit(1 if d.get('ok')==False and 'error' in d else 0)" $SNYK_REPORTS_DIR/npm-dep-scan.json 2>/dev/null; then
+            snyk-to-html -i $SNYK_REPORTS_DIR/npm-dep-scan.json -o $SNYK_REPORTS_DIR/npm-dep-scan.html || true
+            echo "Frontend npm dependency scan complete"
+          else
+            echo "WARNING: npm scan JSON contains errors (auth/API issue). Skipping HTML generation."
+            cat $SNYK_REPORTS_DIR/npm-dep-scan.json 2>/dev/null || true
+          fi
 
       # ====== Docker Build ======
       - echo "Resolved Image Tag in build section - $IMAGE_TAG"
@@ -129,17 +126,16 @@ phases:
       - DOCKER_BUILDKIT=1 docker build --no-cache --build-arg NODE_OPTIONS="--max-old-space-size=8192" -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG .
 
       # ====== Snyk Scan 3: Docker image scan ======
-      # TODO: Uncomment to enable Docker image scanning
-      # - echo "Running Snyk Docker image scan..."
-      # - snyk container test $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG --json > $SNYK_REPORTS_DIR/docker-image-scan.json || true
-      # - |
-      #     if python3 -c "import json,sys; d=json.load(open(sys.argv[1])); sys.exit(1 if d.get('ok')==False and 'error' in d else 0)" $SNYK_REPORTS_DIR/docker-image-scan.json 2>/dev/null; then
-      #       snyk-to-html -i $SNYK_REPORTS_DIR/docker-image-scan.json -o $SNYK_REPORTS_DIR/docker-image-scan.html || true
-      #       echo "Docker image scan complete"
-      #     else
-      #       echo "WARNING: Docker scan JSON contains errors (auth/API issue). Skipping HTML generation."
-      #       cat $SNYK_REPORTS_DIR/docker-image-scan.json 2>/dev/null || true
-      #     fi
+      - echo "Running Snyk Docker image scan..."
+      - snyk container test $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG --json > $SNYK_REPORTS_DIR/docker-image-scan.json || true
+      - |
+          if python3 -c "import json,sys; d=json.load(open(sys.argv[1])); sys.exit(1 if d.get('ok')==False and 'error' in d else 0)" $SNYK_REPORTS_DIR/docker-image-scan.json 2>/dev/null; then
+            snyk-to-html -i $SNYK_REPORTS_DIR/docker-image-scan.json -o $SNYK_REPORTS_DIR/docker-image-scan.html || true
+            echo "Docker image scan complete"
+          else
+            echo "WARNING: Docker scan JSON contains errors (auth/API issue). Skipping HTML generation."
+            cat $SNYK_REPORTS_DIR/docker-image-scan.json 2>/dev/null || true
+          fi
 
   post_build:
     commands:
@@ -148,21 +144,20 @@ phases:
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
 
       # ====== Upload Snyk reports to S3 ======
-      # TODO: Uncomment to enable Snyk report upload to S3
-      # - echo "Uploading Snyk scan reports to S3..."
-      # - |
-      #   if [ -n "$SNYK_S3_BUCKET" ]; then
-      #     S3_PATH="s3://${SNYK_S3_BUCKET}/snyk-reports/csight-frontend/${SCAN_DATE}-${IMAGE_TAG}"
-      #     aws s3 cp $SNYK_REPORTS_DIR/pip-dep-scan.json "${S3_PATH}/pip-dep-scan.json" || true
-      #     aws s3 cp $SNYK_REPORTS_DIR/pip-dep-scan.html "${S3_PATH}/pip-dep-scan.html" || true
-      #     aws s3 cp $SNYK_REPORTS_DIR/npm-dep-scan.json "${S3_PATH}/npm-dep-scan.json" || true
-      #     aws s3 cp $SNYK_REPORTS_DIR/npm-dep-scan.html "${S3_PATH}/npm-dep-scan.html" || true
-      #     aws s3 cp $SNYK_REPORTS_DIR/docker-image-scan.json "${S3_PATH}/docker-image-scan.json" || true
-      #     aws s3 cp $SNYK_REPORTS_DIR/docker-image-scan.html "${S3_PATH}/docker-image-scan.html" || true
-      #     echo "Reports uploaded to ${S3_PATH}"
-      #   else
-      #     echo "SNYK_S3_BUCKET not set — skipping S3 upload"
-      #   fi
+      - echo "Uploading Snyk scan reports to S3..."
+      - |
+        if [ -n "$SNYK_S3_BUCKET" ]; then
+          S3_PATH="s3://${SNYK_S3_BUCKET}/snyk-reports/csight-frontend/${SCAN_DATE}-${IMAGE_TAG}"
+          aws s3 cp $SNYK_REPORTS_DIR/pip-dep-scan.json "${S3_PATH}/pip-dep-scan.json" || true
+          aws s3 cp $SNYK_REPORTS_DIR/pip-dep-scan.html "${S3_PATH}/pip-dep-scan.html" || true
+          aws s3 cp $SNYK_REPORTS_DIR/npm-dep-scan.json "${S3_PATH}/npm-dep-scan.json" || true
+          aws s3 cp $SNYK_REPORTS_DIR/npm-dep-scan.html "${S3_PATH}/npm-dep-scan.html" || true
+          aws s3 cp $SNYK_REPORTS_DIR/docker-image-scan.json "${S3_PATH}/docker-image-scan.json" || true
+          aws s3 cp $SNYK_REPORTS_DIR/docker-image-scan.html "${S3_PATH}/docker-image-scan.html" || true
+          echo "Reports uploaded to ${S3_PATH}"
+        else
+          echo "SNYK_S3_BUCKET not set — skipping S3 upload"
+        fi
 
       - echo "Build and push completed successfully"
 

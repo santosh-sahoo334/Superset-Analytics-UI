@@ -62,7 +62,7 @@ ENV LANG=C.UTF-8 \
     SUPERSET_PORT=8088
 
 RUN mkdir -p ${PYTHONPATH} superset/static superset-frontend apache_superset.egg-info requirements \
-    && useradd --user-group -d ${SUPERSET_HOME} -m --no-log-init --shell /bin/bash superset \
+    && useradd --user-group --uid 1000 -d ${SUPERSET_HOME} -m --no-log-init --shell /bin/bash superset \
     && apt-get update -qq \
     # [SECURITY] Upgrade Debian packages with known CVEs
     && apt-get upgrade -yqq \

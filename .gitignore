@@ -15,6 +15,7 @@
 # limitations under the License.
 #
 Security-Scan-Reports/
+superset-frontend/.npmrc
 *.bak
 *.db
 *.pyc

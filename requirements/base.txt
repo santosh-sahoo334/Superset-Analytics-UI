@@ -400,7 +400,8 @@ zipp==3.21.0
 # The following packages are considered to be unsafe in a requirements file:
 setuptools==78.1.1
 
-# Move the dependancies from Helm 
+# Move the dependancies from Helm
+azure-identity
 psycopg2-binary==2.9.6
 sqlalchemy-bigquery
 prophet==1.1.5
