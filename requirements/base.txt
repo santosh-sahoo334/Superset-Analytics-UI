@@ -415,3 +415,5 @@ pip==25.2
 Flask-Limiter
 # For CORS to function correctly
 apache-superset[cors]
+# For Azure Synapse SQL (mssql+pymssql)
+pymssql==1.1.2
