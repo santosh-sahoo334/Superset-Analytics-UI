@@ -127,6 +127,15 @@ RUN ldconfig
 # Check if Curl is properly installed
 RUN curl --version
 
+# [AZURE SYNAPSE] Install Microsoft ODBC Driver 18 for SQL Server (required by pyodbc)
+RUN apt-get update -qq \
+    && apt-get install -yqq --no-install-recommends gnupg2 apt-transport-https \
+    && curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg \
+    && curl -fsSL https://packages.microsoft.com/config/debian/12/prod.list > /etc/apt/sources.list.d/mssql-release.list \
+    && apt-get update -qq \
+    && ACCEPT_EULA=Y apt-get install -yqq --no-install-recommends msodbcsql18 unixodbc-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY --chown=superset:superset setup.py MANIFEST.in README.md ./
 # setup.py uses the version information in package.json
 COPY --chown=superset:superset superset-frontend/package.json superset-frontend/
