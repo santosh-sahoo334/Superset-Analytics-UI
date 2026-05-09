@@ -150,14 +150,22 @@ RUN --mount=type=bind,target=./requirements/local.txt,src=./requirements/local.t
 # Install Node 22 LTS via NodeSource and point Playwright to use it.
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -yqq --no-install-recommends nodejs \
-    # [SECURITY] Update npm to fix bundled vulnerabilities (tar, minimatch, glob)
-    && npm install -g npm@latest \
-    # [SECURITY] Patch npm transitive vulnerabilities (picomatch 4.0.3->4.0.4, brace-expansion 5.0.4->5.0.5)
+    # [SECURITY] Patch npm bundled vulnerabilities:
+    #   picomatch 4.0.3 -> 4.0.4 (CVE-2026-33671, CVE-2026-33672)
+    #   brace-expansion 2.0.2 -> 2.0.3 (CVE-2026-33750)
     && npm pack picomatch@4.0.4 --pack-destination /tmp \
-    && npm pack brace-expansion@5.0.5 --pack-destination /tmp \
-    && find /usr/lib/node_modules -path "*/node_modules/picomatch" -type d -exec sh -c 'rm -rf "$1"/* && tar xzf /tmp/picomatch-4.0.4.tgz --strip-components=1 -C "$1"' _ {} \; \
-    && find /usr/lib/node_modules -path "*/node_modules/brace-expansion" -type d -exec sh -c 'rm -rf "$1"/* && tar xzf /tmp/brace-expansion-5.0.5.tgz --strip-components=1 -C "$1"' _ {} \; \
+    && npm pack brace-expansion@2.0.3 --pack-destination /tmp \
+    && cd /usr/lib/node_modules/npm/node_modules/picomatch \
+    && rm -rf ./* \
+    && tar xzf /tmp/picomatch-4.0.4.tgz --strip-components=1 \
+    && cd /usr/lib/node_modules/npm/node_modules/brace-expansion \
+    && rm -rf ./* \
+    && tar xzf /tmp/brace-expansion-2.0.3.tgz --strip-components=1 \
+    && cd /app \
     && rm -f /tmp/picomatch-*.tgz /tmp/brace-expansion-*.tgz \
+    # Verify patches applied
+    && grep '"version": "4.0.4"' /usr/lib/node_modules/npm/node_modules/picomatch/package.json \
+    && grep '"version": "2.0.3"' /usr/lib/node_modules/npm/node_modules/brace-expansion/package.json \
     && rm -rf /var/lib/apt/lists/* \
     # Remove ALL Playwright bundled Node binaries (any path under playwright/)
     && find /usr/local/lib/python3.9/site-packages/playwright -name "node" -type f -delete 2>/dev/null || true \
