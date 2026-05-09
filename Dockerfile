@@ -175,6 +175,12 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     # to prevent Snyk from flagging node 24.x CVEs. Runtime uses PLAYWRIGHT_NODEJS_PATH instead.
     && find /usr/local/lib/python3.9/site-packages/playwright -name "node" -type f -delete 2>/dev/null || true
 
+# [SECURITY] Remove build-only dev package that triggers SBOM false positive.
+# zlib1g-dev source contains minizip (CVE-2023-45853) which Debian does NOT compile,
+# but SBOM scanners flag it. The runtime library zlib1g remains installed.
+RUN apt-get remove --purge -yqq zlib1g-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY --chmod=755 ./docker/run-server.sh /usr/bin/
 USER superset
 
