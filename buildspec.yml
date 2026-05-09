@@ -10,6 +10,7 @@ env:
     BABEL_DISABLE_CACHE: "1"
     SNYK_S3_BUCKET: ""
     SNYK_TOKEN: ""
+    SNYK_ORG: ""
 
 phases:
   pre_build:
@@ -89,6 +90,14 @@ phases:
       # Check if the .env file exists before proceeding
       - if [ ! -f "$CODEBUILD_SRC_DIR/superset-frontend/.env" ]; then echo ".env file does not exist. Build will not proceed."; exit 1; fi
 
+      # Build Snyk org flag if SNYK_ORG is set
+      - |
+          SNYK_ORG_FLAG=""
+          if [ -n "$SNYK_ORG" ]; then
+            SNYK_ORG_FLAG="--org=$SNYK_ORG"
+            echo "Using Snyk org: $SNYK_ORG"
+          fi
+
       # ====== Snyk Scan 1: Python dependency scan ======
       # Create a venv and install packages so Snyk can fully resolve the dependency tree
       - echo "Running Snyk Python dependency scan..."
@@ -97,10 +106,10 @@ phases:
       - |
         cd $CODEBUILD_SRC_DIR
         . /tmp/snyk-venv/bin/activate
-        snyk test --file=requirements/base.txt --package-manager=pip --json > $SNYK_REPORTS_DIR/pip-dep-scan.json || true
+        snyk test --file=requirements/base.txt --package-manager=pip $SNYK_ORG_FLAG --json > $SNYK_REPORTS_DIR/pip-dep-scan.json || true
         deactivate
       - |
-          if python3 -c "import json,sys; d=json.load(open(sys.argv[1])); sys.exit(1 if d.get('ok')==False and 'error' in d else 0)" $SNYK_REPORTS_DIR/pip-dep-scan.json 2>/dev/null; then
+          if python3 -c "import json,sys; d=json.load(open(sys.argv[1])); sys.exit(0 if 'vulnerabilities' in d else 1)" $SNYK_REPORTS_DIR/pip-dep-scan.json 2>/dev/null; then
             snyk-to-html -i $SNYK_REPORTS_DIR/pip-dep-scan.json -o $SNYK_REPORTS_DIR/pip-dep-scan.html || true
             echo "Python dependency scan complete"
           else
@@ -110,9 +119,9 @@ phases:
 
       # ====== Snyk Scan 2: Frontend npm dependency scan ======
       - echo "Running Snyk frontend npm dependency scan..."
-      - snyk test --file=superset-frontend/package-lock.json --json > $SNYK_REPORTS_DIR/npm-dep-scan.json || true
+      - snyk test --file=superset-frontend/package-lock.json $SNYK_ORG_FLAG --json > $SNYK_REPORTS_DIR/npm-dep-scan.json || true
       - |
-          if python3 -c "import json,sys; d=json.load(open(sys.argv[1])); sys.exit(1 if d.get('ok')==False and 'error' in d else 0)" $SNYK_REPORTS_DIR/npm-dep-scan.json 2>/dev/null; then
+          if python3 -c "import json,sys; d=json.load(open(sys.argv[1])); sys.exit(0 if 'vulnerabilities' in d else 1)" $SNYK_REPORTS_DIR/npm-dep-scan.json 2>/dev/null; then
             snyk-to-html -i $SNYK_REPORTS_DIR/npm-dep-scan.json -o $SNYK_REPORTS_DIR/npm-dep-scan.html || true
             echo "Frontend npm dependency scan complete"
           else
@@ -127,14 +136,29 @@ phases:
 
       # ====== Snyk Scan 3: Docker image scan ======
       - echo "Running Snyk Docker image scan..."
-      - snyk container test $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG --json > $SNYK_REPORTS_DIR/docker-image-scan.json || true
+      - snyk container test $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG $SNYK_ORG_FLAG --json > $SNYK_REPORTS_DIR/docker-image-scan.json || true
       - |
-          if python3 -c "import json,sys; d=json.load(open(sys.argv[1])); sys.exit(1 if d.get('ok')==False and 'error' in d else 0)" $SNYK_REPORTS_DIR/docker-image-scan.json 2>/dev/null; then
+          if python3 -c "import json,sys; d=json.load(open(sys.argv[1])); sys.exit(0 if 'vulnerabilities' in d else 1)" $SNYK_REPORTS_DIR/docker-image-scan.json 2>/dev/null; then
             snyk-to-html -i $SNYK_REPORTS_DIR/docker-image-scan.json -o $SNYK_REPORTS_DIR/docker-image-scan.html || true
             echo "Docker image scan complete"
           else
             echo "WARNING: Docker scan JSON contains errors (auth/API issue). Skipping HTML generation."
             cat $SNYK_REPORTS_DIR/docker-image-scan.json 2>/dev/null || true
+          fi
+
+      # ====== Snyk Monitor: Upload results to Snyk UI ======
+      - |
+          if [ -n "$SNYK_TOKEN" ] && [ -n "$SNYK_ORG" ]; then
+            echo "Uploading scan results to Snyk UI..."
+            cd $CODEBUILD_SRC_DIR
+            . /tmp/snyk-venv/bin/activate
+            snyk monitor --file=requirements/base.txt --package-manager=pip $SNYK_ORG_FLAG --project-name=csight-frontend-pip || true
+            deactivate
+            snyk monitor --file=superset-frontend/package-lock.json $SNYK_ORG_FLAG --project-name=csight-frontend-npm || true
+            snyk container monitor $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG $SNYK_ORG_FLAG --project-name=csight-frontend-docker || true
+            echo "Snyk monitor upload complete"
+          else
+            echo "SNYK_TOKEN or SNYK_ORG not set — skipping Snyk monitor upload"
           fi
 
   post_build:

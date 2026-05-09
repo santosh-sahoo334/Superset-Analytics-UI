@@ -1,0 +1,28 @@
+# Rebuild of apache/superset:dockerize with security patches.
+# Original: Alpine 3.19.1 + dockerize v0.7.0 (golang.org/x/net v0.10.0)
+# Updated:  Alpine 3.21  + dockerize v0.11.0 (golang.org/x/net v0.48.0+)
+#
+# Fixes:
+#   CVE-2025-22870 (HIGH)  - golang.org/x/net SSRF  -> fixed in dockerize v0.11.0
+#   CVE-2024-6119  (HIGH)  - OpenSSL type confusion  -> fixed in Alpine 3.21
+#   CVE-2025-26519 (HIGH)  - musl                    -> fixed in Alpine 3.21
+#   CVE-2023-42363..42366 (MEDIUM) - busybox          -> fixed in Alpine 3.21
+
+FROM alpine:3.21
+
+ARG DOCKERIZE_VERSION=v0.11.0
+
+RUN apk update \
+    && apk upgrade --no-cache \
+    && apk add --no-cache \
+        openssl \
+        ca-certificates \
+        curl \
+    && curl -fsSL "https://github.com/jwilder/dockerize/releases/download/${DOCKERIZE_VERSION}/dockerize-alpine-linux-amd64-${DOCKERIZE_VERSION}.tar.gz" \
+        | tar -xzf - -C /usr/local/bin \
+    && chmod +x /usr/local/bin/dockerize \
+    && dockerize --version \
+    && apk del curl \
+    && rm -rf /var/cache/apk/*
+
+ENTRYPOINT ["dockerize"]
