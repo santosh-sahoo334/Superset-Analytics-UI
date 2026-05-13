@@ -203,7 +203,7 @@ export const LayoutProvider = (props: ChildContainerProps) => {
     <LayoutContext.Provider value={value}>
       <>
         <head>
-          <title>EveryOps CSight</title>
+          <title>CapacityOps</title>
           <meta charSet="UTF-8" />
           <meta
             name="description"
