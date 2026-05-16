@@ -49,6 +49,22 @@ def is_blacklisted(session_id):
         return False
 
 
+def clear_session_blacklist(session_id):
+    """Remove a session ID from the blacklist after re-authentication.
+
+    Flask-Login's _id is a deterministic hash of IP + User-Agent, so the same
+    user logging back in from the same browser gets the same _id that was
+    blacklisted at logout.  This must be called during login to unblock it.
+    """
+    if not session_id:
+        return
+    try:
+        _get_client().delete(f"{PREFIX}{session_id}")
+        logger.info("[redis_blacklist] Cleared session blacklist for %s", session_id[:8])
+    except Exception as e:
+        logger.error("Failed to clear session blacklist: %s", e)
+
+
 # ---------------------------------------------------------------------------
 # User-level revocation (for OIDC Backchannel Logout)
 # ---------------------------------------------------------------------------

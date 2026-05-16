@@ -1007,8 +1007,15 @@ class AuthOAuthView(AuthView):
             # Clear any backchannel revocation flag so the fresh login isn't
             # immediately kicked out by check_user_revocation.
             try:
-                from superset.utils.redis_blacklist import clear_user_revocation
+                from superset.utils.redis_blacklist import clear_user_revocation, clear_session_blacklist
                 clear_user_revocation(user.id)
+                # Also clear session blacklist for the new _id. Flask-Login's _id
+                # is sha512(IP+UA) — deterministic — so the same user logging back
+                # in from the same browser gets the same _id that was blacklisted
+                # at the previous logout.
+                new_sid = session.get("_id")
+                if new_sid:
+                    clear_session_blacklist(new_sid)
             except Exception:
                 pass
 
