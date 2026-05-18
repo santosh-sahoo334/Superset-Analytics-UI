@@ -1,6 +1,7 @@
 /* eslint-disable */
 // import Head from "next/head";
 import React, { useState,ReactNode,Dispatch,SetStateAction } from "react";
+import getBootstrapData from 'src/utils/getBootstrapData';
 
 export type ColorScheme = "light" | "dark" | "dim";
 
@@ -203,7 +204,7 @@ export const LayoutProvider = (props: ChildContainerProps) => {
     <LayoutContext.Provider value={value}>
       <>
         <head>
-          <title>CapacityOps</title>
+          <title>{getBootstrapData()?.common?.menu_data?.brand?.alt || 'EveryOps CSight'}</title>
           <meta charSet="UTF-8" />
           <meta
             name="description"

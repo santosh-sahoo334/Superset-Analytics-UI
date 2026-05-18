@@ -50,8 +50,8 @@ phases:
       # - echo "REACT_APP_SUPERSET_BASE_URL - $REACT_APP_SUPERSET_BASE_URL"
       - ADMIN_EMAIL=$(aws ssm get-parameter --name "/csight/frontend/ADMIN_EMAIL" --with-decryption --query "Parameter.Value" --output text)
       - echo "ADMIN_EMAIL - $ADMIN_EMAIL"
-      - REACT_APP_LOGO_TEXT=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_LOGO_TEXT" --with-decryption --query "Parameter.Value" --output text)
-      - echo "REACT_APP_LOGO_TEXT - $REACT_APP_LOGO_TEXT"
+      # - REACT_APP_LOGO_TEXT=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_LOGO_TEXT" --with-decryption --query "Parameter.Value" --output text)
+      # - echo "REACT_APP_LOGO_TEXT - $REACT_APP_LOGO_TEXT"
       # - REACT_APP_DWORKS_BASE_URL=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_DWORKS_BASE_URL" --with-decryption --query "Parameter.Value" --output text)
       # - echo "REACT_APP_DWORKS_BASE_URL - $REACT_APP_DWORKS_BASE_URL"
       - REACT_APP_DWORKS_API_KEY=$(aws ssm get-parameter --name "/csight/frontend/REACT_APP_DWORKS_API_KEY" --with-decryption --query "Parameter.Value" --output text)
@@ -74,7 +74,7 @@ phases:
       - echo "Writing parameters to .env file in superset-frontend folder"
       - ENV_FILE="$CODEBUILD_SRC_DIR/superset-frontend/.env"
       - echo "ADMIN_EMAIL=$ADMIN_EMAIL" > $ENV_FILE
-      - echo "REACT_APP_LOGO_TEXT=$REACT_APP_LOGO_TEXT" >> $ENV_FILE
+      # - echo "REACT_APP_LOGO_TEXT=$REACT_APP_LOGO_TEXT" >> $ENV_FILE
       # - echo "REACT_APP_DWORKS_BASE_URL=$REACT_APP_DWORKS_BASE_URL" >> $ENV_FILE
       - echo "REACT_APP_DWORKS_API_KEY=$REACT_APP_DWORKS_API_KEY" >> $ENV_FILE
       - echo "REACT_APP_INFO_MONTHLY_COST=$REACT_APP_INFO_MONTHLY_COST" >> $ENV_FILE

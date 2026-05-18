@@ -267,9 +267,10 @@ export const DashboardPage: FC<PageProps> = ({ idOrSlug,className }: PageProps) 
   }, [readyToRender]);
 
   useEffect(() => {
-    document.title = 'CapacityOps';
+    const brandName = getBootstrapData()?.common?.menu_data?.brand?.alt || 'EveryOps CSight';
+    document.title = brandName;
     return () => {
-      document.title = 'CapacityOps';
+      document.title = brandName;
     };
   }, [dashboard_title]);
 

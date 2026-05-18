@@ -487,7 +487,7 @@ useEffect(() => {
             />
           </div>
           <span className="header-title-csight">
-            {process.env.REACT_APP_LOGO_TEXT || 'CSight'}
+            {getBootstrapData()?.common?.menu_data?.brand?.alt || 'CSight'}
           </span>
           {isMobile && (
             <Button

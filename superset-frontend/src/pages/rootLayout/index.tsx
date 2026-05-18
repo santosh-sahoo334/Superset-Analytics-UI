@@ -11,6 +11,7 @@ import 'primeicons/primeicons.css';
 
 import "../../styles/layout/layout.scss";
 import { ToastProvider } from "src/components/CsightCommon/context/ToastContext";
+import getBootstrapData from 'src/utils/getBootstrapData';
 
 
 export default function RootLayout({
@@ -21,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <title>CapacityOps</title>
+        <title>{getBootstrapData()?.common?.menu_data?.brand?.alt || 'EveryOps CSight'}</title>
         <meta charSet="UTF-8" />
         <meta
           name="description"

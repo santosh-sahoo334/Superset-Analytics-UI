@@ -7,6 +7,7 @@ import { useContext, useEffect } from "react";
 import AppMenu from "./AppMenu";
 import { LayoutContext } from "./context/layoutcontext";
 import { MenuProvider } from "./context/menucontext";
+import getBootstrapData from 'src/utils/getBootstrapData';
 
 const AppSidebar = (
   props: { sidebarRef: React.RefObject<HTMLDivElement> },
@@ -101,7 +102,7 @@ const AppSidebar = (
             </div>
           </Link>
           <div className="logo-text">
-            {process.env.REACT_APP_LOGO_TEXT || "CSight"}
+            {getBootstrapData()?.common?.menu_data?.brand?.alt || 'EveryOps CSight'}
           </div>
         </div>
 
