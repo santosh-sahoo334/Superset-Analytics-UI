@@ -320,6 +320,19 @@ export const DashboardPage: FC<PageProps> = ({ idOrSlug,className }: PageProps) 
     return componentPages.find(p => p.tabName === activeNavItem)?.component || null;
   };
 
+  // When switching from a custom page to the Superset dashboard, trigger a
+  // window resize so ParentSize/ResizeObserver recalculates chart dimensions.
+  const prevIsCustomPage = useRef(isCustomPage);
+  useEffect(() => {
+    if (prevIsCustomPage.current && !isCustomPage) {
+      // Small delay to let display:block take effect before triggering resize
+      requestAnimationFrame(() => {
+        window.dispatchEvent(new Event('resize'));
+      });
+    }
+    prevIsCustomPage.current = isCustomPage;
+  }, [isCustomPage]);
+
   if (error) throw error; // caught in error boundary
 
   const customComponent = isCustomPage ? getCustomComponent() : null;

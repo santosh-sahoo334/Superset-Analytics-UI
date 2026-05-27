@@ -752,7 +752,7 @@
 
 .site-layout.collapsed {
   margin-left: 80px;
-  width: calc(100% - 50px);
+  width: calc(100% - 80px);
 }
 
 .site-content {
@@ -1352,9 +1352,11 @@
   border-radius: 3px;
 }
 
-/* Remove any overflow settings from other containers */
-.app-sidebar,
-.ant-layout,
-.site-layout {
+/* Prevent horizontal overflow on layout containers */
+.app-sidebar {
   overflow: hidden !important;
+}
+.site-layout {
+  overflow-x: hidden;
+  overflow-y: hidden;
 }

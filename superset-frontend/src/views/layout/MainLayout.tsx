@@ -585,7 +585,7 @@ useEffect(() => {
       )}
 
       <Layout className={`custom-menu-item site-layout ${collapsed ? 'collapsed' : ''}`}>
-        <AntContent className="site-content" style={{ overflow: 'auto', height: 'calc(100vh - 60px)' }}>
+        <AntContent className="site-content" style={{ overflow: 'auto', height: 'calc(100vh - 64px)' }}>
           <ScrollButtons />
           {isFeatureEnabled(FeatureFlag.CsightChatbot) && <ChatBot />}
           {children}
